@@ -1,0 +1,279 @@
+<style>
+    div.swal2-container {
+        z-index: 1100;
+    }
+
+</style>
+
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Sản phẩm/</span> Danh sách sản phẩm
+</h4>
+<div class="mb-3">
+    <a type="button" class="btn btn-secondary" href="/admin/product/add-product">Thêm sản phẩm</a>
+</div>
+
+<div class="nav-align-top mb-4">
+    <form th:action="@{/admin/product/list_detail}" th:object="${detailDTO}" id="form-product">
+        <ul class="nav nav-tabs nav-fill fs-5 " role="tablist">
+            <li class="nav-item">
+                <a href="/admin/product/list">
+                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-home" aria-controls="navs-pills-justified-home"
+                            aria-selected="true">
+                        Sản phẩm
+                        <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger">[(${#lists.size(countProduct)})]</span>
+                    </button>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/product/list_detail">
+                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-profile" aria-controls="navs-pills-justified-profile"
+                            aria-selected="false">
+                        Sản phẩm chi tiết
+                        <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger">[(${#lists.size(countDetail)})]</span>
+                    </button>
+                </a>
+            </li>
+        </ul>
+        <div class="card p-0 rounded-bottom rounded-0">
+            <div class="card-header">
+                <div class="input-group mb-3">
+                    <input class="form-control" type="search" placeholder="Nhập tên sản phẩm hoặc thông số muốn tìm"
+                           id="key" th:field="*{key}">
+                    <button class="btn btn-secondary" id="search">Tìm kiếm</button>
+                </div>
+                <div class="row justify-content-between">
+                    <div class="col-xl-2 col-4">
+                        <div class="input-group ">
+                            <label class="input-group-text" for="select-size">Xem:</label>
+                            <select class="form-select text-start" id="select-size" name="size" th:field="*{size}">
+                                <option value="10" th:selected="*{size == 10}">10</option>
+                                <option value="20" th:selected="*{size == 20}">20</option>
+                                <option value="40" th:selected="*{size == 40}">40</option>
+                                <option value="80" th:selected="*{size == 80}">80</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="input-group">
+                            <label class="input-group-text" for="select-size">Sắp xếp:</label>
+                            <select class="form-select text-start" id="sort" name="size" th:field="*{sort}">
+                                <option value="1" th:selected="*{sort == 1}">Mới nhất</option>
+                                <option value="2" th:selected="*{sort == 2}">Cũ nhất</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <table class="table table-hover" id="table-all-product">
+                    <caption class="ms-4">
+                        Từ [(${listProductDetail.number * listProductDetail.size +1})] đến [(${(listProductDetail.number
+                        *
+                        listProductDetail.size)+listProductDetail.numberOfElements})]
+                    </caption>
+                    <thead>
+                    <tr class="fw-semibold row-table">
+                        <th>Sản phẩm</th>
+                        <th>Sku</th>
+                        <!--                    <th>Giá nhập</th>-->
+                        <th>Giá bán</th>
+                        <th>Giảm giá</th>
+                        <th>Số lượng</th>
+                        <th>Trạng thái</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!--                    (today.getTime()-bill.paymentDate.getTime())-->
+                    <tr th:each="product,productStat:${listProductDetail}">
+                        <td th:text="${listNameProduct[productStat.index]}"></td>
+                        <td th:text="${product.sku}"></td>
+                        <td th:text="${#numbers.formatDecimal(product.priceExport,0,'COMMA',0,'POINT')}"></td>
+                        <td th:text="${ product.coupon!=null &&product.coupon.active == true && #dates.createNow().before(product.coupon.dateEnd) && #dates.createNow().after(product.coupon.dateStart)  ? product.coupon.value+'%':'0%'}">
+                        </td>
+                        <td th:text="${product.quantity}"></td>
+                        <td class="form-switch text-center"><input class="form-check-input active-product-detail cursor-pointer"
+                                                                   type="checkbox" th:value="${product.id}"
+                                                                   th:checked="${product.active}"></td>
+                        <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                        data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item view-product" href="javascript:void(0);"
+                                       data-bs-toggle="modal" th:value="${product.id}"
+                                       data-bs-target="#modalDetailProduct"><i class='bx bx-show me-1'></i>Xem sản phẩm</a>
+                                    <a class="dropdown-item view-discount" href="javascript:void(0);"
+                                       data-bs-toggle="modal"
+                                       data-bs-target="#modalDiscount" th:value="${product.id}"><i
+                                            class='bx bxs-discount'></i>Xem
+                                        giảm giá</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal fade" id="modalDiscount" aria-modal="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="title-discount">Thông tin giảm giá</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body" id="have-discount">
+                            <div class="mb-3">
+                                <label class="form-label">Mã giảm giá:</label>
+                                <span class="form-control" name="code" id="code"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Giá trị:</label>
+                                <div class="input-group">
+                                    <span type="number" class="form-control" name="value" id="value"></span>
+                                    <span class="input-group-text">%</span>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Ngày bắt đầu:</label>
+                                <span type="date" class="form-control" name="dateStart" id="date-start"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Ngày kết thúc:</label>
+                                <span type="date" class="form-control" name="dateEnd" id="date-end"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Trạng thái :</label>
+                                <span type="date" class="form-control" name="active" id="active-discount"></span>
+                            </div>
+                        </div>
+                        <div class="modal-body" id="no-discount" hidden>
+                            <h3>Sản phẩm chưa từng được áp dụng giảm giá</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="modalDetailProduct" tabindex="-1" style="display: none">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header ">
+                            <div>
+                                <h5 class="modal-title" id="name-product"></h5>
+                            </div>
+                            <div class="mx-2">
+                                <span id="date-create"></span>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" id="close"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col mb-3">
+                                    <label class="form-label">sku</label>
+                                    <input type="text" class="form-control" id="sku">
+                                    <span class="fst-italic text-danger" id="error-sku"></span>
+
+                                </div>
+                                <div class="col mb-3">
+                                    <label class="form-label">Số lượng</label>
+                                    <input type="number" class="form-control" id="quantity">
+                                    <span class="fst-italic text-danger" id="error-quantity"></span>
+
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col mb-3">
+                                    <label class="form-label">Giá nhập</label>
+                                    <div class=" input-group">
+                                        <input type="number" class="form-control" id="price-import">
+                                        <span class="input-group-text">VNĐ</span>
+                                    </div>
+                                    <span class="fst-italic text-danger" id="error-priceImport"></span>
+                                </div>
+
+                                <div class="col mb-3">
+                                    <label class="form-label">Giá bán</label>
+                                    <div class=" input-group">
+                                        <input type="number" class="form-control" id="price-export">
+                                        <span class="input-group-text">VNĐ</span>
+                                    </div>
+                                    <span class="fst-italic text-danger" id="error-priceExport"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col mb-3">
+                                    <div class="col-md">
+                                        <label class="d-block form-label">Bày bán</label>
+                                        <div class="form-check form-check-inline mt-3">
+                                            <input class="form-check-input" type="radio" name="active"
+                                                   id="active" value="true">
+                                            <label class="form-check-label" for="active">Bày bán</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="active"
+                                                   id="inactive" value="false">
+                                            <label class="form-check-label" for="inactive">Không bán</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col mb-3">
+                                    <label class="form-label">Hình ảnh</label>
+                                    <div class="text-center" id="image">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="save-product-detail">Lưu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div>
+                    <div aria-label="Page pagination">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item first">
+                                <a class="page-link" id="first" th:value="1" type="button">
+                                    <i class="tf-icon bx bx-chevrons-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item prev">
+                                <a class="page-link" id="prev"><i class="tf-icon bx bx-chevron-left"></i></a>
+                            </li>
+                            <li class="page-item mx-2">
+                                <div class="input-group input-group-merge">
+                                    <input class="form-control inputPage" id="pageInput" type="number" name="page"
+                                           th:temp="*{page}"
+                                           th:value="*{page}">
+                                    <span class="input-group-text" id="total"
+                                          th:value="${listProductDetail.totalPages}">/[(${listProductDetail.totalPages})]</span>
+                                    <!--                                                                    <input id="totalPage" value="${session.list.totalPages}" hidden="hidden">-->
+                                </div>
+                            </li>
+                            <li class="page-item next">
+                                <a class="page-link" id="next">
+                                    <i class="tf-icon bx bx-chevron-right"></i>
+                                </a>
+                            </li>
+                            <li class="page-item last">
+                                <a class="page-link" id="last" th:value="${listProductDetail.totalPages}">
+                                    <i class="tf-icon bx bx-chevrons-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<script src="/admin/plugin/js/list-product.js"></script>

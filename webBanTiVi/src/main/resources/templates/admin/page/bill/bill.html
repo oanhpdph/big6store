@@ -1,0 +1,221 @@
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Hóa đơn/ </span>Danh sách hóa đơn</h4>
+<div class="card">
+
+    <form class="col-12 mt-2" th:action="@{/admin/bill/list_bill}" method="get" th:object="${search}" id="formBill">
+        <input hidden th:value="*{billStatus}" id="status" name="billStatus">
+        <ul class="nav nav-tabs nav-fill fs-5" role="tablist">
+            <li class="nav-item">
+                <button type="button"
+                        th:class="|nav-link status *{billStatus == 'doncho' ? 'active' : ''}|"
+                        data-bs-toggle="tab" value="doncho"
+                        aria-selected="false">
+                    Chờ xử lý
+                    <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger" th:if="${#lists.size(cho)>0}">[(${#lists.size(cho)})]</span>
+                </button>
+            </li>
+            <li class="nav-item">
+                <button type="button" th:class="|nav-link status *{billStatus=='chuanbi' ? 'active':''}|"
+                        data-bs-toggle="tab" value="chuanbi"
+                        aria-selected="true">
+                    Chuẩn bị hàng
+                    <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger"  th:if="${#lists.size(chuanbi)>0}">[(${#lists.size(chuanbi)})]</span>
+                </button>
+            </li>
+            <li class="nav-item">
+                <button type="button" th:class="|nav-link status *{billStatus=='danggiao' ? 'active':''}|"
+                        data-bs-toggle="tab" value="danggiao"
+                        aria-selected="false">
+                    Đang giao
+                    <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger"  th:if="${#lists.size(danggiao)>0}">[(${#lists.size(danggiao)})]</span>
+                </button>
+            </li>
+            <li class="nav-item">
+                <button type="button" th:class="|nav-link status *{billStatus=='hoanthanh' ? 'active':''}|"
+                        data-bs-toggle="tab" value="hoanthanh"
+                        aria-selected="false">
+                    Hoàn thành
+                    <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger"  th:if="${#lists.size(hoanthanh)>0}">[(${#lists.size(hoanthanh)})]</span>
+                </button>
+            </li>
+            <li class="nav-item">
+                <button type="button" th:class="|nav-link status *{billStatus=='donhuy' ? 'active':''}|"
+                        data-bs-toggle="tab" value="donhuy"
+                        aria-selected="false">
+                    Đơn hủy
+                    <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger"  th:if="${#lists.size(huy)>0}">[(${#lists.size(huy)})]</span>
+                </button>
+            </li>
+<!--            <li class="nav-item">-->
+<!--                <button type="button" th:class="|nav-link status *{billStatus=='dontra' ? 'active':''}|"-->
+<!--                        data-bs-toggle="tab" value="dontra"-->
+<!--                        aria-selected="false">-->
+<!--                    Đơn trả-->
+<!--                    <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger"  th:if="${#lists.size(trahang)>0}">[(${#lists.size(trahang)})]</span>-->
+<!--                </button>-->
+<!--            </li>-->
+            <li class="nav-item">
+                <button type="button" th:class="|nav-link status *{billStatus=='donhoan' ? 'active':''}|"
+                        data-bs-toggle="tab" value="donhoan"
+                        aria-selected="false">
+                    Đơn hoàn
+                    <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger"  th:if="${#lists.size(hoantra)>0}">[(${#lists.size(hoantra)})]</span>
+                </button>
+            </li>
+        </ul>
+        <div class="card-header">
+            <div class="col-12 row">
+                <div class="col-7">
+                    <div class="form-check input-group input-group-merge">
+                    <span class="input-group-text">
+                        <i class="bx bx-search"></i>
+                    </span>
+                        <input type="text" class="form-control" placeholder="Mã hóa đơn, tên khách hàng, số điện thoại"
+                               name="key" id="search-input" th:field="*{key}" autocomplete="off">
+                        <button class="btn btn-primary" type="button" id="search">Tìm kiếm</button>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <button class="btn btn-secondary" data-bs-offset="0,4" data-bs-toggle="tooltip"
+                            data-bs-placement="bottom" data-bs-html="true" title=""
+                            data-bs-original-title="<span>Reset form</span>" type="button" id="reset">
+                        <i class='bx bx-reset'></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6 col-xl-7 col-md-9 col-sm-12 row mt-2">
+                <div class="col-lg-9 col-xl-7 col-md-9 col-sm-8">
+                    <div class="input-group form-check">
+                        <div class="input-group input-group-merge input">
+                            <label for="date-seach-order" class="input-group-text">Chọn ngày:</label>
+                            <input type="text" class="form-control" id="date-seach-order" name="date" th:field="*{date}"
+                                   placeholder="MM/DD/YYYY-MM/DD/YYYY" autocomplete="off">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row mb-2 justify-content-between">
+                <div class="mx-3 col-md-2">
+                    <div class="input-group ">
+                        <label class="input-group-text" for="select-size">Xem:</label>
+                        <select class="form-select text-start" id="select-size" name="size">
+                            <option value="10" selected="selected">10</option>
+                            <option value="20">20</option>
+                            <option value="40">40</option>
+                            <option value="80">80</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-5 text-end">
+                    <div class="btn-group" role="group" aria-label="First group">
+                        <a th:href="@{/admin/bill/list_bill/download_excel}" type="button"
+                           class="btn btn-outline-secondary" data-bs-offset="0,4" data-bs-toggle="tooltip"
+                           data-bs-placement="bottom" data-bs-html="true" title=""
+                           data-bs-original-title="<span>Xuất danh sách excel theo danh sách hiển thị</span>">
+                            Excel
+                        </a>
+                        <a th:href="@{/admin/bill/list_bill/downloadpdf}" type="button"
+                           class="btn btn-outline-secondary" data-bs-offset="0,4" data-bs-toggle="tooltip"
+                           data-bs-placement="bottom" data-bs-html="true" title=""
+                           data-bs-original-title="<span>Xuất pdf theo danh sách hiển thị</span>">
+                            PDF
+                        </a>
+                        <button type="button" class="btn btn-outline-secondary">In</button>
+                    </div>
+                </div>
+            </div>
+            <div class="overflow-auto">
+                <table class="table table-hover table-bordered overflow-hidden" id="myTable">
+                    <thead>
+                    <tr class="row-table">
+                        <th>#</th>
+                        <th>Mã hóa đơn</th>
+                        <th>Tên khách hàng</th>
+                        <th>Ngày tạo</th>
+                        <th>Tổng tiền(VNĐ)</th>
+                        <th><select class="form-select" th:name="paymentStatus" id="paymentStatus"
+                                    th:field="*{paymentStatus}">
+                            <optgroup label="Thanh toán">
+                                <option selected value="-1">Tất cả</option>
+                                <option value="1">Đã thanh toán</option>
+                                <option value="2">Chưa thanh toán</option>
+                                <option value="3">Đã hoàn tiền</option>
+                            </optgroup>
+                        </select></th>
+                        <th></th>
+
+                    </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                    <tr th:each="listBill,billStat: ${listBill.content}">
+                        <td>
+                            <strong>[(${billStat.index+1})]</strong>
+                        </td>
+                        <td>[(${listBill.code})]</td>
+                        <td>
+                            [(${listBill.customer.name})]
+                        </td>
+                        <td>[(${listBill.createDate})]</td>
+                        <td  th:if="${listBill.getDeliveryNotes()[0].getDeliveryFee() != null}">
+                            [(${#numbers.formatDecimal(listBill.totalPrice+listBill.getDeliveryNotes()[0].getDeliveryFee(),0,'COMMA',0,'POINT')})]
+                        </td>
+                        <td  th:if="${listBill.getDeliveryNotes()[0].getDeliveryFee() == null}">
+                            [(${#numbers.formatDecimal(listBill.totalPrice,0,'COMMA',0,'POINT')})]
+                        </td>
+                        <td th:text="${listBill.paymentStatus == 1 ? 'Đã thanh toán' : listBill.paymentStatus == 2 ? 'Chưa thanh toán' : 'Đã hoàn tiền'}"></td>
+                        <td>
+                            <a th:href="|/admin/bill/bill_detail/${listBill.id}|" type="button"
+                               class="btn btn-icon btn-outline-primary">
+                                <i class="bx bxs-edit-alt"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card-footer ">
+            <!--            <div class="d-inline-flex">-->
+            <div>
+                <div aria-label="Page pagination">
+                    <ul class="pagination justify-content-end">
+                        <li class="page-item first">
+                            <a class="page-link" id="first" th:value="1" type="button">
+                                <i class="tf-icon bx bx-chevrons-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item prev">
+                            <a class="page-link" id="prev" th:value="${session.page==1? '1': session.page - 1}"><i
+                                    class="tf-icon bx bx-chevron-left"></i></a>
+                        </li>
+                        <li class="page-item mx-2">
+                            <div class="input-group input-group-merge">
+                                <input class="form-control inputPage" id="pageInput" type="number" name="page"
+                                       th:onblur="|blurInputPage(${session.page},${session.size})|"
+                                       th:onkeydown="|keydownPage(event,${session.page},${session.size})|"
+                                       th:value="${session.page}">
+                                <span class="input-group-text">/[(${listBill.totalPages})]</span>
+                                <!--                                <input id="totalPage" value="${session.list.totalPages}" hidden="hidden">-->
+                            </div>
+                        </li>
+                        <li class="page-item next">
+                            <a class="page-link" id="next"
+                               th:value="${session.page < listBill.totalPages ? session.page + 1 : listBill.totalPages }">
+                                <i class="tf-icon bx bx-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item last">
+                            <a class="page-link" id="last" th:value="${listBill.totalPages}">
+                                <i class="tf-icon bx bx-chevrons-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <!--            </div>-->
+        </div>
+    </form>
+</div>
+<script th:src="@{/admin/plugin/js/bill.js}"></script>

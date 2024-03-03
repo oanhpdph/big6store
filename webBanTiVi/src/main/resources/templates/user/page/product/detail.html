@@ -1,0 +1,447 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<style>
+    .buttons_added {
+        opacity: 1;
+        display: inline-block;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .is-form {
+        overflow: hidden;
+        position: relative;
+        background-color: #f9f9f9;
+        height: 2.2rem;
+        width: 1.9rem;
+        padding: 0;
+        text-shadow: 1px 1px 1px #fff;
+        border: 1px solid #ddd;
+    }
+
+    .is-form:focus, .input-text:focus {
+        outline: none;
+    }
+
+    .is-form.minus {
+        border-radius: 4px 0 0 4px;
+    }
+
+    .is-form.plus {
+        border-radius: 0 4px 4px 0;
+    }
+
+    .input-qty {
+        background-color: #fff;
+        height: 2.2rem;
+        text-align: center;
+        font-size: 1rem;
+        display: inline-block;
+        vertical-align: top;
+        margin: 0;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        border-left: 0;
+        border-right: 0;
+        padding: 0;
+    }
+
+    .input-qty::-webkit-outer-spin-button, .input-qty::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+<div class="container-xl">
+    <span hidden id="message">[(${message})]</span>
+    <section class="row">
+        <div class="col-lg-7 col-sm-12 mt-5 mb-5">
+            <div class="card">
+                <div class="card-body">
+                    <div id="carouselExample" class="carousel slide"
+                         data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div th:class="|carousel-item ${image.location==true?'active':''}|"
+                                 th:each="image:${product.listImage}">
+                                <div>
+                                    <img th:src="@{'/image/product/'+${image?.link}}"
+                                         alt="" class="d-block w-100">
+                                </div>
+                            </div>
+                        </div>
+                        <a class="carousel-control-prev" href="#carouselExample" role="button"
+                           data-bs-slide="prev">
+                                                        <span class="carousel-control-prev-icon"
+                                                              aria-hidden="true"></span>
+                            <span class="visually-hidden">Previous</span>
+                        </a>
+                        <a class="carousel-control-next" href="#carouselExample"
+                           role="button"
+                           data-bs-slide="next">
+                                                        <span class="carousel-control-next-icon"
+                                                              aria-hidden="true"></span>
+                            <span class="visually-hidden">Next</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5 mt-5 mb-5">
+            <form th:action="@{/product/detail/{id}(id=${product.id})}" method="post">
+                <div class="product-detail-title">
+                    <h2 th:text="${product.product.nameProduct +' '+product.product.sku}">
+                    </h2>
+                </div>
+                <table class="table">
+                    <tbody>
+                    <tr th:if="${reduceMoney!=0}">
+                        <td class="fs-5 text-strike-through"
+                            th:text="|${#numbers.formatDecimal(product.priceExport,0,'COMMA',0,'POINT')} (VNĐ)|"></td>
+                    </tr>
+                    <tr th:if="${reduceMoney!=0}">
+                        <td class="fs-4"
+                            th:text="|${#numbers.formatDecimal(reduceMoney,0,'COMMA',0,'POINT')} (VNĐ)|"></td>
+                    </tr>
+                    <tr th:if="${reduceMoney==0}">
+                        <td class="fs-4"
+                            th:text="|${#numbers.formatDecimal(product.priceExport,0,'COMMA',0,'POINT')} (VNĐ)|"></td>
+                    </tr>
+                    <tr th:if="${product.active==true}">
+                        <td class="fs-5" th:text="|Số lượng: ${product.quantity}|"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div class="mb-3">
+                    <div class="d-inline-block mb-4" th:each="productAll:${productAll.productDetails}">
+                        <a th:class="|border border-2 p-2 mb-3 mx-2 text-black ${product.id==productAll.id ? 'bg-label-primary':''}|"
+                           th:href="@{'/product/detail/'+${productAll.id}}" th:if="${productAll.active==true}">
+                        <span th:each="field:${productAll.fieldList}" class="mx-2"><span
+                                th:text="|${field.value}|"></span></span>
+                        </a>
+                    </div>
+                </div>
+                <div class="buttons_added mt-4 " th:id="${product.id}">
+                    <input class="minus is-form" type="button"
+                           value="-">
+                    <input aria-label="quantity" class="input-qty" max="10" min="1"
+                           name="qty"
+                           type="number"
+                           value="1">
+                    <input class="plus is-form"
+                           type="button" value="+">
+                </div>
+                <!--                <div class="col-lg-4 col-md-6">-->
+                <div class="mt-3">
+                    <!-- Button trigger modal -->
+                    <button type="submit" class="btn btn-primary w-auto"
+                            th:if="${product.quantity!=0 && product.active==true}">
+                        Thêm vào giỏ hàng
+                    </button>
+                    <span class="fs-5 text-danger" th:if="${product.quantity==0 && product.active==true}">Sản phẩm hiện chưa có hàng</span>
+                    <span class="fs-5 text-danger"
+                          th:if="${product.active!=true}">Sản phẩm đang ngừng bán</span>
+
+                    <!-- Modal -->
+                    <!--                                        <div class="modal fade" id="basicModal" tabindex="-1" style="display: none;"-->
+                    <!--                                             aria-hidden="true">-->
+                    <!--                                            <div class="modal-dialog" role="document">-->
+                    <!--                                                <div class="modal-content">-->
+                    <!--                                                    <div class="modal-header"></div>-->
+                    <!--                                                    <div class="modal-body text-center">-->
+                    <!--                                                        <h3>Thêm sản phẩm vào giỏ hàng?</h3>-->
+                    <!--                                                    </div>-->
+                    <!--                                                    <div class="modal-footer text-center">-->
+                    <!--                                                        <button type="submit" class="btn btn-primary text-center"-->
+                    <!--                                                                autofocus>-->
+                    <!--                                                            Xác nhận-->
+                    <!--                                                        </button>-->
+                    <!--                                                        <button type="button" class="btn btn-danger"-->
+                    <!--                                                                data-bs-dismiss="modal">-->
+                    <!--                                                            Hủy-->
+                    <!--                                                        </button>-->
+                    <!--                                                    </div>-->
+                    <!--                                                </div>-->
+                    <!--                                            </div>-->
+                    <!--                                        </div>-->
+                </div>
+            </form>
+        </div>
+        <hr>
+        <div class="col-md-6">
+            <h3 class="mb-3">
+                Thông số kỹ thuật
+                <!--                <span th:text="${product.product.nameProduct}"></span>-->
+            </h3>
+
+            <div class="" border="0px">
+                <div th:each="item,itemStat : ${product.product.productFieldValues}"
+                     th:if="${item.field.active == true && itemStat.index<10}">
+                    <div class="row row-cols-sm-2 mb-3">
+                        <span class="col">[(${item.field.name})]:</span>
+                        <span class="col">[(${item.value})]</span>
+                    </div>
+                    <hr>
+                </div>
+                <div class="text-center" th:if="${#lists.size(product.product.productFieldValues)>=10}">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#field">Xem chi tiết thông số</button>
+                </div>
+                <div class="modal fade" id="field" aria-modal="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title" th:text="${product.product.nameProduct+' '+product.product.sku}"></h4>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div th:each="item,itemStat : ${product.product.productFieldValues}"
+                                     th:if="${item.field.active==true}">
+                                    <div class="row row-cols-sm-2 mb-3">
+                                        <span class="col">[(${item.field.name})]:</span>
+                                        <span class="col">[(${item.value})]</span>
+                                    </div>
+                                    <hr>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-4">
+                        Đánh Giá <span th:text="${product.product.nameProduct+' '+product.product.sku}"></span>
+                    </h3>
+                    <div class="row">
+                        <div>
+                            <i th:class="|${product.product.avgPoint == 0 ? 'bx bx-star bx-md': product.product.avgPoint > 0 && product.product.avgPoint < 1 ? 'bx bxs-star-half bx-md':'bx bxs-star bx-md'}|"
+                               style='color:#fdb602'></i>
+                            <i th:class="|${product.product.avgPoint <=1 ? 'bx bx-star bx-md': product.product.avgPoint > 1 && product.product.avgPoint < 2 ? 'bx bxs-star-half bx-md':'bx bxs-star bx-md'}|"
+                               style='color:#fdb602'></i>
+                            <i th:class="|${product.product.avgPoint <=2 ? 'bx bx-star bx-md': product.product.avgPoint > 2 && product.product.avgPoint < 3 ? 'bx bxs-star-half bx-md':'bx bxs-star bx-md'}|"
+                               style='color:#fdb602'></i>
+                            <i th:class="|${product.product.avgPoint <=3 ? 'bx bx-star bx-md': product.product.avgPoint > 3 && product.product.avgPoint < 4 ? 'bx bxs-star-half bx-md':'bx bxs-star bx-md'}|"
+                               style='color:#fdb602'></i>
+                            <i th:class="|${product.product.avgPoint <=4 ? 'bx bx-star bx-md': product.product.avgPoint > 4 && product.product.avgPoint < 5 ? 'bx bxs-star-half bx-md':'bx bxs-star bx-md'}|"
+                               style='color:#fdb602'></i>
+                        </div>
+                        <div>
+                            <span class="fs-3" th:text="${product.product.avgPoint}"></span>
+                            <span class="fs-5 mx-2"
+                                  th:text="|${#lists.size(evaluate)} đánh giá|"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div th:each="item,itemStat: ${evaluate}" th:if="${itemStat.index<3}">
+                    <span class="fs-5"><strong th:text="${item.customer.name}"></strong>
+                                        </span>
+                        <div>
+                            <p>
+                                <i th:class="|${item.point >=1 ? 'bx bxs-star':'bx bx-star'}|"
+                                   style='color:#fdb602'></i>
+                                <i th:class="|${item.point >=2 ? 'bx bxs-star':'bx bx-star'}|"
+                                   style='color:#fdb602'></i>
+                                <i th:class="|${item.point >=3 ? 'bx bxs-star':'bx bx-star'}|"
+                                   style='color:#fdb602'></i>
+                                <i th:class="|${item.point >=4 ? 'bx bxs-star':'bx bx-star'}|"
+                                   style='color:#fdb602'></i>
+                                <i th:class="|${item.point >=5 ? 'bx bxs-star':'bx bx-star'}|"
+                                   style='color:#fdb602'></i>
+                            </p>
+                            <p>
+                                <span th:text="${item.comment}"></span> <br>
+                                <small class="text-muted">
+                                    <span th:text="${item.dateCreate}"></span>
+                                </small>
+                            </p>
+                        </div>
+                        <div>
+                            <img th:each="img:${item.evaluateList}" th:src="|/image/product/${img.nameImage}|"
+                                 alt="Ảnh bị lỗi" class="w-px-100">
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+                <div class="card-footer text-center">
+
+                    <div>
+                        <div>
+                            <a th:href="|/product/evaluate/${productAll.id}|" class="btn btn-outline-secondary"
+                               style="width: 40%">
+                                Xem tất cả đánh giá([(${countEvaluate})])
+                            </a>
+                            <button class="btn btn-primary" style="width: 40%" data-bs-target="#writeEvaluate"
+                                    data-bs-toggle="modal"
+                                    th:if="${(session.user != null && hasEvaluate == false)}">
+                                Viết đánh giá
+                            </button>
+                        </div>
+                        <small th:if="${session.user == null}">Bạn cần đăng nhập để đánh giá</small>
+                        <small th:if="${session.user != null and hasEvaluate ==true}">Bạn đã đánh giá sản phẩm
+                            này</small>
+                    </div>
+                    <div class="modal fade" id="writeEvaluate" tabindex="-1" aria-modal="true" role="dialog">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel1">Đánh giá</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" id="close"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="mb-3 row">
+                                        <span th:text="${product.product.nameProduct + ' '+product.product.sku}"></span>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <p>
+                                            <i class='bx bx-star bx-lg star1 point' style='color:#fdb602'></i>
+                                            <i class='bx bx-star bx-lg star2 point' style='color:#fdb602'></i>
+                                            <i class='bx bx-star bx-lg star3 point' style='color:#fdb602'></i>
+                                            <i class='bx bx-star bx-lg star4 point' style='color:#fdb602'></i>
+                                            <i class='bx bx-star bx-lg star5 point' style='color:#fdb602'></i>
+                                        </p>
+                                    </div>
+                                    <div class="mb-3 row">
+                                        <textarea type="text" class="form-control" id="comment"
+                                                  placeholder="Viết cảm nhận ở đây"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <p>Hình ảnh thực tế</p>
+                                        <img th:src="@{'/image/tivi1.jpg'}"
+                                             class="w-px-100 image-preview cursor-pointer" alt="Chưa chọn ảnh">
+                                        <input class="file-input" hidden="hidden" type="file">
+                                        <img th:src="@{'/image/tivi1.jpg'}"
+                                             class="w-px-100 image-preview cursor-pointer" alt="Chưa chọn ảnh">
+                                        <input class="file-input" hidden="hidden" type="file">
+                                        <img th:src="@{'/image/tivi1.jpg'}"
+                                             class="w-px-100 image-preview cursor-pointer" alt="Chưa chọn ảnh">
+                                        <input class="file-input" hidden="hidden" type="file">
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" id="sendEvaluate"
+                                            th:value="${product.product.id}" th:if="${(hasBuy==true)}">Lưu
+                                    </button>
+                                    <span th:if="${hasBuy == false}">Bạn cần mua hàng để đánh giá</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<br>
+</html>
+<script>
+    var point = 0;
+    if (document.getElementById("message").textContent == 'true') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            title: "Thêm thành công"
+        });
+    }
+    if (document.getElementById("message").textContent == 'false') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "error",
+            title: "Không đủ sản phẩm!"
+        });
+    }
+    if (document.getElementById("message").textContent == 'qua10') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "error",
+            title: "Số lượng mua tối đa là 10!"
+        });
+    }
+
+    const plus = document.querySelectorAll(".plus")
+    const minus = document.querySelectorAll(".minus")
+
+    $(document).ready(
+        $.each(plus, function (index, item) {
+            // var temp = index
+            item.addEventListener("click", function (e) {
+                var quantityForm = document.querySelectorAll(".input-qty")
+                const totalPriceForm = document.querySelectorAll(".total-price")
+                const priceExportForm = document.querySelectorAll(".price-export")
+
+                var valueInput = quantityForm[index].value
+
+                if (valueInput < Number(quantityForm[index].getAttribute('max'))) {
+                    quantityForm[index].value = Number(valueInput) + 1
+                    valueInput = Number(valueInput) + 1
+                }
+
+                // var quantity = quantityForm[index].value
+                var priceExport = priceExportForm[index].getAttribute("value")
+                var totalPrice = Number(valueInput) * Number(priceExport)
+
+                totalPriceForm[index].innerText = totalPrice
+
+            })
+        }),
+        $.each(minus, function (index, item) {
+            // var temp = index
+            item.addEventListener("click", function (e) {
+
+                const totalPriceForm = document.querySelectorAll(".total-price")
+                const priceExportForm = document.querySelectorAll(".price-export")
+                var quantityForm = document.querySelectorAll(".input-qty")
+
+                var valueInput = quantityForm[index].value// = 10
+
+                if (valueInput > Number(quantityForm[index].getAttribute('min'))) {
+                    quantityForm[index].value = Number(valueInput) - 1
+                    valueInput = Number(valueInput) - 1
+                }
+
+                var priceExport = priceExportForm[index].getAttribute("value")
+                var totalPrice = Number(valueInput) * Number(priceExport)
+
+                totalPriceForm[index].innerText = totalPrice
+            })
+        })
+    )
+
+</script>
+<script src="/admin/plugin/js/evaluate.js"></script>
+<script src="/admin/plugin/js/loadImage.js"></script>

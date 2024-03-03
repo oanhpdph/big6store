@@ -1,0 +1,320 @@
+<style>
+    div.swal2-container {
+        z-index: 1100;
+    }
+
+</style>
+<link rel="stylesheet" href="/admin/plugin/css/product.css">
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">Sản phẩm/<a class="text-muted fw-light"
+                                                                            href="/admin/product/list">Danh sách sản phẩm/</a></span>
+    Thêm sản phẩm</h4>
+<div class="card mb-4" style="min-height: 40vh">
+    <div class="mt-3">
+        <div class="modal fade" id="attributes" tabindex="-1" style="display: none;"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalCenterTitle">Danh sách thuộc tính</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col mb-3">
+                                <div class="mb-3 text-end">
+                                    <button type="button"
+                                            class="btn btn-outline-secondary d-inline-flex"
+                                            data-bs-toggle="modal"
+                                            data-bs-dismiss="modal"
+                                            data-bs-target="#add-attribute-modal"
+                                            id="add-attributes"><span
+                                            class="">Thêm thuộc tính</span>
+                                    </button>
+                                </div>
+                                <input type="text" id="search-input"
+                                       class="form-control"
+                                       onkeyup="myFunction()" autocomplete="off"
+                                       placeholder="Nhập tên thuộc tính ">
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="table-responsive overflow-auto h-px-350" id="scroll">
+                                <table id="tableAttributes"
+                                       class="table table-bordered table-hover text-center">
+                                    <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Tên thuộc tính</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+                                id="close-add-attributes">
+                            Đóng
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="add-attribute-modal" tabindex="-1"
+             style="display: none;"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Thêm thuộc tính</h5>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="label">Tên thuộc tính</label>
+                        <input class="form-control" type="text" id="name-attribute">
+                        <span class="fst-italic text-danger" id="attributes-error"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" id="submit-add-attribute"
+                        >
+                            Thêm
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary"
+                                id="close-add-attribute"
+                                data-bs-toggle="modal"
+                                data-bs-target="#attributes"
+                                data-bs-dismiss="modal">
+                            Quay lại
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="modalVariant" tabindex="-1"
+             style="display: none;"
+             aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Danh sách thuộc tính</h5>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col mb-3">
+                                <div class="mb-3 text-end">
+                                    <button type="button"
+                                            class="btn btn-outline-secondary d-inline-flex"
+                                            data-bs-toggle="modal"
+                                            data-bs-dismiss="modal"
+                                            data-bs-target="#add-variant-modal"
+                                            id="add-variant"><span class="">Thêm biến thể</span>
+                                    </button>
+                                </div>
+                                <input type="text" id="search-variant"
+                                       class="form-control"
+                                       onkeyup="searchVariant()" autocomplete="off"
+                                       placeholder="Nhập tên thuộc tính">
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="table-responsive overflow-auto h-px-350" id="scroll1">
+                                <table id="table-variant"
+                                       class="table table-bordered table-hover text-center">
+                                    <thead>
+                                    <tr>
+                                        <th>STT</th>
+                                        <th>Tên thuộc tính</th>
+                                        <th></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">
+                            Đóng
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="add-variant-modal" tabindex="-1"
+             style="display: none;"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Tạo biến thể</h5>
+                        <button type="button" class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="label">Tên thuộc tính</label>
+                        <input class="form-control" type="text" id="name-variant">
+                        <span class="fst-italic text-danger " id="variant-error"></span>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline-secondary" id="submit-add-variant">
+                            Thêm
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary"
+                                data-bs-toggle="modal"
+                                data-bs-target="#modalVariant"
+                                data-bs-dismiss="modal">
+                            Quay lại
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-6 row justify-content-between">
+                <div class="mb-3 col">
+                    <label class="form-label" for="select-group">Nhóm sản phẩm</label>
+                    <select class="form-select" id="select-group">
+                        <option></option>
+                    </select>
+                    <span class="fst-italic text-danger group-error error"></span>
+                </div>
+                <div class="row justify-content-between">
+                    <div class="mb-3 col">
+                        <label class="form-label">Mã SKU</label>
+                        <input class="form-control" id="sku-code">
+                        <span class="fst-italic text-danger error" id="sku-code-error"></span>
+                    </div>
+                    <div class="mb-3 col">
+                        <label class="form-label">Hãng</label>
+                        <select class="form-select" id="select-brand">
+                            <option></option>
+                        </select>
+                        <span class="fst-italic text-danger error" id="brand-error"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="mb-3">
+                    <label class="form-label">Tên sản phẩm</label>
+                    <textarea class="form-control" rows="3"
+                              id="name-display"></textarea>
+                    <span class="fst-italic text-danger error" id="name-error"></span>
+                </div>
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-item mb-3">
+                    <h2 class="accordion-header" id="headingOne">
+                        <label class="accordion-button collapsed form-label bg-label-dark"
+                               data-bs-toggle="collapse"
+                               data-bs-target="#accordionOne"
+                               aria-controls="accordionOne">
+                            Thuộc tính
+                        </label>
+                    </h2>
+                    <div id="accordionOne" class="accordion-collapse collapse overflow-auto"
+                         data-bs-parent="#accordionExample" style="max-height: 600px">
+                        <div class="accordion-body">
+                            <div class="fst-italic">Nhấn enter để xác định 1 giá trị, click vào
+                                giá trị để xóa, những thuộc tính không có giá trị sẽ bỏ qua.
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="item-content">
+                                </div>
+                            </div>
+                            <!--thêm thuộc tính sản phẩm modal tạo sản phẩm-->
+                            <div>
+                                <button type="button"
+                                        class="btn btn-outline-secondary add-attri"
+                                        data-bs-toggle="modal" data-bs-target="#attributes"
+                                        data-bs-dismiss="modal">
+                                    Thêm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <label class="accordion-button collapsed form-label bg-label-dark"
+                               data-bs-toggle="collapse"
+                               data-bs-target="#variant"
+                               aria-controls="variant">
+                            Biến thể
+                        </label>
+                    </h2>
+                    <div id="variant" class="accordion-collapse collapse overflow-auto"
+                         data-bs-parent="#variant" style="max-height: 600px">
+                        <div class="accordion-body">
+                            <div class="fst-italic">Nhấn enter để xác định 1 giá trị, click vào
+                                giá trị để xóa
+                            </div>
+                            <div class="mb-3 row">
+                                <div class="item-content-variant">
+                                </div>
+                            </div>
+                            <!--thêm thuộc tính sản phẩm modal tạo sản phẩm-->
+                            <div>
+                                <button type="button"
+                                        class="btn btn-outline-secondary add-attri"
+                                        data-bs-toggle="modal" data-bs-target="#modalVariant" id="btn-add-variant"
+                                        data-bs-dismiss="modal">
+                                    Thêm
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-header">
+        <div class="card-title">
+            <h5>Sản phẩm biến thể</h5>
+        </div>
+    </div>
+    <div class="card-body" id="detail-pro">
+        <div class="mb-3">
+            <table class="table table-hover table-bordered table-product" id="table-product-detail">
+                <thead>
+                <tr class="row-table fw-semibold text-center">
+                    <td>Thuộc tính</td>
+                    <td>Mã Sku</td>
+                    <td>Số lượng</td>
+                    <td>Giá nhập</td>
+                    <td>Giá bán</td>
+                    <td>Hình ảnh</td>
+                    <td>Bày bán</td>
+                </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-3 text-end">
+            <div>
+                <button class="btn btn-success" type="button" id="save-product">Lưu sản phẩm</button>
+            </div>
+            <span class="fst-italic text-danger error" id="active-error"></span>
+        </div>
+    </div>
+</div>
+<!--</div>-->
+<script src="/admin/plugin/js/product-add.js"></script>
+

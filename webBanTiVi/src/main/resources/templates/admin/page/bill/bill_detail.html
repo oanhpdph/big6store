@@ -1,0 +1,360 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="/admin/plugin/css/invoice_detail.css">
+<h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><a class="text-muted fw-light"
+                                                                   href="/admin/bill/list_bill">Danh sách Hóa đơn/</a></span>Hóa
+    đơn chi tiết</h4>
+<div class="row">
+    <!--    sản phẩm, phiếu giao-->
+    <input th:value="${billDetail.id}" style="display: none" id="idBill">
+    <div class="col-lg-8 col-md-8 order-0">
+        <div class="row">
+            <!--            Sản phẩm-->
+            <form th:action="@{/admin/bill/bill_detail}" method="post" th:object="${billDetail}">
+                <div class="card">
+                    <div class="card-body">
+                        <span class="card-title mt-3 text-danger">
+                             <b>Mã đơn:</b> <i>[(*{code})]</i> <b>|</b><i
+                                th:text="|${#lists.size(billDetail.billProducts)} sản phẩm|"></i>
+                        </span>
+                        <div class="row select-order mb-3" th:each="billProduct: *{billProducts}">
+                            <hr>
+                            <div class="col-4 col-md-5 col-xl-4">
+                                <img th:each="image:${billProduct.product.listImage}"
+                                     th:if="${image.location == true }"
+                                     th:src="@{'/image/product/'+ ${ image.link}}" src=""
+                                     class="w-px-200" alt="Lỗi hiển thị">
+                            </div>
+                            <div class="col-8 col-md-7 col-xl-8">
+                                <div class="col-12 mb-4 "><p class="fs-4"><b>Tên sản phẩm:</b>
+                                    <span class="text-decoration-none">[(${billProduct.product.product.nameProduct+'-'+billProduct.product.product.sku})]</span>
+                                </p>
+                                    <div class="fs-5" th:each="field:${billProduct.product.fieldList}">
+                                        <span>[(${field.field.name})]: [(${field.value})]</span>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-4 justify-content-between">
+                                    <span class="col text-left"><b>Số lượng:</b></span>
+                                    <span class="col text-end"> [(${billProduct.quantity})]</span>
+                                </div>
+                                <div class="row mb-4 justify-content-between">
+                                    <span class="col text-start"><b>Giá sản phẩm:</b></span>
+                                    <span class="col text-end"> [(${#numbers.formatDecimal(billProduct.price, 0,'COMMA',0,'POINT')})]<u>đ</u></span>
+                                </div>
+                                <div class="row mb-4 justify-content-between" th:if="${billProduct.reducedMoney!=0}">
+                                    <span class="col text-start"><b>Giá khuyến mãi:</b></span>
+                                    <span class="col text-end"> [(${#numbers.formatDecimal(billProduct.price-billProduct.reducedMoney, 0,'COMMA',0,'POINT')})]<u>đ</u></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <!--          Phiếu giao-->
+            <div class="nav-align-top mb-4 mt-3">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                                data-bs-target="#navs-top-info-customer" aria-controls="navs-top-home"
+                                aria-selected="true">
+                            Thông tin phiếu giao
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button type="button" class="nav-link " role="tab" data-bs-toggle="tab"
+                                data-bs-target="#navs-billReturn-info" aria-controls="navs-top-home"
+                                aria-selected="true">
+                            Lịch sử trả hàng
+                        </button>
+                    </li>
+                </ul>
+                <div class="tab-content" style="z-index: initial">
+                    <div class="tab-pane fade active show" id="navs-top-info-customer" role="tabpanel">
+                        <form th:action="@{/admin/bill/bill_detail/delivery_note}" id="formUpdateDeliveryNotes">
+                            <!--                            <div class="row">-->
+<!--                            <div class="col-6 col-md-6">-->
+<!--                                <button class="btn btn-secondary" type="button" id="btnEdit"-->
+<!--                                        name="editInfo">Chỉnh sửa-->
+<!--                                </button>-->
+<!--                                <button class="btn btn-secondary" type="button" id="btnSave"-->
+<!--                                        th:value="${deliveryNote?.id}"-->
+<!--                                        name="editInfo">Lưu-->
+<!--                                </button>-->
+<!--                                <button class="btn btn-secondary" type="reset" id="btnCancel"-->
+<!--                                        name="editInfo">Reset-->
+<!--                                </button>-->
+
+<!--                            </div>-->
+                            <!--                            </div>-->
+                            <hr>
+                            <div class="table-responsive text-wrap">
+                                <table class="table table-bordered">
+                                    <tbody>
+                                    <tr>
+                                        <td><strong>Tên khách hàng:</strong>
+                                        </td>
+                                        <td>
+                                            <p th:text="${billDetail.customer.name}"></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SĐT khách hàng:</strong>
+                                        </td>
+                                        <td>
+                                            <p th:text="${billDetail.customer.phoneNumber}"></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Email:</strong>
+                                        </td>
+                                        <td>
+                                            <p id="emailCustomerText" th:text="${deliveryNote?.receivedEmail}"></p></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Tên người nhận:</strong>
+                                        </td>
+                                        <td>
+                                            <p id="nameText" th:text="${deliveryNote?.received}"></p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SĐT người nhận:</strong>
+                                        </td>
+                                        <td>
+                                            <p id="phoneText" th:text="${deliveryNote?.receiverPhone}"></p>
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Địa chỉ người nhận:</strong>
+                                        </td>
+                                        <td class="input-group">
+                                            <input class="form-control" type="text"
+                                                   th:value="${deliveryNote?.receivingAddress}" name="receivingAddress"
+                                                   id="receivingAddress" disabled="true">
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td><strong>Phí giao hàng:</strong>
+                                        </td>
+                                        <td class="input-group">
+
+                                            <div class=" input-group">
+                                                <input class="form-check form-control " type="number"
+                                                       th:value="${#numbers.formatInteger(deliveryNote.getDeliveryFee(),1)}"
+                                                       name="deliveryFee"
+                                                       id="deliveryFee" disabled="true">
+                                                <span class="input-group-text">VNĐ</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Ghi chú:</strong>
+                                        </td>
+                                        <td class="input-group"><input class="form-check form-control " type="text"
+                                                                       th:value="${deliveryNote?.note}" name="note"
+                                                                       id="note" disabled="true">
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="tab-pane fade" id="navs-billReturn-info" role="tabpanel">
+                        <div class="mb-4 mx-4">
+                            <div class="row mt-3">
+                            <span class="col-sm-6">
+                                 <a class="text-black" sec:authorize="!isAuthenticated()"
+                                    style="font-size: 15px ; font-family: roboto !important;"
+                                    th:href="@{/search_order?search={codeSearch}(codeSearch=${session.codeSearch})}"> < Trở Lại</a>
+                            </span>
+                            </div>
+                            <div class="mb-3 row order" th:each="historyReturnDto , billStat : ${listNew}">
+                                <div class="row mt-3" th:each=" historyBillReturnList : ${historyReturnDto}">
+                                    <div class="row mt-3">
+                                        <span class="col-sm-9">Mã đơn:[(${historyBillReturnList?.bill?.code})] | Yêu cầu vào : [(${#dates.format(historyBillReturnList?.historyBillProductList[0].date, 'dd/MM/yyyy HH:mm')})]</span>
+                                        <span class="text-end col-sm-3"
+                                              th:text="${historyBillReturnList?.bill?.billStatus?.status}"></span>
+                                        <hr>
+                                    </div>
+                                    <hr>
+                                    <div th:each=" historyBillReturn : ${historyBillReturnList.historyBillProductList}">
+                                        <div class="row">
+                                            <div class="row ">
+                                                <div class="col-sm-2">
+                                                    <div th:each="image:${historyBillReturn?.billProduct?.product?.listImage}">
+                                                        <img th:if="${image.location == true}"
+                                                             th:src="@{'/image/product/'+${image.link}}"
+                                                             alt="" width="80px" height="80px">
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-5 ">
+                                                    <div class="mb-2">
+                                                        <div style="display: flex">
+                                                <span class="text-black">[(${historyBillReturn?.billProduct?.product?.product?.nameProduct+'-'+historyBillReturn?.billProduct?.product?.product.sku})]
+                                                <span> </span>
+                                                </span>
+                                                        </div>
+                                                        <div class="text-decoration-none"> Phân loại hàng:
+                                                            <span th:each="field,iterStat : ${historyBillReturn?.billProduct?.product.fieldList}">[(${field.value})]
+                                                                                      <span th:if="${!iterStat.last}">,</span>
+                                                                                </span>
+                                                        </div>
+                                                        <div class="text-gray">
+                                                            <span>x[(${historyBillReturn.quantityRequestReturn})]</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-3">
+                                                    <div th:if="${historyBillReturn?.statusBillProduct == 1}"
+                                                         class="viewReturnwait">Đang đợi người bán phê duyệt
+                                                    </div>
+                                                    <div th:if="${historyBillReturn?.statusBillProduct == 3}"
+                                                         class="viewReturnwait">chấp nhận
+                                                    </div>
+                                                    <div th:if="${historyBillReturn?.statusBillProduct == 2}"
+                                                         class="viewReturnwait">từ chối
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-2 text-end">
+                                                    <div th:if="${historyBillReturn.billProduct.reducedMoney!=0}">
+                                                        <span class="text-strike-through">[(${#numbers.formatDecimal(historyBillReturn.billProduct.price,0,'COMMA',0,'POINT')})]</span>
+                                                        <span class="fs-tiny text-decoration-underline">đ</span>
+                                                    </div>
+                                                    <div th:if="${historyBillReturn?.billProduct.reducedMoney !=0}">
+                                                        <span>[(${#numbers.formatDecimal(historyBillReturn.billProduct.price-historyBillReturn.billProduct.reducedMoney,0,'COMMA',0,'POINT')})]</span>
+                                                        <span class="fs-tiny text-decoration-underline">đ</span>
+                                                    </div>
+                                                    <div th:if="${historyBillReturn?.billProduct.reducedMoney ==0}">
+                                                        <span>[(${#numbers.formatDecimal(historyBillReturn.billProduct.price,0,'COMMA',0,'POINT')})]</span>
+                                                        <span class="fs-tiny text-decoration-underline">đ</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <div class="row mb-3">
+                                        <div class="col-6">
+                                            <div>[(${historyBillReturnList?.quantityAccept})] sản phẩm</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div th:if="${historyBillReturnList.returnMoney >=0}"
+                                                 class="text-end text-black mb-1 fw-bold">
+                                                Số tiền hoàn
+                                                lại:[(${#numbers.formatDecimal(historyBillReturnList?.returnMoney,0,'COMMA',0,'POINT')})]
+                                            </div>
+                                            <div th:if="${historyBillReturnList.returnMoney < 0}"
+                                                 class="text-end text-black mb-1 fw-bold"
+                                                 id="returnMoneyDiv">
+                                                Khách hàng gửi lại : <span>[(${#numbers.formatDecimal(historyBillReturnList?.returnMoney-historyBillReturnList?.returnMoney*2,0,'COMMA',0,'POINT')})]</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <hr>
+                                    <br>
+                                    <div class="text-end mb-3 ">
+                                        <a class="btn btn-outline-dark"
+                                           th:href="@{/admin/bill/detail_return/{id}/{returnTimes}(id=${historyBillReturnList?.bill.id}, returnTimes=${historyBillReturnList?.returnTimes})}"
+                                        >Xem chi tiết
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Trạng thái đơn hàng, thanh toán-->
+    <div class="col-lg-4 col-md-4 mb-4 order-1">
+        <form th:action="@{/admin/bill/bill_detail}" id="formUpdateStatus">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="form-label"> Trạng thái đơn hàng</div>
+                    <div class="list-group list-group-flush">
+                        <input th:value="${billDetail.billStatus.code}" id="codeStatus" style="display: none">
+                        <select class="form-select list-group list-group-flush select2" id="billStatus" name="status">
+                            <option th:each="bs :${billStatus}" th:value="${bs.code}" th:id="${bs.code}"
+                                    th:selected="${bs.code==billDetail.billStatus.code}"
+                                    th:text="${bs.status}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-4">
+                <div class="card-body">
+                    <input th:value="${billDetail.paymentStatus}" id="payment" style="display: none">
+                    <div class="form-label"> Trạng thái thanh toán</div>
+                    <div class="list-group list-group-flush">
+                        <select class="form-select list-group list-group-flush select2"
+                                th:field="${billDetail.paymentStatus}"
+                                id="paymentStatus" name="paymentStatus">
+                            <option value="1">Đã thanh toán</option>
+                            <option value="2">Chưa thanh toán</option>
+                            <option value="3">Đã hoàn tiền</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <div class="card">
+            <div class="d-flex align-items-end row">
+                <form th:action="@{/admin/bill/bill_detail/update_status/{id}(id=${billDetail.id})}" method="post"
+                      id="updatePay">
+                    <div class="card-body">
+                    <span class="card-title mt-3 mb-3">
+                         <b>Tổng tiền</b>
+                    </span>
+                        <div class="mb-3 row">
+                            <hr>
+                            <div class="mb-2">
+                                <div class="row">
+                                    <label class="col-5 col-md-5"><b class="text-start">Tạm tính:</b></label>
+                                    <span class="text-end col-7 col-md-7">[(${#numbers.formatDecimal(totalPrice,0,'COMMA',0,'POINT')})]<u>đ</u></span>
+                                </div>
+                                <small class="col-12 col-md-12"
+                                       th:text="|(${#lists.size(billDetail.billProducts)} sản phẩm)|"></small>
+                            </div>
+                            <div class="mb-2">
+                                <div class="row">
+                                    <label class="col-6 col-md-6"><b class="text-start">Giảm giá:</b></label>
+                                    <span class="text-end col-6 col-md-6">[(${#numbers.formatDecimal(totalReduceMoney,0,'COMMA',0,'POINT')})]<u>đ</u></span>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="row">
+                                    <label class="col-6 col-md-6"><b class="text-start">Voucher:</b></label>
+                                    <span class="text-end col-6 col-md-6">[(${billDetail?.voucher?.value != null ?  billDetail.voucher.value :'0'})]<u>đ</u></span>
+                                </div>
+                            </div>
+
+                            <div class="mb-2">
+                                <div class="row">
+                                    <label class="col-6 col-md-6"><b class="text-start">Phí giao hàng:</b></label>
+                                    <span class="text-end col-6 col-md-6">[(${#numbers.formatDecimal(deliveryNote.getDeliveryFee(),0,'COMMA',0,'POINT')})]<u>đ</u></span>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="mt-2 mb-2">
+                            <div class="row">
+                                <label class="col-6 col-md-6"><b class="text-start">Tiền phải trả:</b></label>
+                                <span class="text-end col-6 col-md-6">[(${#numbers.formatDecimal(totalAfter+deliveryNote.getDeliveryFee(),0,'COMMA',0,'POINT')})]<u>đ</u></span>
+                            </div>
+                        </div>
+                        <div class="mt-2 mb-2">
+                            <label class="form-label"><b class="text-start">Ghi chú:</b></label>
+                            <textarea class="form-control" th:value="${billDetail.note}" disabled></textarea>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/admin/plugin/js/invoice_detail.js"></script>
+</html>

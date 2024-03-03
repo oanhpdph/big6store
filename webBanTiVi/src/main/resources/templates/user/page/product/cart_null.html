@@ -1,0 +1,36 @@
+<div class="card">
+    <span id="message"hidden>[(${message})]</span>
+    <h5 class="card-header">Delete Account</h5>
+    <div class="card-body">
+        <form id="formAccountDeactivation" onsubmit="return false">
+            <div class="text-center">
+                <i class='bx bxs-cart-add bx-lg' style="color: red"></i>
+                <h4>Không có sản phẩm nào trong giỏ hàng</h4>
+                <div class="d-grid gap-2 col-6 mx-auto">
+                    <a class="btn btn-outline-primary" type="button" href="/">
+                        <b>VỀ TRANG CHỦ</b>
+                    </a>
+                </div>
+                <br>
+                <h4> Khi cần trợ giúp vui lòng gọi 1800.1061 hoặc 028.3948.6789 (7h30 - 22h)</h4>
+            </div>
+        </form>
+    </div>
+</div>
+<script> if (document.getElementById("message").textContent == 'xoathanhcong') {
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+    Toast.fire({
+        icon: "success",
+        title: "Xóa thành công"
+    });
+}</script>

@@ -1,0 +1,656 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<style>
+    .error {
+        color: red;
+    }
+
+    .alert {
+        z-index: 1100;
+        position: fixed;
+    }</style>
+<h4 class="fw-semibold py-3 mb-4">Danh sách giảm giá</h4>
+<div class="mb-4">
+    <div class="row justify-content-end me-4">
+        <button
+                type="button"
+                class="btn btn-success w-auto"
+                data-bs-toggle="modal"
+                data-bs-target="#largeModal"
+        >
+            <i class="tf-icon bx bx-plus-medical"></i> Thêm giảm giá
+        </button>
+    </div>
+    <form
+            th:action="@{/admin/coupon/save}"
+            method="post"
+            th:object="${coupon}"
+            enctype="multipart/form-data"
+            class="formAdd"
+            th:name="myform"
+    >
+        <div
+                class="modal fade"
+                th:id="largeModal"
+                tabindex="-1"
+                aria-hidden="true"
+        >
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Thêm giảm giá</h5>
+                        <button
+                                type="button"
+                                class="btn-close"
+                                data-bs-dismiss="modal"
+                                aria-label="Close"
+                        ></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-lg-5 col-sm-12 text-center">
+                                <div class="text-center">
+                                    <img
+                                            th:src="@{'/image/default.jpg'}"
+                                            alt="Chưa chọn ảnh"
+                                            class="rounded image-preview mb-3"
+                                            width="250"
+                                    />
+                                </div>
+                                <div class="error imageloc"></div>
+                                <label class="btn btn-primary me-2 mb-4" tabindex="0">
+                                    <span class="d-none d-sm-block">Tải ảnh lên</span>
+                                    <i class="bx bx-upload d-block d-sm-none"></i>
+                                    <input
+                                            type="file"
+                                            class="file-input"
+                                            hidden=""
+                                            accept="image/png, image/jpeg"
+                                            name="avatar"
+                                    />
+                                </label>
+                            </div>
+                            <div class="col-lg-7">
+                                <div class="mb-3">
+                                    <label class="form-label">Mã giảm giá:</label>
+                                    <input type="text" class="form-control" th:name="code"/>
+                                    <span class="error codeloc"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Giảm tối đa:</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" name="value"/>
+                                        <span class="input-group-text">%</span>
+                                    </div>
+                                    <span class="error valueloc"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Ngày bắt đầu:</label>
+                                    <input
+                                            type="date"
+                                            class="form-control"
+                                            name="dateStart"
+                                            min=""
+                                    />
+                                    <span class="error dateStartloc"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Ngày kết thúc:</label>
+                                    <input type="date" class="form-control" name="dateEnd"/>
+                                    <span class="error dateEndloc"></span>
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label">Trạng thái:</label>
+                                    <div>
+                                        <div class="form-check form-check-inline mt-3">
+                                            <input
+                                                    class="form-check-input"
+                                                    type="radio"
+                                                    th:name="active"
+                                                    th:value="true"
+                                                    checked
+                                            />
+                                            <label class="form-check-label">Hoạt Động</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input
+                                                    class="form-check-input"
+                                                    type="radio"
+                                                    th:name="active"
+                                                    th:value="false"
+                                            />
+                                            <label class="form-check-label">Chưa hoạt động</label>
+                                        </div>
+                                        <span id="activeloc" class="error"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-secondary">Đặt lại</button>
+                        <button type="submit" class="btn btn-primary">Lưu</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div class="card mb-3">
+    <div class="card-header">
+        <form class="col-12 mt-2">
+            <div class="col-12 row">
+                <div class="col-7">
+                    <div class="form-check input-group input-group-merge">
+              <span class="input-group-text">
+                <i class="bx bx-search"></i>
+              </span>
+                        <input type="text" class="form-control" placeholder="Tìm id"/>
+                        <button class="btn btn-primary" type="button">Tìm kiếm</button>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <button
+                            class="btn btn-secondary"
+                            data-bs-toggle="tooltip"
+                            data-bs-offset="0,4"
+                            data-bs-placement="bottom"
+                            data-bs-html="true"
+                            title=""
+                            data-bs-original-title="<span>Reset filter</span>"
+                            aria-describedby="tooltip91262"
+                    >
+                        <i class="bx bx-reset"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2 d-flex align-items-center">
+                <p>
+                    Coupon :
+                    <!--                    <span th:text="${#lists.size(listCou)}"></span>-->
+                </p>
+            </div>
+        </div>
+        <hr/>
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover overflow-hidden">
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Mã giảm giá</th>
+                    <th>Giá trị</th>
+                    <th>Ảnh</th>
+                    <th>Trạng thái</th>
+                </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                <tr th:each="coupon,couponStat : ${listCou}">
+                    <td th:text="${couponStat.index+1}"></td>
+                    <td th:text="${coupon.code}"></td>
+                    <td th:text="|${coupon.value}%|"></td>
+                    <td>
+                        <p>
+                            <img th:src="@{'/image/'+*{coupon.image}}" class="w-px-100"/>
+                        </p>
+                    </td>
+                    <td class="form-switch text-center"><input
+                            class="form-check-input update-active-coupon cursor-pointer"
+                            type="checkbox"
+                            th:value="${coupon.id}" th:checked="${coupon.active}"></td>
+                    <td>
+                    <td>
+                        <button
+                                type="button"
+                                class="btn btn-icon btn-primary"
+                                data-bs-toggle="modal"
+                                th:data-bs-target="|#modal${coupon.id}|"
+                        >
+                            <i class="bx bxs-edit-alt"></i>
+                        </button>
+                        <div
+                                class="modal fade"
+                                th:id="|modal${coupon.id}|"
+                                tabindex="-1"
+                                aria-hidden="true"
+                        >
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Thông tin phiếu mua hàng</h5>
+                                        <button
+                                                type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"
+                                        ></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form
+                                                th:action="@{/admin/coupon/update/{id}(id=${coupon.id})}"
+                                                method="post"
+                                                th:object="${coupon}"
+                                                enctype="multipart/form-data"
+                                                class="formUpdate"
+                                        >
+                                            <div>
+                                                <div class="col-lg-12">
+                                                    <div class="text-center">
+                                                        <img
+                                                                th:src="@{'/image/'+*{image}}"
+                                                                alt="user-avatar"
+                                                                class="rounded mb-3 image-preview"
+                                                                width="250"
+                                                        />
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Mã giảm giá:</label>
+                                                        <input disabled
+                                                               type="text"
+                                                               class="form-control"
+                                                               th:name="code"
+                                                               th:value="${coupon.code}"
+                                                        />
+                                                        <!--                                                        <span  class="error codeloc"></span>-->
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Giảm tối đa:</label>
+                                                        <div class="input-group">
+                                                            <input disabled
+                                                                   type="number"
+                                                                   class="form-control"
+                                                                   th:name="value"
+                                                                   th:value="${coupon.value}"
+                                                            />
+                                                            <span class="input-group-text">%</span>
+                                                        </div>
+                                                        <span class="error valueloc"></span>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Ngày bắt đầu:</label>
+                                                        <input disabled
+                                                               type="date"
+                                                               class="form-control"
+                                                               th:name="dateStart"
+                                                               th:value="${coupon.dateStart}"
+                                                        />
+                                                        <span class="error dateStartloc"></span>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Ngày kết thúc:</label>
+                                                        <input disabled
+                                                               type="date"
+                                                               class="form-control"
+                                                               th:name="dateEnd"
+                                                               th:value="${coupon.dateEnd}"
+                                                        />
+                                                        <span class="error dateEndloc"></span>
+                                                    </div>
+<!--                                                    <div class="mb-3">-->
+
+<!--                                                        <label class="form-label">Trạng thái :</label>-->
+<!--                                                        <br/>-->
+<!--                                                        <span th:text="${coupon.active==true?'Hoạt Động':'Không Hoạt Động'}"></span>-->
+<!--                                                    </div>-->
+                                                </div>
+                                            </div>
+                                            <br/>
+                                            <div class="row justify-content-xl-end">
+                                                <div class="w-auto">
+                                                    <a
+                                                            th:href="@{'/admin/discountproduct/' + *{id}}"
+                                                            class="btn btn-primary btn-control"
+                                                    >Các sản phẩm được giảm</a
+                                                    >
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr class="card-separator"/>
+    </div>
+    <div class="card-footer">
+        <div class="d-inline-flex float-end"></div>
+    </div>
+</div>
+<script>
+    $.each($(".formAdd"), function (index, item) {
+        $(item).on("submit", function (event) {
+            event.preventDefault();
+            var $this = this;
+            console.log($this);
+            $.ajax({
+                url: "/admin/coupon/all",
+                method: "get",
+                success: function (data) {
+                    var code = $this.code;
+                    var value = $this.value;
+                    var dateStart = $this.dateStart;
+                    var dateEnd = $this.dateEnd;
+                    let today = new Date().toISOString().slice(0, 10);
+                    var avatar = $this.avatar;
+                    var status = [];
+
+                    if (code.value.trim().length == 0) {
+                        $(code)
+                            .siblings(".codeloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống mã!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $.each(data, function (index, item) {
+                            if (code.value.trim() == item) {
+                                $(code)
+                                    .siblings(".codeloc")
+                                    .first()
+                                    .html(
+                                        "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Mã đã tồn tại!"
+                                    );
+
+                                status.push(false);
+                                return false;
+                            } else {
+                                $(code).siblings(".codeloc").first().html("");
+                            }
+                        });
+                    }
+                    // if (code.trim().length < 1) {
+                    //     document.getElementById("codeloc").innerHTML =
+                    //         " <i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống mã!";
+                    //     status.push(false);
+                    // } else {
+                    //     document.getElementById("codeloc").innerHTML = "";
+                    // }
+                    //image
+                    if (avatar.value.trim().length < 1) {
+                        $(avatar)
+                            .parent()
+                            .siblings(".imageloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống ảnh!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(avatar).parent().siblings(".imageloc").first().html("");
+                    }
+                    //value
+                    if (value.value.trim() == "" || value.value <= 0) {
+                        $(value)
+                            .parent()
+                            .siblings(".valueloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Giá trị không được để trống và phải lớn hơn 0!"
+                            );
+
+                        status.push(false);
+                    } else if (value.value > 100) {
+                        $(value)
+                            .parent()
+                            .siblings(".valueloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Giá trị không được lớn hơn 100!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(value).parent().siblings(".valueloc").first().html("");
+                    }
+                    //dateStart
+                    if (dateStart.value.trim().length < 1) {
+                        $(dateStart)
+                            .siblings(".dateStartloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống ngày bắt đầu!"
+                            );
+
+                        status.push(false);
+                    } else if (today.valueOf() > dateStart.value.valueOf()) {
+                        $(dateStart)
+                            .siblings(".dateStartloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Ngày bắt đầu phải lớn hơn ngày hiện tại!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(dateStart).siblings(".dateStartloc").first().html("");
+                    }
+                    //dateEnd
+                    if (dateEnd.value.trim().length < 1) {
+                        $(dateEnd)
+                            .siblings(".dateEndloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống ngày kết thúc!"
+                            );
+
+                        status.push(false);
+                    } else if (dateStart.value.valueOf() > dateEnd.value.valueOf()) {
+                        $(dateEnd)
+                            .siblings(".dateEndloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Ngày kết thúc phải lớn hơn ngày bắt đầu!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(dateEnd).siblings(".dateEndloc").first().html("");
+                    }
+
+                    if (status.indexOf(false) > -1) {
+                        // resolve(false)
+                        // event.preventDefault()
+                        return;
+                    }
+                    $this.submit();
+                },
+                error: function (error) {
+                    // reject(error)
+                    return;
+                },
+            });
+        });
+    });
+    $.each($(".formUpdate"), function (index, item) {
+        $(item).on("submit", function (event) {
+            event.preventDefault();
+            var $this = this;
+            console.log($this);
+            $.ajax({
+                url: "/admin/coupon/all",
+                method: "get",
+                success: function (data) {
+                    var code = $this.code;
+                    var value = $this.value;
+                    var dateStart = $this.dateStart;
+                    var dateEnd = $this.dateEnd;
+                    let today = new Date().toISOString().slice(0, 10);
+                    var avatar = $this.avatar;
+                    var status = [];
+
+                    if (code.value.trim().length == 0) {
+                        $(code)
+                            .siblings(".codeloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống mã!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(code).siblings(".codeloc").first().html("");
+                    }
+                    // else {
+                    //     $.each(data, function (index, item) {
+                    //         if (code.value.trim() == item) {
+                    //             $(code).siblings('.codeloc').first().html("<i class='bx bx-x-circle' style='color:#ff0000' ></i> Mã đã tồn tại!");
+                    //
+                    //             status.push(false);
+                    //             return false
+                    //         } else {
+                    //             $(code).siblings('.codeloc').first().html("");
+                    //
+                    //         }
+                    //     })
+                    // }
+                    // if (code.trim().length < 1) {
+                    //     document.getElementById("codeloc").innerHTML =
+                    //         " <i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống mã!";
+                    //     status.push(false);
+                    // } else {
+                    //     document.getElementById("codeloc").innerHTML = "";
+                    // }
+                    //image
+                    // if (avatar.value.trim().length < 1) {
+                    //     $(avatar).parent().siblings('.imageloc').first().html("<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống ảnh!");
+                    //
+                    //     status.push(false);
+                    // } else {
+                    //     $(avatar).parent().siblings('.imageloc').first().html("");
+                    // }
+                    //value
+                    if (value.value.trim() == "" || value.value <= 0) {
+                        $(value)
+                            .parent()
+                            .siblings(".valueloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Giá trị không được để trống và phải lớn hơn 0!"
+                            );
+
+                        status.push(false);
+                    } else if (value.value > 100) {
+                        $(value)
+                            .parent()
+                            .siblings(".valueloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Giá trị không được lớn hơn 100!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(value).parent().siblings(".valueloc").first().html("");
+                    }
+                    //dateStart
+                    if (dateStart.value.trim().length < 1) {
+                        $(dateStart)
+                            .siblings(".dateStartloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống ngày bắt đầu!"
+                            );
+
+                        status.push(false);
+                    }
+                        // else if (today.valueOf() > dateStart.value.valueOf()) {
+                        //     $(dateStart).siblings('.dateStartloc').first().html("<i class='bx bx-x-circle' style='color:#ff0000' ></i> Ngày bắt đầu phải lớn hơn ngày hiện tại!");
+                        //
+                        //     status.push(false);
+                    // }
+                    else {
+                        $(dateStart).siblings(".dateStartloc").first().html("");
+                    }
+                    //dateEnd
+                    if (dateEnd.value.trim().length < 1) {
+                        $(dateEnd)
+                            .siblings(".dateEndloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống ngày kết thúc!"
+                            );
+
+                        status.push(false);
+                    } else if (dateStart.value.valueOf() > dateEnd.value.valueOf()) {
+                        $(dateEnd)
+                            .siblings(".dateEndloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Ngày kết thúc phải lớn hơn ngày bắt đầu!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(dateEnd).siblings(".dateEndloc").first().html("");
+                    }
+
+                    if (status.indexOf(false) > -1) {
+                        // resolve(false)
+                        // event.preventDefault()
+                        return;
+                    }
+                    $this.submit();
+                    $("#formUpdate")[0].submit();
+                },
+                error: function (error) {
+                    // reject(error)
+                    return;
+                },
+            });
+        });
+    });
+
+    $.each($(".update-active-coupon"), function (index, item) {
+        $(item).on("change", function () {
+            Swal.fire({
+                title: "Bạn xác nhận cập nhật?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Xác nhận!",
+                cancelButtonText: "Hủy",
+                customClass: {
+                    container: 'alert'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var data = {
+                        id: item.value,
+                        active: item.checked
+                    }
+                    $.ajax({
+                        url: "/admin/coupon/update",
+                        method: "post",
+                        data: JSON.stringify(data),
+                        contentType: "application/json",
+                        success: function (data) {
+                            Swal.fire({
+                                title: "Thành công!",
+                                text: "Trạng thái sản phẩm đã được cập nhật",
+                                icon: "success",
+                                customClass: {
+                                    container: 'alert'
+                                }
+                            });
+                        }
+                    })
+                } else {
+                    item.checked = !item.checked
+                }
+            });
+        })
+
+    })
+</script>
+<script src="/admin/plugin/js/loadImage.js"></script>
+</html>

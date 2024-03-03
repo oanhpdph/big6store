@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html class="light-style" xmlns:th="http://www.thymeleaf.org">
+
+<section class="ss1">
+    <div class="container">
+        <div >
+            <h3 class="text-center pt-2 pb-2 title px-3 text-uppercase fw-bold">
+                Giảm ngay [(${discount.getValue()})]% từ sản phẩm
+            </h3>
+        </div><hr>
+        <img th:src="@{'/image/' + *{discount.getImage()}}" width="100%" height="auto"  display="block" style="text-align: center">
+        <hr>
+    </div>
+</section>
+<section class="container">
+    <div >
+        <h3 class="text-center pt-2 pb-2 title px-3 text-uppercase fw-bold">
+            Các sản phẩm áp dụng:
+        </h3>
+    </div>
+    <div th:if="${check == false}">
+    <p class="fs-large fw-bold text-center text-danger">[(${message})]</p>
+    </div>
+    <div th:if="${check == true}">
+    <div class="row row-cols-1 row-cols-lg-4 row-cols-md-4 row-cols-sm-2 g-4">
+        <div th:each="tivi : ${listproduct}">
+            <div class="col">
+        <div class="card h-100 item-product">
+            <div class="card-body">
+                <img class="img-fluid d-flex mx-auto my-4"
+                     th:src="|/image/product/${tivi.getListImage().get(0).getLink()}|"
+                     alt="Hình ảnh bị lỗi"/>
+                <a th:href="@{'/product/detail/'+${tivi.getId()}}"
+                   class="stretched-link mb-2 text-black">
+                                            <span class="fs-5 fw-semibold card-title"
+                                                  th:text="${tivi.getProduct().getNameProduct()}">
+                                                        </span></a>
+                <div th:if="${tivi.getPriceExport().intValue()!=0}"><span class="text-strike-through fs-6 "> [(${tivi.getPriceExport().intValue()})]<small
+                        class="align-text-top">đ</small></span>
+                </div>
+                <div><span class="text-danger fs-6 fw-bold"
+                >[(${tivi.getPriceExport().intValue() - (tivi.getPriceExport().intValue()* giam/100)})]<small
+                        class="align-text-top">đ</small></span>
+                </div>
+                <div class="mb-1"><span class="border mx-1 p-1">Giá đã giảm [(${discount.getValue()})]%</span>
+                </div>
+            </div>
+        </div>
+                </div>
+    </div>
+    </div>
+    </div>
+</section>

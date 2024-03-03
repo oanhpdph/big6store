@@ -1,0 +1,474 @@
+<style>
+    .order:hover {
+        background-color: #f1f0f0;
+    }
+
+    .pull-up:hover {
+        border-radius: 0px !important;
+    }
+
+    .imgOrder {
+        border: 1px solid #6e7881 !important;
+    }
+
+    .statusBP {
+        color: chocolate !important;
+    }
+    .qsfSj4 {
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    border-bottom: 1px dotted rgba(0,0,0,.09);
+     }
+    .lX4Gwk {
+    font-size: 13px;
+    line-height: 16px;
+    color: rgba(0,0,0,.54);
+     }
+    .ROZVxd {
+    padding: 10px 10px 10px 24px;
+    flex: 1;
+    color: rgba(0,0,0,.54);
+    font-size: 13px;
+    }
+     .sabTA\+ {
+    padding: 8px 24px 8px 10px;
+     }
+    .\+MprAa {
+    padding: 10px 24px 10px;
+    width: 240px;
+    border-left: 1px dotted rgba(0,0,0,.09);
+    justify-content: flex-end;
+    word-wrap: break-word;
+    color: rgba(0,0,0,.54);
+    font-size: 13px;
+    }
+    .noteReturn{
+       font-size: 13px;
+       color: rgba(0,0,0,.54);
+    }
+
+
+
+
+</style>
+<section>
+    <div sec:authorize="isAuthenticated()">
+        <div class="text-center mb-3">
+            <div class="d-inline-flex">
+                <div>
+                    <h2 class="text-uppercase">CHÀO MỪNG QUAY TRỞ LẠI, <span
+                            th:name="avatar"
+                            th:text="${#authentication.principal.name}"></span></h2>
+                    <p><i>Kiểm tra và chỉnh sửa thông tin cá nhân của bạn tại đây</i></p>
+                </div>
+            </div>
+            <div class="d-inline-block mx-3">
+                <img th:src="@{'/image/'+${#authentication.principal.avatar}}" alt="" id="avatar"
+                     class="w-px-200 h-px-200 rounded-circle avatar">
+                <input type="file" hidden accept="image/" id="avatarUpload" name="image">
+            </div>
+        </div>
+    </div>
+    <div class="nav-align-left mb-4">
+        <ul class="nav nav-tabs col-lg-2" sec:authorize="isAuthenticated()" role="tablist">
+            <li class="nav-item">
+                <a type="button" class="nav-link pb-3 pt-35 fs-5 te" role="tab"
+                   aria-controls="navs-top-home" aria-selected="false"
+                   th:href="@{/profile}">
+                    Thông tin tài khoản
+                </a>
+            </li>
+            <li class="nav-item">
+                <a type="button" class="nav-link pb-3 pt-3 fs-5" role="tab"
+                   aria-controls="navs-top-profile" aria-selected="true"
+                   th:href="@{/order}">
+                    Đơn hàng của bạn
+                </a>
+            </li>
+            <li class="nav-item">
+                <a type="button" class="nav-link pb-3 pt-35 fs-5" th:href="@{/login/logout}"
+                   aria-controls="navs-top-home" aria-selected="false">
+                    Đăng xuất
+                </a>
+            </li>
+        </ul>
+        <div class="col-lg-10" sec:authorize="isAuthenticated()">
+            <div>
+                <div class="mb-4 mx-4">
+                    <div class="mb-3 row order">
+                        <div class="row mt-3">
+                            <span class="col-sm-6">
+                                 <a class="text-black" sec:authorize="isAuthenticated()"
+                                    style="font-size: 15px ; font-family: roboto !important;"
+                                    th:href="@{/order}"> < Trở Lại</a>
+                             <a class="text-black" sec:authorize="!isAuthenticated()"
+                                style="font-size: 15px ; font-family: roboto !important;"
+                                th:href="@{/search_order?search={codeSearch}(codeSearch=${session.codeSearch})}"> < Trở Lại</a>
+                            </span>
+                            <span class="text-end col-sm-6">Mã đơn:[(${bill.code})] | [(${bill.billStatus.status})]</span>
+                            <hr>
+                        </div>
+                        <input type="text" th:value="${return}" id="return" hidden="hidden">
+                        <div tabindex="-1" aria-hidden="true">
+                            <input type="text" th:value="${bill.id}" class="id" hidden="hidden">
+                            <div th:if="${checkQuantity}">
+                                <div class="table-responsive text-nowrap">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                <input type="checkbox" class="form-check-input"
+                                                       id="checkboxAll" th:value="${bill.id}">
+                                            </th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Số lượng</th>
+                                            <th>Giá</th>
+                                            <th>Lí do</th>
+                                            <th>Ảnh trả hàng</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <input type="text" th:value="${bill.id}" id="billId" hidden="hidden">
+                                        <tr th:each="billProduct : ${bill.billProducts}"
+                                            th:if="${billProduct.quantity !=0}">
+
+                                            <td>
+                                                <input type="checkbox" readonly="readonly"
+                                                       th:class="|return checkbox${billProduct.id} form-check-input|"
+                                                       th:value="${billProduct.id}">
+                                            </td>
+                                            <td >
+                                                 <div style="text-wrap: wrap"  th:class="|text-black nameProduct${billProduct.id}|">[(${billProduct.product.product.nameProduct+'-'+billProduct.product.product.sku})]</div>
+                                                <div class="text-decoration-none" style="font-size: 13px "> Phân loại hàng:
+                                                    <span th:each="field,iterStat : ${billProduct.product.fieldList}">[(${field.value})]
+                                                    <span th:if="${!iterStat.last}">,</span>
+                                                </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div style="width: 150px" class="input-group input-group-merge">
+                                                    <input type="number"
+                                                           onchange="total()"
+                                                           th:class="|form-control w-30 quantityReturn${billProduct.id}|"
+                                                           th:value="${quantity}"
+                                                           th:max="${billProduct.quantity}"
+                                                           disabled >
+                                                    <span class="input-group-text w-px-60" disabled>/[(${billProduct.quantity})]</span>
+                                                </div>
+                                                <span th:class="|errorQuantity${billProduct.id} text-danger|"></span>
+                                            </td>
+                                            <td>
+                                                <input type th:class="|price${billProduct.id}  form-control|"
+                                                       th:value="${#numbers.formatDecimal(billProduct.price-billProduct.reducedMoney,0,'COMMA',0,'POINT')}"
+                                                       disabled>
+                                            </td>
+                                            <td>
+                                                                <textarea name=""  cols=""
+                                                                          rows="2"
+                                                                          th:class="|reason${billProduct.id} form-control|"
+                                                                          disabled></textarea>
+                                                <span th:class="|errorReason${billProduct.id} text-danger|"></span>
+                                            </td>
+                                            <td>
+                                                <ul class="list-unstyled users-list avatar-group m-0 d-flex align-items-center">
+                                                    <li data-bs-toggle="tooltip"
+                                                        data-popup="tooltip-custom"
+                                                        data-bs-placement="bottom"
+                                                        class="avatar avatar-xl pull-up border-dark border"
+                                                        data-bs-offset="0,4" data-bs-html="true"
+                                                        title="">
+                                                        <img src="/image/product/anhdefault.jpg"
+                                                             alt="Avatar"
+                                                             class="image-preview">
+                                                        <input type="file" multiple
+                                                               name="return-images"
+                                                               hidden
+                                                               th:class="|file-input  returnImg${billProduct.id}|"
+                                                               disabled>
+                                                    </li>
+                                                    <li data-bs-toggle="tooltip"
+                                                        data-popup="tooltip-custom"
+                                                        data-bs-placement="bottom"
+                                                        class="avatar avatar-xl pull-up border-dark border"
+                                                        data-bs-offset="0,4" data-bs-html="true"
+                                                        title=""
+                                                    >
+                                                        <img src="/image/product/anhdefault.jpg"
+                                                             alt="Avatar"
+                                                             class="image-preview">
+                                                        <input type="file" multiple
+                                                               name="return-images"
+                                                               hidden
+                                                               th:class="|file-input  returnImg${billProduct.id}|"
+                                                               disabled>
+                                                    </li>
+                                                    <li data-bs-toggle="tooltip"
+                                                        data-popup="tooltip-custom"
+                                                        data-bs-placement="bottom"
+                                                        class="avatar avatar-xl pull-up border-dark border"
+                                                        title=""
+                                                        data-bs-offset="0,4" data-bs-html="true"
+                                                    >
+                                                        <img src="/image/product/anhdefault.jpg"
+                                                             alt="Avatar"
+                                                             class="image-preview">
+                                                        <input type="file" multiple
+                                                               name="return-images"
+                                                               hidden
+                                                               th:class="|file-input  returnImg${billProduct.id}|"
+                                                               disabled>
+                                                    </li>
+                                                </ul>
+                                                <span th:class="|errorImage${billProduct.id} text-danger|"></span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <hr>
+                                <div class="row mb-3">
+                                    <div class="qsfSj4">
+                                        <div class="ROZVxd dCx+CJ"><span>Tổng giá trị sản phẩm hoàn trả: </span></div>
+                                        <div class="+MprAa" id="total"><span>0 đ</span></div>
+                                    </div>
+                                    <div class="qsfSj4">
+                                        <div class="ROZVxd dCx+CJ"><span>Hoàn trả vào:  </span></div>
+                                        <div class="+MprAa" ><span>Tài khoản ngân hàng</span></div>
+                                    </div>
+                                    <div class="qsfSj4">
+                                        <div class="ROZVxd dCx+CJ"><span>Số tài khoản:  </span></div>
+                                        <div class="+MprAa"><input class="form-control" id="stk"  type="text"></div>
+                                        <span class="errorSTK text-danger"></span>
+                                    </div>
+                                    <div class="qsfSj4">
+                                        <div class="ROZVxd dCx+CJ"><span>Ngân hàng:  </span></div>
+                                        <div class="+MprAa"><input class="form-control"  id="nh" type="text"></div>
+                                        <span class="errorNH text-danger"></span>
+                                    </div>
+                                    <div class="qsfSj4">
+                                        <div class="ROZVxd dCx+CJ"><span>Chủ sở hữu:  </span></div>
+                                        <div class="+MprAa" ><input class="form-control"  id="csh" type="text"></div>
+                                        <span class="errorCSH text-danger"></span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row mb-3 noteReturn">
+                                    <span class="text-danger">(*)Lưu ý:</span>
+                                    <span>Số tiền hoàn lại có thể sẽ khác so với tổng giá trị sản phẩm hoàn trả do <a
+                                            href="">chính sách trả hàng/hoàn tiền của cửa hàng</a>! </span>
+                                </div>
+                                <div class="mb-3 text-center">
+                                    <Button type="submit" id="complete"
+                                            th:class="|btn btn-primary completed${bill.id} |"
+                                            disabled onclick="clickSave()">Hoàn tất
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-12" sec:authorize="!isAuthenticated()">
+            <div>
+                <div class="mb-4 mx-4">
+                    <div class="mb-3 row order">
+                        <div class="row mt-3">
+                            <span class="col-sm-6">
+                                 <a class="text-black" sec:authorize="isAuthenticated()"
+                                    style="font-size: 15px ; font-family: roboto !important;"
+                                    th:href="@{/order}"> < Trở Lại</a>
+                             <a class="text-black" sec:authorize="!isAuthenticated()"
+                                style="font-size: 15px ; font-family: roboto !important;"
+                                th:href="@{/search_order?search={codeSearch}(codeSearch=${session.codeSearch})}"> < Trở Lại</a>
+                            </span>
+                            <span class="text-end col-sm-6">Mã đơn:[(${bill.code})] | [(${bill.billStatus.status})]</span>
+                            <hr>
+                        </div>
+                        <div tabindex="-1" aria-hidden="true">
+                            <input type="text" th:value="${bill.id}" class="id" hidden="hidden">
+                            <div th:if="${checkQuantity}">
+                                <div class="table-responsive text-nowrap">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                        <tr>
+                                            <th>
+                                                <input type="checkbox" class="form-check-input"
+                                                       id="checkboxAll" th:value="${bill.id}">
+                                            </th>
+                                            <th>Tên sản phẩm</th>
+                                            <th>Số lượng</th>
+                                            <th>Giá</th>
+                                            <th>Lí do</th>
+                                            <th>Ảnh trả hàng</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <input type="text" th:value="${bill.id}" id="billId" hidden="hidden">
+                                        <tr th:each="billProduct : ${bill.billProducts}"
+                                            th:if="${billProduct.quantity !=0}">
+
+                                            <td>
+                                                <input type="checkbox" readonly="readonly"
+                                                       th:class="|return checkbox${billProduct.id} form-check-input|"
+                                                       th:value="${billProduct.id}">
+                                            </td>
+                                            <td >
+                                                <div style="text-wrap: wrap"  th:class="|text-black nameProduct${billProduct.id}|">[(${billProduct.product.product.nameProduct+'-'+billProduct.product.product.sku})]</div>
+                                                <div class="text-decoration-none" style="font-size: 13px "> Phân loại hàng:
+                                                    <span th:each="field,iterStat : ${billProduct.product.fieldList}">[(${field.value})]
+                                                    <span th:if="${!iterStat.last}">,</span>
+                                                </span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div style="width: 150px" class="input-group input-group-merge">
+                                                    <input type="number"
+                                                           onchange="total()"
+                                                           th:class="|form-control w-30 quantityReturn${billProduct.id}|"
+                                                           th:value="${quantity}"
+                                                           th:max="${billProduct.quantity}"
+                                                           disabled >
+                                                    <span class="input-group-text w-px-60" disabled>/[(${billProduct.quantity})]</span>
+                                                </div>
+                                                <span th:class="|errorQuantity${billProduct.id} text-danger|"></span>
+                                            </td>
+                                            <td>
+                                                <input type th:class="|price${billProduct.id}  form-control|"
+                                                       th:value="${#numbers.formatDecimal(billProduct.price-billProduct.reducedMoney,0,'COMMA',0,'POINT')}"
+                                                       disabled>
+                                            </td>
+                                            <td>
+                                                                <textarea name=""  cols=""
+                                                                          rows="2"
+                                                                          th:class="|reason${billProduct.id} form-control|"
+                                                                          disabled></textarea>
+                                                <span th:class="|errorReason${billProduct.id} text-danger|"></span>
+                                            </td>
+                                            <td>
+                                                <ul class="list-unstyled users-list avatar-group m-0 d-flex align-items-center">
+                                                    <li data-bs-toggle="tooltip"
+                                                        data-popup="tooltip-custom"
+                                                        data-bs-placement="bottom"
+                                                        class="avatar avatar-xl pull-up border-dark border"
+                                                        data-bs-offset="0,4" data-bs-html="true"
+                                                        title="">
+                                                        <img src="/image/product/anhdefault.jpg"
+                                                             alt="Avatar"
+                                                             class="image-preview">
+                                                        <input type="file" multiple
+                                                               name="return-images"
+                                                               hidden
+                                                               th:class="|file-input  returnImg${billProduct.id}|"
+                                                               disabled>
+                                                    </li>
+                                                    <li data-bs-toggle="tooltip"
+                                                        data-popup="tooltip-custom"
+                                                        data-bs-placement="bottom"
+                                                        class="avatar avatar-xl pull-up border-dark border"
+                                                        data-bs-offset="0,4" data-bs-html="true"
+                                                        title=""
+                                                    >
+                                                        <img src="/image/product/anhdefault.jpg"
+                                                             alt="Avatar"
+                                                             class="image-preview">
+                                                        <input type="file" multiple
+                                                               name="return-images"
+                                                               hidden
+                                                               th:class="|file-input  returnImg${billProduct.id}|"
+                                                               disabled>
+                                                    </li>
+                                                    <li data-bs-toggle="tooltip"
+                                                        data-popup="tooltip-custom"
+                                                        data-bs-placement="bottom"
+                                                        class="avatar avatar-xl pull-up border-dark border"
+                                                        title=""
+                                                        data-bs-offset="0,4" data-bs-html="true"
+                                                    >
+                                                        <img src="/image/product/anhdefault.jpg"
+                                                             alt="Avatar"
+                                                             class="image-preview">
+                                                        <input type="file" multiple
+                                                               name="return-images"
+                                                               hidden
+                                                               th:class="|file-input  returnImg${billProduct.id}|"
+                                                               disabled>
+                                                    </li>
+                                                </ul>
+                                                <span th:class="|errorImage${billProduct.id} text-danger|"></span>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <hr>
+                                <div class="row mb-3">
+                                    <div class="qsfSj4">
+                                        <div class="ROZVxd dCx+CJ"><span>Tổng giá trị sản phẩm hoàn trả: </span></div>
+                                        <div class="+MprAa" id="total"><span>0 đ</span></div>
+                                    </div>
+                                    <div class="qsfSj4">
+                                        <div class="ROZVxd dCx+CJ"><span>Hoàn trả vào:  </span></div>
+                                        <div class="+MprAa" ><span>Tài khoản ngân hàng</span></div>
+                                    </div>
+                                    <div class="qsfSj4">
+                                        <div class="ROZVxd dCx+CJ"><span>Số tài khoản:  </span></div>
+                                        <div class="+MprAa" ><input class="form-control" id="stk" type="text"></div>
+                                        <span class="errorSTK text-danger"></span>
+                                    </div>
+                                    <div class="qsfSj4">
+                                        <div class="ROZVxd dCx+CJ"><span>Ngân hàng:  </span></div>
+                                        <div class="+MprAa " ><input class="form-control" id="nh" type="text"></div>
+                                        <span class="errorNH text-danger"></span>
+                                    </div>
+                                    <div class="qsfSj4">
+                                        <div class="ROZVxd dCx+CJ"><span>Chủ sở hữu:  </span></div>
+                                        <div class="+MprAa "  ><input class="form-control" id="csh" type="text"></div>
+                                        <span class="errorCSH text-danger"></span>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row mb-3 noteReturn" >
+                                    <span class="text-danger">(*)Lưu ý:</span>
+                                    <span>Số tiền hoàn lại có thể sẽ khác so với tổng giá trị sản phẩm hoàn trả do <a
+                                            th:href="@{/policy}">chính sách trả hàng/hoàn tiền của cửa hàng</a>! </span>
+                                </div>
+                                <div class="mb-3 text-center">
+                                    <Button type="submit" id="complete"
+                                            th:class="|btn btn-primary completed${bill.id} |"
+                                            disabled onclick="clickSave()">Hoàn tất
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="/admin/plugin/js/loadImage.js"></script>
+<script src="/admin/plugin/js/order.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script>
+    if (document.getElementById("return").value == "return") {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            title: "Trả hàng thành công!"
+        });
+    }
+
+</script>

@@ -1,0 +1,35 @@
+.item-product:hover {
+    transform: scale(1.05);
+}
+
+.item-product:hover .card-title {
+    color: #496469;
+}
+
+
+#range {
+    height: 10px;
+}
+
+#range .noUi-connect {
+    background: #969696;
+}
+
+#range .noUi-handle {
+    height: 18px;
+    width: 18px;
+    top: -5px;
+    right: -9px; /* half the width */
+    border-radius: 9px;
+}
+.slider-styled,
+.slider-styled .noUi-handle {
+    box-shadow: none;
+}
+
+/* Hide markers on slider handles */
+.slider-styled .noUi-handle::before,
+.slider-styled .noUi-handle::after {
+    display: none;
+}
+

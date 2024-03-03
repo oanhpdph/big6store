@@ -1,0 +1,145 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<div class="content-wrapper">
+    <!-- Content -->
+    <form th:action="@{/confirm}" method="get" th:object="${session.listBill}">
+        <div class="container-xxl flex-grow-1 container-p-y">
+            <div class="row">
+                <div class="col-lg-3 mb-4 order-0"></div>
+                <div class="col-lg-6 mb-4 order-0">
+                    <div class="card">
+                        <div class="d-flex align-items-end row">
+                            <div class="card-header">
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="card bg-primary text-white mb-3">
+                                        <div class="card-body">
+                                            <i class="bx bxs-party" style="color: #15f30c"></i>
+                                            <h5
+                                                    class="card-title text-white"
+                                                    style="color: black; text-align: center"
+                                            >
+                                                ĐẶT HÀNG THÀNH CÔNG
+                                            </h5>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="text-center">
+                                    <p class="text-center fs-large">Cảm Ơn Quý Khách Đã Đặt Hàng Của Big6 Store</p>
+                                    <small>(Hóa đơn sẽ được gửi về email quý khách đặt mua, vui lòng kiểm tra)</small>
+                                </div>
+                                <div class="col-md-12 col-xl-12">
+                                    <div class="card shadow-none bg-transparent border border-primary mb-3">
+                                        <div class="card-header">
+                                            <span class="text-center fs-large">Thông tin hóa đơn</span>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="row mb-3">
+                                                <b class="text-start col"><p>Mã đơn hàng:</p>
+                                                </b>
+                                                <span th:text="*{code}" class="text-start col"></span>
+
+                                            </div>
+                                            <div class="row mb-3">
+                                                <b class="text-start col">Người nhận: </b>
+                                                <span th:each="delivery : *{deliveryNotes}" class="text-start col"
+                                                      th:text="${delivery.received}"></span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <b class="text-start col">Số điện thoại mua hàng: </b>
+                                                <span th:each="delivery : *{deliveryNotes}" class="text-start col"
+                                                      th:text="${delivery.deliveryPhone}"></span>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <b class="text-start col">Địa chỉ nhận: </b>
+                                                <span th:each="delivery : *{deliveryNotes}" class="text-start col"
+                                                      th:text="${delivery.receivingAddress}"></span>
+                                            </div>
+
+
+                                            <div class="row mb-3">
+                                                <b class="text-start col">Phương Thức Thanh Toán: </b>
+                                                <span th:text="*{paymentMethod.paymentMethod}"
+                                                      class="text-start col"></span
+                                                ></div>
+
+                                            <div class="row mb-3">
+                                                <b class="text-start col">Trạng Thái Thanh Toán: </b>
+                                                <span th:text="*{paymentStatus == 1 ?  'Đã thanh toán':'Chưa thanh toán'}"
+                                                      class="text-start col"></span></div>
+
+
+                                            <div class="row mb-3">
+                                                <table class="table table-bordered">
+                                                    <thead>
+                                                    <tr>
+                                                        <th>Sản phẩm</th>
+                                                        <th>Giá(VNĐ)</th>
+                                                        <th>Số lượng</th>
+                                                        <th>Thành tiền(VNĐ)</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                    <tr th:each="billProducts:*{billProducts}">
+                                                        <td th:text="${billProducts.product.product.nameProduct}">
+                                                            <p th:text="${billProducts.product.product.nameProduct}"></p>
+                                                            <div th:each="field:${billProducts.product.fieldList}">
+                                                                <p th:text="|${field.field.name}: ${field.value}|"></p>
+                                                            </div>
+
+                                                        </td>
+                                                        <td>
+                                                            <div th:if="${billProducts.reducedMoney==0}">
+                                                                <span class="fs-5">[(${#numbers.formatDecimal(billProducts.price,0,'COMMA',0,'POINT')})]</span>
+                                                            </div>
+                                                            <div th:if="${billProducts.reducedMoney!=0}"
+                                                                 class="text-strike-through">
+                                                                <span class="fs-5">[(${#numbers.formatDecimal(billProducts.price,0,'COMMA',0,'POINT')})]</span>
+                                                            </div>
+                                                            <div th:if="${billProducts.reducedMoney!=0}">
+                                                                <span class="fs-5"
+                                                                      th:text="|${#numbers.formatDecimal(billProducts.price - billProducts.reducedMoney,0,'COMMA',0,'POINT')}|"></span>
+                                                            </div>
+                                                        </td>
+                                                        <td th:text="${billProducts.quantity}"></td>
+                                                        <td th:text="${#numbers.formatDecimal((billProducts.price- billProducts.reducedMoney) * billProducts.quantity ,0,'COMMA',0,'POINT')}">
+
+                                                        </td>
+                                                    </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <b class="text-start col">Phí vận chuyển: </b>
+                                                <span  class="text-start col"
+                                                       th:text="|*{#numbers.formatDecimal(deliveryNotes[0].deliveryFee,0,'COMMA',0,'POINT')} (VNĐ)|"/>
+                                            </div>
+                                            <div class="row mb-3">
+                                                <b class="text-start col">Voucher: </b>
+                                                <span th:text="|*{#numbers.formatDecimal(voucherValue,0,'COMMA',0,'POINT')} (VNĐ)|"
+                                                      class="text-start col"></span
+                                                ></div>
+                                            <div class="row mb-3">
+                                                <b class="text-start col">Tổng Tiền: </b>
+                                                <span th:text="|*{#numbers.formatDecimal((totalPrice+deliveryNotes[0].deliveryFee),0,'COMMA',0,'POINT')} (VNĐ)|"
+                                                      class="text-start col"></span>
+                                            </div>
+                                        </div>
+                                        <div class="card-footer">
+                                            <a href="/" type="button" class="btn btn-lg btn-outline-primary">Về trang
+                                                chủ</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3 mb-4 order-0"></div>
+            </div>
+        </div>
+        <!-- / Content -->
+        <div class="content-backdrop fade"></div>
+    </form>
+</div>
+</html>

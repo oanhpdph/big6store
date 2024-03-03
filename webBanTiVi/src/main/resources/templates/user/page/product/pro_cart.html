@@ -1,0 +1,399 @@
+<style>
+    .buttons_added {
+        opacity: 1;
+        display: inline-block;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .is-form {
+        overflow: hidden;
+        position: relative;
+        background-color: #f9f9f9;
+        height: 2.2rem;
+        width: 1.9rem;
+        padding: 0;
+        text-shadow: 1px 1px 1px #fff;
+        border: 1px solid #ddd;
+    }
+
+    .is-form:focus, .input-text:focus {
+        outline: none;
+    }
+
+    .is-form.minus {
+        border-radius: 4px 0 0 4px;
+    }
+
+    .is-form.plus {
+        border-radius: 0 4px 4px 0;
+    }
+
+    .input-qty {
+        background-color: #fff;
+        height: 2.2rem;
+        text-align: center;
+        font-size: 1rem;
+        display: inline-block;
+        vertical-align: top;
+        margin: 0;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        border-left: 0;
+        border-right: 0;
+        padding: 0;
+    }
+
+    .input-qty::-webkit-outer-spin-button, .input-qty::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+</style>
+<div class="container">
+    <span hidden id="message">[(${message})]</span>
+    <div class="row">
+        <div class="col-lg-12 mb-4 order-0">
+            <!--    <div class="col-md-10">-->
+            <div class="card"><br>
+                <section class="breadcrumb-option">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <h4>Giỏ hàng</h4>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <br>
+                <section>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <form th:action="@{/cart/update}" method="post" id="form-cart">
+                                    <div class="table-responsive">
+                                        <table class="table table-borderless">
+                                            <thead>
+                                            <tr class="row-table">
+                                                <th>Sản phẩm</th>
+                                                <th>Giá(VNĐ)</th>
+                                                <th>Số lượng</th>
+                                                <th>Tổng tiền(VNĐ)</th>
+                                                <th></th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="item,itemStat:${session.list}">
+                                                <td>
+                                                    <input th:value="${item.product.id}" name="id" hidden>
+                                                    <a th:href="@{'/product/detail/'+${item.product.id}}"
+                                                       class="text-black">
+                                                        <div th:each="image:${item.product.listImage}">
+                                                            <img th:if="${image.location == true}"
+                                                                 th:src="@{'/image/product/'+${image.link}}"
+                                                                 alt="" width="100px">
+                                                        </div>
+                                                        <div>
+                                                            <span class="fs-5"
+                                                                  th:text="${item.product.product.nameProduct}"></span>
+                                                            <div th:each="field:${item.product.fieldList}">
+                                                                <p><span
+                                                                        th:text="|${field.field.name}  :  ${field.value}|"></span>
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <div th:if="${reduceMoney[itemStat.index]!=item.product.priceExport}">
+                                                        <pan class="fs-4 text-strike-through"
+                                                             th:text="|${#numbers.formatDecimal(item.product.priceExport,0,'COMMA',0,'POINT')}|"></pan>
+                                                    </div>
+                                                    <div th:if="${reduceMoney[itemStat.index]!=item.product.priceExport}">
+                                                        <span class="fs-4 price-export">[(${#numbers.formatDecimal(reduceMoney[itemStat.index],0,'COMMA',0,'POINT')})]</span>
+                                                    </div>
+                                                    <div th:if="${reduceMoney[itemStat.index]==item.product.priceExport}">
+                                                        <span class="fs-4 price-export"
+                                                              th:text="|${#numbers.formatDecimal(item.product.priceExport,0,'COMMA',0,'POINT')}|"></span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="buttons_added" th:id="${item.product.id}">
+                                                        <input class="minus is-form" type="submit"
+                                                               value="-">
+                                                        <input aria-label="quantity" class="input-qty" max="11" min="0"
+                                                               name="qty"
+                                                               type="number"
+                                                               th:value="${item.quantity}">
+                                                        <input class="plus is-form plus"
+                                                               type="submit" value="+">
+                                                        <div th:if="${qty>item.quantity}">
+                                                            <span>Lỗi</span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="total-price fs-4">[(${#numbers.formatDecimal(reduceMoney[itemStat.index]* item.quantity,0,'COMMA',0,'POINT')})]</span>
+                                                </td>
+                                                <td>
+                                                    <a type="button" class="btn btn-icon btn-danger"
+                                                       th:href="@{/cart/remove/{id}(id=${item.product.id})}"
+                                                       onclick="xoa(this)">
+                                                        <span class="tf-icons bx bx-trash"></span>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            <hr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </form>
+                                <hr>
+                                <div class="text-end">
+                                    <div class="mb-3">
+                                    <span class="fs-4 text-danger"> Tổng tiền:
+                                              <span class="total-pro"
+                                                    th:text="|${#numbers.formatDecimal(total,0,'COMMA',0,'POINT')} (VNĐ)|"></span>
+                                    </span></div>
+                                    <div>
+                                        <a href="/" type="" class="btn btn-lg btn-outline-primary">Quay
+                                            Lại</a>
+                                        <a type="button" class="btn btn-primary btn-lg mx-3" th:href="@{/pay}">Thanh
+                                            Toán
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!--        <div class="col-lg-3">-->
+        <!--            <div class="card">-->
+        <!--                <div class="card-body">-->
+        <!--                    <div>-->
+        <!--                        <h6>Discount codes</h6>-->
+        <!--                        <form action="#">-->
+        <!--                            <div class="input-group">-->
+        <!--                                <input type="text" class="form-control" placeholder="Coupon code"-->
+        <!--                                       aria-label="Recipient's username" aria-describedby="button-addon2">-->
+        <!--                                <button class="btn btn-outline-primary" type="button" id="button-addon2">-->
+        <!--                                    Apply-->
+        <!--                                </button>-->
+        <!--                            </div>-->
+        <!--                        </form>-->
+        <!--                    </div>-->
+        <!--                    <br>-->
+        <!--                    <div class="card shadow-none bg-transparent border border-secondary mb-3">-->
+        <!--                        <div class="card-body">-->
+        <!--                            <span class="col fs-6">Tạm tính: </span>-->
+        <!--                            <span class="col text-black" style="text-align: right">-->
+        <!--                                                <span-->
+        <!--                                                        th:text="|${#numbers.formatDecimal(total,0,'COMMA',0,'POINT')} đ|"-->
+        <!--                                                        class="total-pro fs-6" name="totalPrice"></span>-->
+        <!--                                            </span>-->
+        <!--                            <hr>-->
+        <!--                            <span class="fs-5 text-end"> Tổng tiền:-->
+        <!--                                                               <span class="text-danger">-->
+        <!--                                                                <span class="total-pro fs-4" style="text-align: right"-->
+        <!--                                                                      th:text="|${#numbers.formatDecimal(total,0,'COMMA',0,'POINT')} đ|"></span>-->
+        <!--                                                            </span></span>-->
+        <!--                        </div>-->
+        <!--                        <div class="card-footer">-->
+        <!--                            <div style="text-align: center">-->
+        <!--                                <a type="submit" class="btn btn-primary btn-lg" th:href="@{/pay}">Thanh-->
+        <!--                                    Toán-->
+        <!--                                </a>-->
+        <!--                            </div>-->
+        <!--                        </div>-->
+        <!--                    </div>-->
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--        </div>-->
+    </div>
+</div>
+<script>
+
+    if (document.getElementById("message").textContent == 'xoathanhcong') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            title: "Xóa thành công"
+        });
+    }
+    if (document.getElementById("message").textContent == 'update-success') {
+
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            title: "Đã cập nhật lại giỏ hàng"
+        });
+    }
+    if (document.getElementById("message").textContent == 'false') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "error",
+            title: "Không đủ sản phẩm!"
+        });
+    }
+    if (document.getElementById("message").textContent == 'nhohon1') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "error",
+            title: "Số lượng sản phẩm phải lớn hơn 0!"
+        });
+    }
+    if (document.getElementById("message").textContent == 'qua10') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "error",
+            title: "Số lượng mua tối đa là 10!"
+        });
+    }
+    const plus = document.querySelectorAll(".plus")
+    const minus = document.querySelectorAll(".minus")
+
+    function tinhtong() {
+        const totalPriceForm = document.querySelectorAll(".total-price")
+        const totalProForm = document.querySelector(".total-pro")
+        var totalPro = 0;
+        for (let i = 0; i < totalPriceForm.length; i++) {
+            totalPro = Number(totalPriceForm[i].textContent) + Number(totalPro);
+            console.log(totalPro);
+        }
+        totalProForm.innerText = totalPro
+    }
+
+    $(document).ready(
+        // tinhtong(),
+        $.each(plus, function (index, item) {
+            // var temp = index
+            item.addEventListener("click", function (e) {
+                var quantityForm = document.querySelectorAll(".input-qty")
+                const totalPriceForm = document.querySelectorAll(".total-price")
+                const priceExportForm = document.querySelectorAll(".price-export")
+
+                var valueInput = quantityForm[index].value
+
+                if (valueInput < Number(quantityForm[index].getAttribute('max'))) {
+                    quantityForm[index].value = Number(valueInput) + 1
+                    valueInput = Number(valueInput) + 1
+                }
+
+                // var quantity = quantityForm[index].value
+                var priceExport = priceExportForm[index]
+                var temp = parseInt(priceExport.textContent.replace(/,/g, ''), 10)
+
+                var totalPrice = Number(valueInput) * Number(temp)
+
+                totalPriceForm[index].innerText = new Intl.NumberFormat().format(totalPrice)
+                const totalProForm = document.querySelector(".total-pro")
+                var totalPro = 0;
+                for (let i = 0; i < totalPriceForm.length; i++) {
+                    totalPro = Number(parseInt(totalPriceForm[i].textContent.replace(/,/g, ''), 10)) + Number(totalPro);
+                }
+
+                totalProForm.innerText = new Intl.NumberFormat().format(totalPro) + ' (VNĐ)'
+            })
+        }),
+        $.each(minus, function (index, item) {
+            // var temp = index
+            item.addEventListener("click", function (e) {
+
+                const totalPriceForm = document.querySelectorAll(".total-price")
+                const priceExportForm = document.querySelectorAll(".price-export")
+                var quantityForm = document.querySelectorAll(".input-qty")
+
+                var valueInput = quantityForm[index].value// = 10
+
+                if (valueInput > Number(quantityForm[index].getAttribute('min'))) {
+                    quantityForm[index].value = Number(valueInput) - 1
+                    valueInput = Number(valueInput) - 1
+                }
+
+                var priceExport = priceExportForm[index]
+                var temp = parseInt(priceExport.textContent.replace(/,/g, ''), 10)
+
+                var totalPrice = Number(valueInput) * Number(temp)
+
+                totalPriceForm[index].innerText = new Intl.NumberFormat().format(totalPrice)
+                const totalProForm = document.querySelector(".total-pro")
+                var totalPro = 0;
+                for (let i = 0; i < totalPriceForm.length; i++) {
+                    totalPro = Number(parseInt(totalPriceForm[i].textContent.replace(/,/g, ''), 10)) + Number(totalPro);
+                }
+
+                totalProForm.innerText = new Intl.NumberFormat().format(totalPro) + ' (VNĐ)'
+            })
+        }),
+        // $.each($("#form-cart"), function (index, item) {
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                event.preventDefault()
+                $("#form-cart").submit()
+            }
+        })
+        // })
+    )
+
+
+    function xoa(x) {
+        var tr = x.parentElement.parentElement;
+        tr.remove();
+    }
+
+
+</script>

@@ -1,0 +1,185 @@
+<style>
+    .order:hover {
+        background-color: #f1f0f0;
+    }
+
+    .pull-up:hover {
+        border-radius: 0px !important;
+    }
+
+    .imgOrder {
+        border: 1px solid #6e7881 !important;
+    }
+
+    .statusBP {
+        color: chocolate !important;
+    }
+
+</style>
+<section>
+    <div class="text-center mb-3">
+        <div class="d-inline-flex">
+            <div>
+                <h2 class="text-uppercase">CHÀO MỪNG QUAY TRỞ LẠI, <span
+                        th:name="avatar"
+                        th:text="${#authentication.principal.name}"></span></h2>
+                <p><i>Kiểm tra và chỉnh sửa thông tin cá nhân của bạn tại đây</i></p>
+            </div>
+        </div>
+        <div class="d-inline-block mx-3">
+            <img th:src="@{'/image/'+${#authentication.principal.avatar}}" alt="" id="avatar"
+                 class="w-px-200 h-px-200 rounded-circle avatar">
+            <input type="file" hidden accept="image/" id="avatarUpload" name="image">
+        </div>
+    </div>
+    <div class="nav-align-left mb-4">
+        <ul class="nav nav-tabs col-lg-3" role="tablist">
+            <li class="nav-item">
+                <a type="button" class="nav-link pb-3 pt-35 fs-5 te" role="tab"
+                   aria-controls="navs-top-home" aria-selected="false"
+                   th:href="@{/profile}">
+                    Thông tin tài khoản
+                </a>
+            </li>
+            <li class="nav-item">
+                <button type="button" class="nav-link active pb-3 pt-3 fs-5" role="tab" data-bs-toggle="tab"
+                        data-bs-target="#navs-top-profile" aria-controls="navs-top-profile" aria-selected="true">
+                    Đơn hàng của bạn
+                </button>
+            </li>
+            <li class="nav-item">
+                <a type="button" class="nav-link pb-3 pt-35 fs-5" href="/logout"
+                   aria-controls="navs-top-home" aria-selected="false">
+                    Đăng xuất
+                </a>
+            </li>
+        </ul>
+        <div class="tab-content col-lg-9">
+            <div class="tab-pane fade show active " id="navs-top-profile" role="tabpanel">
+                <div class="mb-4 mx-4">
+                    <ul class="nav nav-tabs nav-fill me-lg-auto mb-2 mb-lg-0">
+                        <li class="nav-item  ">
+                            <a th:class="|nav-link page ${session.activeOrder == 0 ?'active':''}|" aria-current="page" th:href="@{/order}">Tất cả</a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a th:class="|nav-link page ${session.activeOrder == 1 ?'active':''}|" th:href="@{/order/status/1}">Chờ xử lý</a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a th:class="|nav-link page ${session.activeOrder == 3 ?'active':''}|" th:href="@{/order/status/3}">Vận chuyển</a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a th:class="|nav-link page ${session.activeOrder == 4 ?'active':''}|" th:href="@{/order/status/4}">Đã giao</a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a th:class="|nav-link page ${session.activeOrder == 5 ?'active':''}|" th:href="@{/order/status/5}">Đã hủy</a>
+                        </li>
+                        <li class="nav-item  ">
+                            <a th:class="|nav-link page ${session.activeOrder== 6 ? 'active':''}|" th:href="@{/order/bill_return}">Trả hàng/Hoàn tiền</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="mb-4 mx-4">
+                    <div class="mb-3 row order" th:each="bill, billStat : ${bill}">
+                        <div class="row mt-3">
+                            <span class="col-sm-6">Mã đơn:[(${bill.code})]</span>
+                            <span class="text-end col-sm-6" th:text="${bill.billStatus.status}"></span>
+                            <hr>
+                        </div>
+                        <input type="text" th:value="${return}" id="return" hidden="hidden">
+
+                        <div class="row">
+                            <div th:each="billProduct,iter : ${bill.billProducts}">
+                                <div class="row mb-3">
+                                    <div class="col-sm-1">
+                                        <div class="mb-2">
+                                            <img class="imgOrder" th:each="image:${billProduct.product.listImage}"
+                                                 th:if="${image.location == true}"
+                                                 th:src="@{'/image/product/'+${image.link}}"
+                                                 alt="" width="80px" height="80px">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        <div class="mb-2">
+                                            <span class="text-black">[(${billProduct.product.product.nameProduct+'-'+billProduct.product.product.sku})]
+                                            </span>
+                                            <div class="text-decoration-none"> Phân loại hàng:
+                                                <span th:each="field,iterStat : ${billProduct.product.fieldList}">[(${field.value})]
+                                                    <span th:if="${!iterStat.last}">,</span>
+                                                </span>
+                                            </div>
+                                            <div class="text-gray">
+                                                <span>x[(${billProduct.quantity})]</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3 text-end">
+                                        <div>
+                                            <span class="text-strike-through">[(${#numbers.formatDecimal(billProduct.price,0,'COMMA',0,'POINT')})]</span>
+                                            <span class="fs-tiny text-decoration-underline">đ</span>
+                                        </div>
+                                        <div th:if="${billProduct.reducedMoney !=0}">
+                                            <span>[(${#numbers.formatDecimal(billProduct.price-billProduct.reducedMoney,0,'COMMA',0,'POINT')})]</span>
+                                            <span class="fs-tiny text-decoration-underline">đ</span>
+                                        </div>
+                                        <div th:if="${billProduct.reducedMoney==0}">
+                                            <span>[(${#numbers.formatDecimal(billProduct.price,0,'COMMA',0,'POINT')})]</span>
+                                            <span class="fs-tiny text-decoration-underline">đ</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="text-end mb-3">
+                                Thanh toán:
+                                <span class="col-sm-2">
+                                        [(${#numbers.formatDecimal(bill.totalPrice+bill.deliveryNotes[0].deliveryFee,0,'COMMA',0,'POINT')})]
+                                      <span class="text-decoration-underline fs-tiny">đ</span>
+                                </span>
+                            </div>
+                            <br>
+                            <div class="text-end mb-3 ">
+                                <a class="btn btn-outline-dark"
+                                   th:href="@{/invoice/invoice_detail/{id}(id=${bill.id})}"
+                                >Xem chi tiết
+                                </a>
+                                <a class="btn btn-danger return"
+                                   th:if="${ bill.billStatus.code == 'CO' && !listCompareBillAndHistory[billStat.index]   && !listCheckConditionReturn[billStat.index] && check[billStat.index] }"
+                                   th:href="@{/order_return/detail/{id}(id=${bill.id})}">
+                                    Trả hàng
+                                </a>
+                                <a class="btn btn-outline-dark"
+                                   onclick="return confirm('Xác nhận hủy đơn hàng')"
+                                   th:href="@{/order/remove/{id}(id=${bill.id})}"
+                                   th:if="${bill.billStatus.code== 'WP'}"
+                                >Hủy đơn hàng
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="/admin/plugin/js/loadImage.js"></script>
+<script src="/admin/plugin/js/order.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<script>
+    if (document.getElementById("return").value == "return") {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "success",
+            title: "Trả hàng thành công!"
+        });
+    }
+</script>

@@ -1,0 +1,810 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<style>
+    .buttons_added {
+        opacity: 1;
+        display: inline-block;
+        display: -ms-inline-flexbox;
+        display: inline-flex;
+        white-space: nowrap;
+        vertical-align: top;
+    }
+
+    .is-form {
+        overflow: hidden;
+        position: relative;
+        background-color: #f9f9f9;
+        height: 2.2rem;
+        width: 1.9rem;
+        padding: 0;
+        text-shadow: 1px 1px 1px #fff;
+        border: 1px solid #ddd;
+    }
+
+    .is-form:focus, .input-text:focus {
+        outline: none;
+    }
+
+    .is-form.minus {
+        border-radius: 4px 0 0 4px;
+    }
+
+    .is-form.plus {
+        border-radius: 0 4px 4px 0;
+    }
+
+    .input-qty {
+        background-color: #fff;
+        height: 2.2rem;
+        text-align: center;
+        font-size: 1rem;
+        display: inline-block;
+        vertical-align: top;
+        margin: 0;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
+        border-left: 0;
+        border-right: 0;
+        padding: 0;
+    }
+
+    .input-qty::-webkit-outer-spin-button, .input-qty::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    .error {
+        color: red;
+    }
+</style>
+<div class="layout-wrapper layout-content-navbar">
+    <span hidden id="message">[(${message})]</span>
+    <div class="layout-container">
+        <div class="content-wrapper">
+            <div class="container-xxl flex-grow-1 container-p-y">
+                <div class="content-wrapper">
+                    <form th:action="@{/purchase}" method="post" th:object="${billProduct}" th:name="myform"
+                          th:onsubmit="return validateForm()">
+                        <div class="row justify-content-center">
+                            <div class="col-md-7 mb-5">
+                                <div class="card mb-4">
+                                    <span class="card-header text-uppercase fs-5">THÔNG TIN KHÁCH HÀNG:</span>
+                                    <div class="card-body" th:id="add">
+                                        <div th:if="${session.user!=null}">
+                                            <!--                                            ten, sdt-->
+                                            <div class="row justify-content-between mb-3">
+                                                <div class="col">
+                                                    <label class="form-label">Tên người nhận</label>
+                                                    <input class="form-control" type="text" placeholder="họ và tên"
+                                                           th:value="${session.user.fullName}"
+                                                           th:name="name">
+                                                    <span id="nameloc" class="error"></span>
+                                                    <div class="alert alert-warning"
+                                                         th:if="${#fields.hasErrors('name')}"
+                                                         th:errors="*{name}"></div>
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label">Số điện thoại người nhận</label>
+                                                    <input class="form-control" type="text" placeholder="0284738477"
+                                                           th:value="${session.user.phone}"
+                                                           id="phoneNumber" th:name="phoneNumber">
+                                                    <span id="numloc" class="error"></span>
+                                                    <div class="alert alert-warning"
+                                                         th:if="${#fields.hasErrors('phoneNumber')}"
+                                                         th:errors="*{phoneNumber}"></div>
+                                                </div>
+                                            </div>
+                                            <!--                                                email-->
+                                            <div class="mb-3">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control"
+                                                       placeholder="example123@gmail.com"
+                                                       th:value="${session.user.email}"
+                                                       id="email" th:name="email">
+                                                <span id="emailloc" class="error"></span>
+                                                <div class="alert alert-warning"
+                                                     th:if="${#fields.hasErrors('email')}"
+                                                     th:errors="*{email}"></div>
+                                            </div>
+                                            <!--                                                address-->
+                                            <div class="row justify-content-between mb-3">
+                                                <label class="form-label">Địa chỉ nhận hàng</label>
+                                                <div class="col">
+                                                    <select class="form-select" id="city"
+                                                            aria-label=".form-select-sm" th:name="city">
+                                                        <option value="tinh" selected>Chọn tỉnh thành</option>
+                                                    </select>
+                                                    <span id="tinhloc" class="error"></span>
+                                                </div>
+                                                <div class="col">
+                                                    <select class="form-select" th:name="district" id="district"
+                                                            aria-label=".form-select-sm">
+                                                        <option value="quan" selected>Chọn quận huyện</option>
+                                                    </select>
+                                                    <span id="quanloc" class="error"></span>
+                                                </div>
+                                                <div class="col">
+                                                    <select class="form-select select-ward" th:name="ward" id="ward"
+                                                            aria-label=".form-select-sm">
+                                                        <option value="xa" selected>Chọn phường xã</option>
+                                                    </select>
+                                                    <span id="xaloc" class="error"></span>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <!--                                                <label class="form-label">Địa chỉ nhận hàng</label>-->
+                                                <input type="text" class="form-control"
+                                                       placeholder="Thôn liên trì 1, xã Yên hòa" th:field="*{address}"
+                                                       id="address" th:name="address">
+                                                <span id="addressloc" class="error"></span>
+                                                <div class="alert alert-warning"
+                                                     th:if="${#fields.hasErrors('address')}"
+                                                     th:errors="*{address}"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Voucher</label>
+                                                <select class="form-select" id="voucher" name="voucher">
+                                                    <option value="-1">Chưa chọn voucher</option>
+                                                    <option th:value="${voucher.voucher.id}"
+                                                            th:each="voucher:${listVoucher}"
+                                                            th:if="${voucher.active  == true && voucher.voucher.active==true}">
+                                                        [(${voucher.voucher.code})]
+                                                    </option>
+                                                </select>
+                                                <div class="mt-2">
+                                                    <span id="info-voucher" class="text-danger">[(${#lists.size(listVoucher)>0?'Bạn có voucher có thể sử dụng':''})]</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div th:if="${session.user==null}">
+                                            <!--                                            ten, sdt-->
+                                            <div class="row justify-content-between mb-3">
+                                                <div class="col">
+                                                    <label class="form-label">Tên người nhận</label>
+                                                    <input class="form-control" type="text" placeholder="họ và tên"
+                                                           th:field="*{name}"
+                                                           id="name" th:name="name">
+                                                    <span id="nameloc" class="error"></span>
+                                                    <div class="alert alert-warning"
+                                                         th:if="${#fields.hasErrors('name')}"
+                                                         th:errors="*{name}"></div>
+                                                </div>
+                                                <div class="col">
+                                                    <label class="form-label">Số điện thoại người nhận</label>
+                                                    <input class="form-control" type="text" placeholder="VN (+84)"
+                                                           th:field="*{phoneNumber}"
+                                                           id="phoneNumber" th:name="phoneNumber">
+                                                    <span id="numloc" class="error"></span>
+                                                    <div class="alert alert-warning"
+                                                         th:if="${#fields.hasErrors('phoneNumber')}"
+                                                         th:errors="*{phoneNumber}"></div>
+                                                </div>
+                                            </div>
+                                            <!--                                                email-->
+                                            <div class="col">
+                                                <label class="form-label">Email</label>
+                                                <input type="email" class="form-control"
+                                                       placeholder="example123@gmail.com"
+                                                       th:field="*{email}"
+                                                       id="email" th:name="email">
+                                                <span id="emailloc" class="error"></span>
+                                                <div class="alert alert-warning"
+                                                     th:if="${#fields.hasErrors('email')}"
+                                                     th:errors="*{email}"></div>
+                                            </div>
+                                            <br>
+                                            <!--                                                address-->
+                                            <div class="row justify-content-between">
+                                                <label class="form-label">Địa chỉ nhận hàng</label>
+                                                <div class="col">
+                                                    <select class="form-select" id="city"
+                                                            aria-label=".form-select-sm" th:name="city">
+                                                        <option value="tinh" selected>Chọn tỉnh thành</option>
+                                                    </select>
+                                                    <span id="tinhloc" class="error"></span>
+                                                </div>
+                                                <div class="col">
+                                                    <select class="form-select" th:name="district" id="district"
+                                                            aria-label=".form-select-sm">
+                                                        <option value="quan" selected>Chọn quận huyện</option>
+                                                    </select>
+                                                    <span id="quanloc" class="error"></span>
+                                                </div>
+                                                <div class="col">
+                                                    <select class="form-select select-ward" th:name="ward" id="ward"
+                                                            aria-label=".form-select-sm">
+                                                        <option value="xa" selected>Chọn phường xã</option>
+                                                    </select>
+                                                    <span id="xaloc" class="error"></span>
+                                                </div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label"></label>
+                                                <input type="text" class="form-control"
+                                                       placeholder="Thôn liên trì 1, xã Yên hòa" th:field="*{address}"
+                                                       id="address" th:name="address">
+                                                <span id="addressloc" class="error"></span>
+                                                <div class="alert alert-warning"
+                                                     th:if="${#fields.hasErrors('address')}"
+                                                     th:errors="*{address}"></div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label class="form-label">Voucher</label>
+                                                <select class="form-select" id="voucher" name="voucher">
+                                                    <option value="-1" style="color: red">Đăng nhập để nhận voucher
+                                                    </option>
+                                                    <option th:value="${voucher.voucher.id}"
+                                                            th:each="voucher:${listVoucher}"
+                                                            th:if="${voucher.active==true}">[(${voucher.voucher.code})]
+                                                    </option>
+                                                </select>
+                                                <span class="text-danger"><a class="text-danger fw-bold"
+                                                                             href="/login">Đăng ký</a> tài khoản để có thể nhận voucher ưu đãi của cửa hàng</span>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3 table-responsive">
+                                            <table class="table table-bordered">
+                                                <thead>
+                                                <tr>
+                                                    <th>Sản phẩm</th>
+                                                    <th>Giá (VNĐ)</th>
+                                                    <th>Số lượng</th>
+                                                    <th>Thành tiền (VNĐ)</th>
+                                                </tr>
+                                                </thead>
+                                                <tbody>
+                                                <tr th:each="item,itemStat:${session.list}">
+                                                    <input th:value="${item.product.id}" name="id" hidden>
+                                                    <td>
+                                                        <div class="mb-3">
+                                                            <img th:each="image:${item.product.listImage}"
+                                                                 th:if="${image.location == true}"
+                                                                 th:src="@{'/image/product/'+${image.link}}"
+                                                                 alt="" width="100px">
+                                                        </div>
+                                                        <span th:text="${item.product.product.nameProduct}"></span>
+                                                        <div>
+                                                            [ <span th:each="field:${item.product.fieldList}"
+                                                                    th:text="|${field.value} |"></span>]
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <div th:if="${reduceMoney[itemStat.index]!=item.product.priceExport}">
+                                                            <span class="fs-5 text-strike-through"
+                                                                  th:text="|${#numbers.formatDecimal(item.product.priceExport,0,'COMMA',0,'POINT')}|"></span>
+                                                        </div>
+                                                        <div>
+                                                            <div th:if="${reduceMoney[itemStat.index]!=item.product.priceExport}">
+                                                                <span class=" fs-4" name="reducedMoney">[(${#numbers.formatDecimal(reduceMoney[itemStat.index],0,'COMMA',0,'POINT')})]</span>
+                                                            </div>
+                                                            <div th:if="${reduceMoney[itemStat.index]==item.product.priceExport}">
+                                                                <span class="fs-4" name="reducedMoney"
+                                                                      th:text="|${#numbers.formatDecimal(item.product.priceExport,0,'COMMA',0,'POINT')}|"></span>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>
+                                                        <input aria-label="quantity" name="qty" class="form-control"
+                                                               th:value="${item.quantity}" hidden="hidden">
+                                                        <span class="fs-4" th:text="${item.quantity}"></span>
+                                                    </td>
+                                                    <td>
+                                                        <span class="fs-4 total-price">[(${#numbers.formatDecimal(reduceMoney[itemStat.index]* item.quantity,0,'COMMA',0,'POINT')})]</span>
+                                                    </td>
+                                                </tr>
+                                                <hr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        <hr>
+                                        <div class="row justify-content-center">
+                                            <span class="col fs-5">Tạm tính: </span>
+                                            <span class="col text-black text-end">
+                                                <span th:text="|${#numbers.formatDecimal(total,0,'COMMA',0,'POINT')} đ|"
+                                                      class="total-pro fs-5" name="totalPrice"></span>
+                                            </span>
+
+                                        </div>
+                                        <div class="row justify-content-center" id="voucher-info" hidden="hidden">
+                                            <span class="col fs-5">Voucher: </span>
+                                            <span class="col text-danger text-end">
+                                                <span class="fs-5" id="voucher-reduce"></span>
+                                            </span>
+                                        </div>
+                                        <div class="row justify-content-center" id="ship-info" hidden="hidden">
+                                            <span class="col fs-5">Phí vận chuyển: </span>
+                                            <span class="col text-danger text-end">
+                                                <span class="fs-5" id="ship-price"></span>
+                                                <input th:name="deliveryFee" id="ship-price2" hidden/>
+                                            </span>
+                                        </div>
+                                        <div class="row justify-content-center">
+                                            <span class="col fs-5">Tổng tiền: </span>
+                                            <span class="col text-danger text-end">
+                                                <span class="fs-4" id="total"
+                                                      th:text="|${#numbers.formatDecimal(total,0,'COMMA',0,'POINT')} đ|"></span>
+                                            </span>
+                                        </div>
+                                        <hr>
+                                        <span class="text-uppercase fs-5">Phương Thức Thanh Toán: </span>
+                                        <div class="card-body">
+                                            <div class="row gy-3">
+                                                <div class="col-md">
+                                                    <div class="form-check form-check-inline mt-3">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="paymentMethod" id="inlineRadio1"
+                                                               th:value="1" checked>
+                                                        <label class="form-check-label" for="inlineRadio1">Thanh toán
+                                                            tiền mặt</label>
+                                                    </div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio"
+                                                               name="paymentMethod" id="inlineRadio2"
+                                                               th:value="2">
+                                                        <label class="form-check-label" for="inlineRadio2">Thanh toán
+                                                            trực tiếp qua
+                                                            VNPAY</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-grid gap-2 col-lg-12 mx-auto mt-4"
+                                             style="text-align: center">
+                                            <button class="btn btn-primary btn-lg" type="submit"
+                                                    onclick="return confirm('Xác nhận tạo hóa đơn')">
+                                                Đặt Hàng
+                                            </button>
+                                            <a href="/cart" class="btn btn-outline-secondary btn-lg" type="button">
+                                                Hủy
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+<script>
+    // console.log(parseInt(document.querySelector('.total-pro').textContent.replace(/,/g, ''), 10))
+
+    if (document.getElementById("message").textContent == 'emailTrung') {
+        const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.onmouseenter = Swal.stopTimer;
+                toast.onmouseleave = Swal.resumeTimer;
+            }
+        });
+        Toast.fire({
+            icon: "error",
+            title: "Email của bạn đã có tài khoản, đăng nhập để tiếp tục hoặc nhập một email mới."
+        });
+    }
+    $("#voucher").on("change", tongtien)
+
+
+    const plus = document.querySelectorAll(".plus")
+    const minus = document.querySelectorAll(".minus")
+
+    var citis = document.getElementById("city");
+    var provinceID;
+    var districts = document.getElementById("district");
+    var districtID;
+    var wards = document.getElementById("ward");
+    var wardID;
+
+
+    window.onload = function renderCity() {
+        $.ajax({
+            url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/province",
+            method: "get",
+            dataType: "json",  // Xác định kiểu dữ liệu mong muốn
+            headers: {
+                token: "4d0b3d7c-65a5-11ee-a59f-a260851ba65c",
+                shop_id: "4611572",
+                ContentType: "application/json",
+            },
+            success: function (data) {
+                // Xử lý khi yêu cầu thành công
+                for (const x of data.data) {
+                    // Tạo một phần tử option cho thành phố (city)
+                    var opt = document.createElement('option');
+                    opt.value = x.ProvinceName;
+                    opt.text = x.ProvinceName;
+                    opt.setAttribute('data-id', x.ProvinceID);
+                    // Thêm option vào select element có id là 'citis'
+                    citis.options.add(opt);
+                }
+            }
+        })
+    }
+
+    // Gắn sự kiện onchange cho select element có id là 'citis'
+    $("#city").on("change", function () {
+        provinceID = this.options[this.selectedIndex].dataset.id;
+        district.length = 1;
+        ward.length = 1;
+        $.ajax({
+            url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/district",
+            method: "get",
+            dataType: "json",  // Xác định kiểu dữ liệu mong muốn
+            headers: {
+                token: "4d0b3d7c-65a5-11ee-a59f-a260851ba65c",
+                shop_id: "4611572",
+                ContentType: "application/json",
+            },
+            data: {
+                "province_id": provinceID
+            },
+            success: function (data) {
+                // Xử lý khi yêu cầu thành công
+                for (const x of data.data) {
+                    // Tạo một phần tử option cho thành phố (city)
+                    var opt = document.createElement('option');
+                    opt.value = x.DistrictName;
+                    opt.text = x.DistrictName;
+                    opt.setAttribute('data-id', x.DistrictID);
+                    // Thêm option vào select element có id là 'districts'
+                    districts.options.add(opt);
+                }
+            }
+        })
+    })
+    $("#district").on("change", function () {
+        districtID = this.options[this.selectedIndex].dataset.id;
+        ward.length = 1;
+        $.ajax({
+            url: "https://online-gateway.ghn.vn/shiip/public-api/master-data/ward",
+            method: "get",
+            dataType: "json",  // Xác định kiểu dữ liệu mong muốn
+            headers: {
+                token: "4d0b3d7c-65a5-11ee-a59f-a260851ba65c",
+                shop_id: "4611572",
+                ContentType: "application/json",
+            },
+            data: {
+                "district_id": districtID
+            },
+            success: function (data) {
+                // Xử lý khi yêu cầu thành công
+                for (const x of data.data) {
+                    var opt = document.createElement('option');
+                    opt.value = x.WardName;
+                    opt.text = x.WardName;
+                    opt.setAttribute('data-id', x.WardCode);
+                    // Thêm option vào select element có id là 'wards'
+                    wards.options.add(opt);
+                }
+            }
+        })
+    })
+
+    function tongtien() {
+
+        wardID = document.getElementById("ward").options[document.getElementById("ward").selectedIndex].dataset.id;
+        console.log(wardID)
+        var dataVoucher = {
+            id: $("#voucher").val(),
+        }
+        $.ajax({
+            url: "/user/voucher/getone",
+            method: "get",
+            data: dataVoucher,
+            success: function (dataVoucher) {
+                var temp = parseInt(document.querySelector('.total-pro').textContent.replace(/,/g, ''), 10)
+                var valuePrice = 0;
+                if (document.getElementById('info-voucher')) {
+                    if (dataVoucher) {
+                        // var formattedNumber = new Intl.NumberFormat().format(data.minimumValue);
+                        if (temp >= dataVoucher.minimumValue) {
+                            document.getElementById("voucher-reduce").innerText = new Intl.NumberFormat().format(dataVoucher.value) + ' đ'
+                            document.getElementById("voucher-info").hidden = false
+                            $("#voucher").attr("name", "voucher")
+                            valuePrice = dataVoucher.value
+                        } else {
+                            $("#voucher").attr("name", "")
+                        }
+                        document.getElementById('info-voucher').innerText = 'Giảm ' + new Intl.NumberFormat().format(dataVoucher.value) + ' đ cho đơn hàng có giá trị từ ' + new Intl.NumberFormat().format(dataVoucher.minimumValue) + ' đ'
+                    } else {
+                        document.getElementById("voucher-info").hidden = true
+                        document.getElementById('info-voucher').innerText = ''
+                        document.getElementById("voucher-reduce").innerText = ''
+                    }
+                }
+                $.ajax({
+                    url: "https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee",
+                    method: "get",
+                    dataType: "json",  // Xác định kiểu dữ liệu mong muốn
+                    headers: {
+                        token: "4d0b3d7c-65a5-11ee-a59f-a260851ba65c",
+                        shop_id: "4611572",
+                        ContentType: "application/json",
+                    },
+                    data: {
+                        "service_type_id": 2,
+                        "from_district_id": 1713,
+                        "to_district_id": districtID,
+                        "to_ward_code": wardID,
+                        "height": 50, // cao
+                        "length": 70, // dài
+                        "weight": 5000,
+                        "width": 20 // rộng
+                    },
+                    success: function (data) {
+                        // Xử lý khi yêu cầu thành công
+                        var calculatedFee = data.data.total;
+                        if (parseInt(districtID) != 1713 || temp < 200000) {
+                            if (temp < 200000) {
+                                document.getElementById("ship-price").innerText =
+                                    new Intl.NumberFormat().format(parseInt(data.data.total) - 60000) + ' đ'
+                                document.getElementById("ship-price2").value =
+                                    (parseInt(data.data.total) - 60000);
+                                document.getElementById("ship-info").hidden = false
+                                document.getElementById("total").innerText =
+                                    new Intl.NumberFormat().format(temp - valuePrice + data.data.total - 60000) + ' đ'
+                            } else if (temp < 1000000) {
+                                document.getElementById("ship-price").innerText =
+                                    new Intl.NumberFormat().format(parseInt(data.data.total) - 50000) + ' đ'
+                                document.getElementById("ship-price2").value =
+                                    (parseInt(data.data.total) - 50000);
+                                document.getElementById("ship-info").hidden = false
+                                document.getElementById("total").innerText =
+                                    new Intl.NumberFormat().format(temp - valuePrice + data.data.total - 50000) + ' đ'
+                            } else if (temp < 3000000) {
+                                document.getElementById("ship-price").innerText =
+                                    new Intl.NumberFormat().format(parseInt(data.data.total) - 20000) + ' đ'
+                                document.getElementById("ship-price2").value =
+                                    (parseInt(data.data.total) - 20000);
+                                document.getElementById("ship-info").hidden = false
+                                document.getElementById("total").innerText =
+                                    new Intl.NumberFormat().format(temp - valuePrice + data.data.total - 20000) + ' đ'
+                            } else if (temp < 5000000) {
+                                document.getElementById("ship-price").innerText =
+                                    new Intl.NumberFormat().format(parseInt(data.data.total)) + ' đ'
+                                document.getElementById("ship-price2").value =
+                                    (parseInt(data.data.total));
+                                document.getElementById("ship-info").hidden = false
+                                document.getElementById("total").innerText =
+                                    new Intl.NumberFormat().format(temp - valuePrice + data.data.total) + ' đ'
+                            } else if (temp < 8000000) {
+                                document.getElementById("ship-price").innerText =
+                                    new Intl.NumberFormat().format(parseInt(data.data.total) + 30000) + ' đ'
+                                document.getElementById("ship-price2").value =
+                                    (parseInt(data.data.total) + 30000);
+                                document.getElementById("ship-info").hidden = false
+                                document.getElementById("total").innerText =
+                                    new Intl.NumberFormat().format(temp - valuePrice + data.data.total + 30000) + ' đ'
+                            } else if (temp < 10000000) {
+                                document.getElementById("ship-price").innerText =
+                                    new Intl.NumberFormat().format(parseInt(data.data.total) + 50000) + ' đ'
+                                document.getElementById("ship-price2").value =
+                                    (parseInt(data.data.total) + 50000);
+                                document.getElementById("ship-info").hidden = false
+                                document.getElementById("total").innerText =
+                                    new Intl.NumberFormat().format(temp - valuePrice + data.data.total + 50000) + ' đ'
+                            } else if (temp < 15000000) {
+                                document.getElementById("ship-price").innerText =
+                                    new Intl.NumberFormat().format(parseInt(data.data.total) + 120000) + ' đ'
+                                document.getElementById("ship-price2").value =
+                                    (parseInt(data.data.total) + 120000);
+                                document.getElementById("ship-info").hidden = false
+                                document.getElementById("total").innerText =
+                                    new Intl.NumberFormat().format(temp - valuePrice + data.data.total + 120000) + ' đ'
+                            } else if (temp < 20000000) {
+                                document.getElementById("ship-price").innerText =
+                                    new Intl.NumberFormat().format(parseInt(data.data.total) + 200000) + ' đ'
+                                document.getElementById("ship-price2").value =
+                                    (parseInt(data.data.total) + 200000);
+                                document.getElementById("ship-info").hidden = false
+                                document.getElementById("total").innerText =
+                                    new Intl.NumberFormat().format(temp - valuePrice + data.data.total + 200000) + ' đ'
+                            } else if (temp < 30000000) {
+                                document.getElementById("ship-price").innerText =
+                                    new Intl.NumberFormat().format(parseInt(data.data.total) + 250000) + ' đ'
+                                document.getElementById("ship-price2").value =
+                                    (parseInt(data.data.total) + 250000);
+                                document.getElementById("ship-info").hidden = false
+                                document.getElementById("total").innerText =
+                                    new Intl.NumberFormat().format(temp - valuePrice + data.data.total + 250000) + ' đ'
+                            } else if (temp < 50000000) {
+                                document.getElementById("ship-price").innerText =
+                                    new Intl.NumberFormat().format(parseInt(data.data.total) + 350000) + ' đ'
+                                document.getElementById("ship-price2").value =
+                                    (parseInt(data.data.total) + 350000);
+                                document.getElementById("ship-info").hidden = false
+                                document.getElementById("total").innerText =
+                                    new Intl.NumberFormat().format(temp - valuePrice + data.data.total + 350000) + ' đ'
+                            } else {
+                                document.getElementById("ship-price").innerText =
+                                    new Intl.NumberFormat().format(parseInt(data.data.total) + 500000) + ' đ'
+                                document.getElementById("ship-price2").value =
+                                    (parseInt(data.data.total) + 500000);
+                                document.getElementById("ship-info").hidden = false
+                                document.getElementById("total").innerText =
+                                    new Intl.NumberFormat().format(temp - valuePrice + data.data.total + 500000) + ' đ'
+                            }
+                        } else {
+                            document.getElementById("ship-price").innerText = '0.00 đ'
+                            document.getElementById("ship-price2").value = 0
+
+                            document.getElementById("ship-info").hidden = false
+                            document.getElementById("total").innerText =
+                                new Intl.NumberFormat().format(temp - valuePrice) + ' đ'
+                        }
+                        console.log(parseInt(data.data.total) - 50000);
+                    }
+                })
+
+            }
+        })
+    }
+
+
+    function validateForm() {
+//city
+
+        var name = document.myform.name.value;
+        var email = document.myform.email.value;
+        var address = document.myform.address.value;
+        var phoneNumber = document.myform.phoneNumber.value;
+        var status = [];
+        //name
+        if (name.trim().length < 1) {
+            document.getElementById("nameloc").innerHTML =
+                " <i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống tên!";
+            status.push(false)
+
+        } else {
+            document.getElementById("nameloc").innerHTML = "";
+        }
+        //address
+        //tinh
+        if (citis.value == 'tinh') {
+            document.getElementById("tinhloc").innerHTML =
+                " <i class='bx bx-x-circle' style='color:#ff0000' ></i> Bạn chưa chọn chọn thành phố!";
+            status.push(false)
+        } else {
+            document.getElementById("tinhloc").innerHTML = "";
+        }
+        // quan
+        if (districts.value == 'quan') {
+            document.getElementById("quanloc").innerHTML =
+                " <i class='bx bx-x-circle' style='color:#ff0000' ></i> Bạn chưa chọn chọn quận huyện!";
+            status.push(false)
+        } else {
+            document.getElementById("quanloc").innerHTML = "";
+        }
+        //xa
+        if (wards.value == 'xa') {
+            document.getElementById("xaloc").innerHTML =
+                " <i class='bx bx-x-circle' style='color:#ff0000' ></i> Bạn chưa chọn chọn phường xã!";
+            status.push(false)
+        } else {
+            document.getElementById("xaloc").innerHTML = "";
+        }
+        if (address.trim().length < 1) {
+            document.getElementById("addressloc").innerHTML =
+                " <i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống địa chỉ!";
+            status.push(false)
+        } else {
+            document.getElementById("addressloc").innerHTML = "";
+        }
+        //email
+        var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+
+        //phone
+        var phoneno = /^\+?([0-9]{2})\)?[-. ]?([0-9]{4})[-. ]?([0-9]{4})$/;
+        if (phoneNumber.trim().length < 1) {
+            document.getElementById("numloc").innerHTML =
+                " <i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống số điện thoại!";
+            status.push(false)
+        } else if (phoneNumber.match(phoneno)) {
+            // status = true;
+            document.getElementById("numloc").innerHTML = "";
+        } else {
+            document.getElementById("numloc").innerHTML = "Không đúng định dạng số điện thoại!";
+            status.push(false)
+        }
+        if (email.trim().length < 1) {
+            document.getElementById("emailloc").innerHTML =
+                " <i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống email!";
+            status.push(false)
+        } else if (filter.test(email.value)) {
+            document.getElementById("emailloc").innerHTML =
+                " <i class='bx bx-x-circle' style='color:#ff0000' ></i>Địa chỉ email không hợp lệ.\n Example@gmail.com!";
+            // email.focus();
+            status.push(false)
+        } else {
+            if (document.getElementById("emailloc")) {
+                document.getElementById("emailloc").innerHTML = "";
+            }
+        }
+        if (status.indexOf(false) > -1) {
+            return false
+        }
+    }
+
+    function tinhtong() {
+        const totalPriceForm = document.querySelectorAll(".total-price")
+        const totalProForm = document.querySelector(".total-pro")
+        var totalPro = 0;
+        for (let i = 0; i < totalPriceForm.length; i++) {
+            totalPro = Number(totalPriceForm[i].textContent) + totalPro;
+            console.log(totalPro);
+        }
+        totalProForm.value = totalPro
+    }
+    $("#ward").on("change", tongtien)
+
+    $(document).ready(
+        tinhtong(),
+        $.each(plus, function (index, item) {
+            // var temp = index
+            item.addEventListener("click", function (e) {
+                var quantityForm = document.querySelectorAll(".input-qty")
+                const totalPriceForm = document.querySelectorAll(".total-price")
+                const priceExportForm = document.querySelectorAll(".price-export")
+
+                var valueInput = quantityForm[index].value
+
+                if (valueInput < Number(quantityForm[index].getAttribute('max'))) {
+                    quantityForm[index].value = Number(valueInput) + 1
+                    valueInput = Number(valueInput) + 1
+                }
+
+                // var quantity = quantityForm[index].value
+                var priceExport = priceExportForm[index].getAttribute("value")
+                var totalPrice = Number(valueInput) * Number(priceExport)
+
+                totalPriceForm[index].innerText = totalPrice
+                const totalProForm = document.querySelector(".total-pro")
+                var totalPro = 0;
+                for (let i = 0; i < totalPriceForm.length; i++) {
+                    totalPro = Number(totalPriceForm[i].textContent) + Number(totalPro);
+                }
+
+                totalProForm.innerText = totalPro
+            })
+        }),
+        $.each(minus, function (index, item) {
+            // var temp = index
+            item.addEventListener("click", function (e) {
+
+                const totalPriceForm = document.querySelectorAll(".total-price")
+                const priceExportForm = document.querySelectorAll(".price-export")
+                var quantityForm = document.querySelectorAll(".input-qty")
+
+                var valueInput = quantityForm[index].value// = 10
+
+                if (valueInput > Number(quantityForm[index].getAttribute('min'))) {
+                    quantityForm[index].value = Number(valueInput) - 1
+                    valueInput = Number(valueInput) - 1
+                }
+
+                var priceExport = priceExportForm[index].getAttribute("value")
+                var totalPrice = Number(valueInput) * Number(priceExport)
+
+                totalPriceForm[index].innerText = totalPrice
+                tinhtong();
+            })
+        })
+    )
+
+    function xoa(x) {
+        var tr = x.parentElement.parentElement;
+        tr.remove();
+    }
+
+</script>
+
+</html>

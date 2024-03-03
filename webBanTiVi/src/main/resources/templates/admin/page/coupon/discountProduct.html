@@ -1,0 +1,87 @@
+<h4 class="fw-semibold py-3 mb-4"> Danh sách sản phẩm áp dụng mã [(${discount.code})]</h4>
+<div class="row justify-content-end me-4">
+    <!-- Nội dung của menu item -->
+</div>
+<form class="justify-content-end me-4">
+    <label class="form-label">Thêm sản phẩm giảm giá:</label>
+    <input type="text" class="form-control" th:name="keyword"
+           th:value="${param.keyword}" placeholder="Tìm theo SKU sản phẩm">
+</form>
+<form th:action="@{/admin/couponproduct/add}" method="post" th:object="${discountproduct}">
+    <div class="justify-content-end me-4">
+        <select id="products" th:name="id" class="form-select">
+            <option th:each="product : ${listallproduct}" th:value="${product.id}"
+                    th:text="${product.sku}"></option>
+        </select>
+        <div class="mt-2">
+            <input type="text" th:name="coupon" th:value="${discount.id}" hidden>
+            <button type="submit" class="btn btn-success mb-4 w-auto">
+                <i class='tf-icon bx bx-plus-medical'></i> Thêm
+            </button>
+        </div>
+    </div>
+</form>
+<div class="card mb-3 ">
+    <div class="card-header">
+        <form class="col-12 mt-2">
+            <div class="col-12 row">
+                <div class="col-7">
+                    <div class="form-check input-group input-group-merge">
+                    <span class="input-group-text">
+                        <i class="bx bx-search"></i>
+                    </span>
+                        <input type="text" class="form-control" th:name="keyword2"
+                               th:value="${param.keyword2}" placeholder="Tìm theo SKU sản phẩm">
+                        <button class="btn btn-primary" type="submit">Search</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div>
+                <p>Số lượng: <span th:text="${listproduct.size()}"></span>
+                </p>
+            </div>
+        </div>
+        <hr>
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover">
+                <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Sku</th>
+                    <!--                    <th>Date Start</th>-->
+                    <!--                    <th>Date End</th>-->
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody class="table-border-bottom-0">
+                <tr th:each="listproduct : ${listproduct}">
+                    <td>[(${listproduct.getProduct().getNameProduct()})]</td>
+                    <td>[(${listproduct.getSku()})]</td>
+                    <td>
+
+
+                        <a th:href="@{/admin/couponproduct/delete/{id}(id=${listproduct.getId()})}"
+                           onclick="return confirm('Xác nhận xóa')">
+                            <button type="button" class="btn btn-icon btn-danger">
+                                <span class="bx bxs-trash"></span>
+                            </button>
+                        </a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+
+        </div>
+        <hr class="card-separator">
+    </div>
+    <div class="card-footer">
+        <div class="d-inline-flex float-end">
+
+        </div>
+    </div>
+</div>

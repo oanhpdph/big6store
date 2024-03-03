@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html class="light-style" xmlns:th="http://www.thymeleaf.org">
+
+<section class="ss1">
+    <div class="container">
+        <div >
+            <h3 class="text-center pt-2 pb-2 title px-3 text-uppercase fw-bold">
+                Khuyến mãi giảm giá từ hãng
+            </h3>
+        </div>
+        <div class="row row-cols-1  row-cols-lg-4 row-cols-md-4 row-cols-sm-2 g-4">
+            <div th:each="coupon : ${listcoupon}">
+                <div class="col">
+                    <div class="card">
+                        <img th:src="@{'/image/' + *{coupon.getImage()}}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h4 class="card-title">GIẢM NGAY [(${coupon.getValue()})]%</h4>
+                            <a th:href="@{'/promotion/coupondetail/' + *{coupon.getId()}}"
+                               class="btn btn-outline-danger">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+</section>
+<section class="ss2">
+    <div class="container">
+        <div >
+            <h3 class="text-center pt-2 pb-2 title px-3 text-uppercase fw-bold">
+                Khuyến mãi voucher từ cửa hàng
+            </h3>
+        </div>
+        <div class="row row-cols-1  row-cols-lg-4 row-cols-md-4 row-cols-sm-2 g-4">
+            <div th:each="voucher : ${listvoucher}">
+                <div class="col">
+                    <div class="card">
+                        <img th:src="@{'/image/' + *{voucher.getImage()}}" class="card-img-top" alt="...">
+                        <div class="card-body">
+                            <h4 class="card-title">[(${voucher.getNameVoucher()})]</h4>
+                            <p class="card-text">Áp dụng từ: [(${voucher.getStartDay()})]</p>
+                            <p class="card-text">Đến ngày: [(${voucher.getExpirationDate()})]</p>
+                            <a th:href="@{'/promotion/voucherdetail/' + *{voucher.getId()}}"
+                               class="btn btn-outline-danger">Xem chi tiết</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

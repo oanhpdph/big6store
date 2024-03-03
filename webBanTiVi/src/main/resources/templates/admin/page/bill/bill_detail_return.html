@@ -1,0 +1,222 @@
+<style>
+    .order:hover {
+        background-color: #f1f0f0;
+    }
+
+    .pull-up:hover {
+        border-radius: 0px !important;
+    }
+
+    .imgOrder {
+        border: 1px solid #6e7881 !important;
+    }
+
+    .statusBP {
+        color: chocolate !important;
+    }
+    .viewReturnwait{
+      padding: 2px 5px;
+    margin: 0 0 0 6px;
+    display: inline-block;
+    font-weight: 700;
+    text-transform: uppercase;
+    vertical-align: middle;
+    font-size: 12px;
+    line-height: 16px;
+    color: #ee4d2d;
+    border: 1px solid rgba(0,0,0,.09);
+    }
+    .qsfSj4 {
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    border-bottom: 1px dotted rgba(0,0,0,.09);
+     }
+    .lX4Gwk {
+    font-size: 13px;
+    line-height: 16px;
+    color: rgba(0,0,0,.54);
+     }
+    .ROZVxd {
+    padding: 10px 10px 10px 24px;
+    flex: 1;
+    color: rgba(0,0,0,.54);
+    font-size: 13px;
+    }
+     .sabTA\+ {
+    padding: 8px 24px 8px 10px;
+     }
+    .\+MprAa {
+    padding: 10px 24px 10px;
+    width: 240px;
+    border-left: 1px dotted rgba(0,0,0,.09);
+    justify-content: flex-end;
+    word-wrap: break-word;
+    color: rgba(0,0,0,.54);
+    font-size: 13px;
+    }
+    .noteReturn{
+    text-align:left;
+       font-size: 13px;
+       color: rgba(0,0,0,.54);
+    }
+    .f-RjWa{
+        text-align:left;
+    }
+
+
+
+</style>
+<section>
+    <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light"><a class="text-muted fw-light"
+                                                                       href="/admin/bill/list_bill">Danh sách Hóa đơn/</a></span>Hóa
+        đơn chi tiết/<span>Chi tiết Trả hàng/Hoàn tiền</span></h4>
+    <div class="text-left mb-3">
+        <div class="nav-align-left mb-4">
+            <div class="tab-content ">
+                <div class="mb-4 mx-4">
+                    <div class="row mt-3">
+                            <span class="text-left  col-sm-6">
+                                 <a class="text-black " sec:authorize="isAuthenticated()"
+                                    style="font-size: 15px ; font-family: roboto !important;"
+                                    th:href="@{/admin/bill/bill_detail/{billcode}(billcode=${listHDTO?.bill?.id})}"> < Trở Lại</a>
+                            </span>
+                        <span class="text-end col-sm-6">Mã đơn:[(${listHDTO?.bill?.code})] | [(${listHDTO?.bill?.billStatus?.status})]</span>
+                        <hr>
+                    </div>
+                    <hr>
+                    <div th:each=" historyBillReturn : ${listHDTO.historyBillProductList}">
+                        <div class="row">
+                            <div class="row mb-3">
+                                <div class="col-sm-1">
+                                    <div class="mb-2">
+                                        <div th:each="image:${historyBillReturn?.billProduct?.product?.listImage}">
+                                            <img th:if="${image.location == true}"
+                                                 th:src="@{'/image/product/'+${image.link}}"
+                                                 alt="" width="80px" height="80px">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-8">
+                                    <div class="mb-2">
+                                        <div style="display: flex">
+                                                <span class="text-black">[(${historyBillReturn?.billProduct?.product?.product?.nameProduct+'-'+historyBillReturn?.billProduct?.product?.product.sku})]
+                                                <span> </span>
+                                                </span>
+
+                                        </div>
+                                        <div class="text-decoration-none"> Phân loại hàng:
+                                            <span th:each="field,iterStat : ${historyBillReturn?.billProduct?.product.fieldList}">[(${field.value})]
+                                                                                      <span th:if="${!iterStat.last}">,</span>
+                                                                                </span>
+                                        </div>
+                                        <div class="text-gray">
+                                            <span>Yêu cầu: x[(${historyBillReturn.quantityRequestReturn})]</span>
+                                            (<span>Đồng ý: x[(${historyBillReturn.quantityAcceptReturn})]</span>)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 text-end">
+                                    <div>
+                                        <span class="text-strike-through"
+                                              th:if="${historyBillReturn.billProduct.reducedMoney!=0}">[(${#numbers.formatDecimal(historyBillReturn.billProduct.price,0,'COMMA',0,'POINT')})]</span>
+                                        <span class="fs-tiny text-decoration-underline">đ</span>
+                                    </div>
+                                    <div th:if="${historyBillReturn.billProduct.reducedMoney!=0}">
+                                       <span>
+                                           [(${#numbers.formatDecimal(historyBillReturn?.billProduct.price-historyBillReturn?.billProduct.reducedMoney,0,'COMMA',0,'POINT')})]
+                                           <strong class="fs-tiny text-decoration-underline">đ</strong>
+                                       </span>
+                                    </div>
+                                    <div th:if="${historyBillReturn.billProduct.reducedMoney ==0}">
+                                        <span>
+                                            [(${#numbers.formatDecimal(historyBillReturn?.billProduct.price,0,'COMMA',0,'POINT')})]
+                                            <strong class="fs-tiny text-decoration-underline">đ</strong>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <br>
+                    <div class="row mb-3">
+                        <div class="qsfSj4">
+                            <div class="ROZVxd dCx+CJ"><span>Tổng giá trị sản phẩm hoàn trả:  </span></div>
+                            <div class="+MprAa">
+                                <span>[(${#numbers.formatDecimal(totalReturn,0,'COMMA',0,'POINT')})]</span><span>đ</span>
+                            </div>
+                        </div>
+                        <div class="qsfSj4" th:if="${listHDTO.returnMoney < 0}">
+                            <div class="ROZVxd dCx+CJ"><span>Voucher:  </span></div>
+                            <div class="+MprAa"><span>-[(${#numbers.formatDecimal(listHDTO.bill.voucherValue,0,'COMMA',0,'POINT')})]</span><span>đ</span>
+                            </div>
+                        </div>
+                        <div class="qsfSj4">
+                            <div th:if="${listHDTO.returnMoney >=0}">
+                                <div class="ROZVxd dCx+CJ">Số tiền hoàn lại:</div>
+                            </div>
+                            <div th:if="${listHDTO.returnMoney >=0}">
+                                <div class="+MprAa"><span>[(${#numbers.formatDecimal(listHDTO.returnMoney,0,'COMMA',0,'POINT')})]</span>
+                                    <span>đ</span></div>
+                                </span>
+                            </div>
+                            <div th:if="${listHDTO.returnMoney < 0}">
+                                <div class="ROZVxd dCx+CJ">Khách hàng gửi lại :</div>
+                            </div>
+                            <div th:if="${listHDTO.returnMoney <0}">
+                                <div class="+MprAa"><span>[(${#numbers.formatDecimal(listHDTO.returnMoney-(listHDTO.returnMoney*2),0,'COMMA',0,'POINT')})]</span>
+                                    <span>đ</span></div>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="qsfSj4">
+                            <div class="ROZVxd dCx+CJ"><span>Hoàn trả vào:  </span></div>
+                            <div class="+MprAa"><span>Tài khoản ngân hàng</span></div>
+                        </div>
+                        <div class="qsfSj4">
+                            <div class="ROZVxd dCx+CJ"><span>Số tài khoản:  </span></div>
+                            <div class="+MprAa" th:if="${listHDTO.returnMoney >= 0}">
+                                [(${listHDTO?.historyBillProductList[0]?.accountNumber})]
+                            </div>
+                            <div class="+MprAa" th:if="${listHDTO.returnMoney < 0}">9704198526191432198</div>
+                        </div>
+                        <div class="qsfSj4">
+                            <div class="ROZVxd dCx+CJ"><span>Ngân hàng:  </span></div>
+                            <div class="+MprAa" th:if="${listHDTO.returnMoney >= 0}">
+                                [(${listHDTO?.historyBillProductList[0]?.bank})]
+                            </div>
+                            <div class="+MprAa" th:if="${listHDTO.returnMoney < 0}">NCB</div>
+                        </div>
+                        <div class="qsfSj4">
+                            <div class="ROZVxd dCx+CJ"><span>Chủ sở hữu:</span></div>
+                            <div class="+MprAa" th:if="${listHDTO.returnMoney >= 0}">
+                                [(${listHDTO?.historyBillProductList[0]?.owner})]
+                            </div>
+                            <div class="+MprAa" th:if="${listHDTO.returnMoney < 0}">NGUYEN VAN A</div>
+                        </div>
+                    </div>
+                    <div class="zrDZlI Q3-CvB">
+                        <div class="f-RjWa text-left" style="color: black">Lý do :
+                            [(${listHDTO?.historyBillProductList[0]?.reason})]
+                        </div>
+                        <div class="mb-2">
+                            <div th:each="image : ${listHDTO?.historyBillProductList[0].listImage}">
+                                    <span class="vA85ua">
+                                        <img th:src="@{'/image/product/'+${image.nameImage}}" width="80px"
+                                             height="80px">
+                                    </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-3 noteReturn" th:if="${listHDTO.returnMoney <0}">
+                        <span class="text-danger">(*)Lưu ý:</span>
+                        <span>Giá trị đơn hàng sau khi trả hàng của bạn không còn đủ điều kiện áp dụng voucher , hãy xem chi tiết trong <a
+                                th:href="@{/policy}">chính sách trả hàng/hoàn tiền của cửa hàng</a>! </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

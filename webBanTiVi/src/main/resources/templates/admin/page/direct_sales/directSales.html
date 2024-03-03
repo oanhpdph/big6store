@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html
+        lang="en"
+        xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="utf-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>Without menu - Layouts | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
+
+    <meta name="description" content=""/>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" th:href="@{/admin/assets/img/favicon/logobig6-03.png}"/>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+            rel="stylesheet"
+    />
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" th:href="@{/admin/assets/vendor/fonts/boxicons.css}"/>
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" th:href="@{/admin/assets/vendor/css/core.css}" class="template-customizer-core-css"/>
+    <link rel="stylesheet" th:href="@{/admin/assets/vendor/css/theme-default.css}"
+          class="template-customizer-theme-css"/>
+    <link rel="stylesheet" th:href="@{/admin/assets/css/demo.css}"/>
+    <link rel="stylesheet" th:href="@{/admin/assets/css/select2.min.css}"/>
+    <link rel="stylesheet" th:href="@{/admin/plugin/css/select2-plugin.css}"/>
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" th:href="@{/admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css}"/>
+
+    <!-- Helpers -->
+    <script th:src="@{/admin/assets/vendor/js/helpers.js}"></script>
+
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script th:src="@{/admin/assets/js/config.js}"></script>
+</head>
+
+<body>
+<!-- Layout wrapper -->
+<div class="layout-wrapper layout-content-navbar layout-without-menu">
+    <div class="layout-container">
+        <!-- Layout container -->
+        <div class="layout-page">
+            <!-- Navbar -->
+            <nav
+                    class="layout-navbar navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+                    id="layout-navbar"
+            >
+                <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                    <!-- Search -->
+                    <div class="navbar-nav align-items-center">
+                        <div class="nav-item d-flex align-items-center">
+                            <i class="bx bx-search fs-4 lh-0"></i>
+                            <input
+                                    type="text"
+                                    class="form-control border-0 shadow-none"
+                                    placeholder="Search product"
+                                    aria-label="Search..."
+                            />
+                        </div>
+                    </div>
+                    <!-- /Search -->
+                    <ul class="navbar-nav flex-row align-items-center ms-auto">
+                        <!-- Place this tag where you want the button to render. -->
+                        <li class="nav-item">
+                            <button type="button" class="btn rounded-pill btn-icon btn-outline-primary"
+                                    onclick="history.back()">
+                                <span class="tf-icons bx bx-home"></span>
+                            </button>
+                        </li>
+
+                        <!-- Users -->
+                        <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                            <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);"
+                               data-bs-toggle="dropdown">
+                                <div class="avatar avatar-online">
+                                    <img src="/admin/assets/img/avatars/1.png" alt
+                                         class="w-px-40 h-auto rounded-circle"/>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <div class="d-flex">
+                                            <div class="flex-shrink-0 me-3">
+                                                <div class="avatar avatar-online">
+                                                    <img src="/admin/assets/img/avatars/1.png" alt
+                                                         class="w-px-40 h-auto rounded-circle"/>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <span class="fw-semibold d-block">John Doe</span>
+                                                <small class="text-muted">Admin</small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="dropdown-divider"></div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bx bx-user me-2"></i>
+                                        <span class="align-middle">My Profile</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bx bx-cog me-2"></i>
+                                        <span class="align-middle">Settings</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="dropdown-divider"></div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="auth-login-basic.html">
+                                        <i class="bx bx-power-off me-2"></i>
+                                        <span class="align-middle">Log Out</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!--/ Users -->
+                    </ul>
+                </div>
+            </nav>
+            <!-- / Navbar -->
+            <!-- Content wrapper -->
+            <div class="content-wrapper">
+                <!-- Content -->
+                <div class="flex-grow-1 container-p-y mx-3">
+                    <div class="row">
+                        <div class="col-xl-9 col-md-9">
+                            <!--Giỏ sản phẩm -->
+                            <div class="card mb-4 overflow-hidden"
+                                 style="max-height: 330px;">
+                                <div class="card-body" id="vertical-example">
+                                    <div class="card mb-xl-2 pt-xl-2 mb-2 ">
+                                        <div class="row">
+                                            <div class="col-md-1 col-1">#</div>
+                                            <div class="col-md-3 col-3">Image</div>
+                                            <div class="col-md-3 col-3">Name</div>
+                                            <div class="col-md-2 col-2">Quantity</div>
+                                            <div class="col-md-1 col-1">Price</div>
+                                            <div class="col-md-1 col-1">Total</div>
+                                            <div class="col-md-1 col-1"><a th:href="@{#}"><i
+                                                    class="bx bxs-trash"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-xl-2 pt-xl-2 mb-2 ">
+                                        <div class="row">
+                                            <div class="col-md-1 col-1">#</div>
+                                            <div class="col-md-3 col-3">Image</div>
+                                            <div class="col-md-3 col-3">Name</div>
+                                            <div class="col-md-2 col-2">Quantity</div>
+                                            <div class="col-md-1 col-1">Price</div>
+                                            <div class="col-md-1 col-1">Total</div>
+                                            <div class="col-md-1 col-1"><a th:href="@{#}"><i
+                                                    class="bx bxs-trash"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card mb-xl-2 pt-xl-2 mb-2 ">
+                                        <div class="row">
+                                            <div class="col-md-1 col-1">#</div>
+                                            <div class="col-md-3 col-3">Image</div>
+                                            <div class="col-md-3 col-3">Name</div>
+                                            <div class="col-md-2 col-2">Quantity</div>
+                                            <div class="col-md-1 col-1">Price</div>
+                                            <div class="col-md-1 col-1">Total</div>
+                                            <div class="col-md-1 col-1"><a th:href="@{#}"><i
+                                                    class="bx bxs-trash"></i></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end giỏ sản phẩm-->
+
+                            <!--Thông tin khách hàng-->
+                            <div class="card mb-4">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h5 class="mb-0">Info customer</h5>
+                                </div>
+                                <div class="card-body">
+                                    <form>
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="mb-xl-3 mb-3">
+                                                    <label class="form-label" for="fullName">Full
+                                                        Name</label>
+                                                    <div class="input-group input-group-merge">
+                                                           <span id="fullname2"
+                                                                 class="input-group-text">
+                                                               <i class="bx bx-user"></i>
+                                                           </span>
+                                                        <input
+                                                                type="text"
+                                                                class="form-control"
+                                                                id="fullName"
+                                                                placeholder="Input name customer"
+                                                                aria-label="Input name customer"
+                                                                aria-describedby="fullname2"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div class="mb-xl-3 mb-3">
+                                                    <label class="form-label" for="phone-number">Phone
+                                                        No</label>
+                                                    <div class="input-group input-group-merge">
+                                                            <span id="phone2" class="input-group-text">
+                                                                <i class="bx bx-phone"></i>
+                                                            </span>
+                                                        <input
+                                                                type="text"
+                                                                id="phone-number"
+                                                                class="form-control phone-mask"
+                                                                placeholder="0369921455"
+                                                                aria-label="0369921455"
+                                                                aria-describedby="phone2"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <div class="mb-xl-3 mb-3">
+                                                    <label class="form-label"
+                                                           for="email">Email</label>
+                                                    <div class="input-group input-group-merge">
+                                                            <span class="input-group-text"><i
+                                                                    class="bx bx-envelope"></i></span>
+                                                        <input
+                                                                type="text"
+                                                                id="email"
+                                                                class="form-control"
+                                                                placeholder="phamoanh123"
+                                                                aria-label="phamoanh123"
+                                                                aria-describedby="email2"
+                                                        />
+                                                        <span id="email2"
+                                                              class="input-group-text">@gmail.com</span>
+                                                    </div>
+                                                    <div class="form-text">You can use letters, numbers
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-xl-3 mb-3">
+                                                    <label class="form-label">Province/City</label>
+                                                    <div class="input-group input-group-merge">
+                                                        <select class="select2-city"
+                                                                style="width: 100%;">
+                                                            <option value=""></option>
+                                                            <option value="HN">Hà Nội</option>
+                                                            <option value="NB">Ninh Bình</option>
+                                                            <option value="ND">Nam Định</option>
+                                                            <option value="TH">Thanh Hóa</option>
+                                                            <option value="HN">Hà Nam</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-xl-3 mb-3">
+                                                    <label class="form-label">District</label>
+                                                    <div class="input-group input-group-merge">
+                                                        <select class="select2-city"
+                                                                style="width: 100%;">
+                                                            <option value=""></option>
+                                                            <option value="HN">Hà Nội</option>
+                                                            <option value="NB">Ninh Bình</option>
+                                                            <option value="ND">Nam Định</option>
+                                                            <option value="TH">Thanh Hóa</option>
+                                                            <option value="HN">Hà Nam</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="mb-xl-3 mb-3">
+                                                    <label class="form-label">Ward</label>
+                                                    <div class="input-group input-group-merge">
+                                                        <select class="select2-city form-select"
+                                                                style="width: 100%;">
+                                                            <option value=""></option>
+                                                            <option value="HN">Hà Nội</option>
+                                                            <option value="NB">Ninh Bình</option>
+                                                            <option value="ND">Nam Định</option>
+                                                            <option value="TH">Thanh Hóa</option>
+                                                            <option value="HN">Hà Nam</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="row">
+                                                    <div class="col-md-5 mb-xl-3 mb-3">
+                                                        <label class="form-label" for="selectGender">Gender</label>
+                                                        <div class="input-group input-group-merge">
+                                                            <select class="form-select form-control select2"
+                                                                    style="width: 100%;" id="selectGender">
+                                                                <option value="HN">Male</option>
+                                                                <option value="NB">Female</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-7 mb-xl-3 mb-3">
+                                                        <label class="form-label" for="birthday">Birthday</label>
+                                                        <input type="date" class="form-control" id="birthday">
+                                                    </div>
+                                                </div>
+                                                <div class="mb-xl-3 mb-3">
+                                                    <label class="form-label" for="basic-icon-default-message">Details
+                                                        address</label>
+                                                    <div class="input-group input-group-merge">
+                                                        <span id="basic-icon-default-message2" class="input-group-text"><i
+                                                                class='bx bxs-map'></i></span>
+                                                        <textarea id="basic-icon-default-message" class="form-control"
+                                                                  placeholder="Input house number"
+                                                                  aria-label="Input house number"
+                                                                  aria-describedby="basic-icon-default-message2"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                            </div>
+                            <!-- end thông tin khách hàng-->
+                        </div>
+
+                        <!-- check out-->
+                        <div class="col-xl-3 col-md-3">
+                            <div class="card mb-xl-4">
+                                <h5 class="card-header">Check out</h5>
+                                <div class="card-body">
+                                    <div class="row mb-xl-2 mb-2">
+                                        <label class="col-5">Total Price:</label>
+                                        <span class="text-end col-7">100000<u>đ</u></span>
+                                    </div>
+                                    <div class="row mb-xl-3 mb-3">
+                                        <label class="col-5">Promotion:</label>
+                                        <span class="text-end col-7">100000<u>đ</u></span>
+                                        <small>(Click to select promotion)</small>
+                                    </div>
+                                    <div class="row mb-xl-3 mb-3">
+                                        <label class="col-5">Discount:</label>
+                                        <span class="text-end col-7">0%</span>
+                                    </div>
+                                    <hr class="m-0">
+                                    <div class="row text-danger mb-xl-2 mb-2">
+                                        <label class="col-5"><b>Must pay:</b></label>
+                                        <span class="text-end col-7"><b>100000<u>đ</u></b></span>
+                                    </div>
+                                    <div class="row text-black mb-xl-3 mb-3">
+                                        <label class="col-3 col-form-label"><b>Paid:</b></label>
+                                        <span class="text-end col-9 "><b class="input-group input-group-merge"><input
+                                                class="form-control" type="text"><u
+                                                class="input-group-text">đ</u></b></span>
+                                    </div>
+                                    <hr class="m-0">
+
+                                    <div class="row mb-xl-4 mb-4">
+                                        <label class="col-5">Give back:</label>
+                                        <span class="text-end col-7">100000<u>đ</u></span>
+                                    </div>
+                                    <div class="row mb-xl-3 mb-3">
+                                        <label class="form-check-label col-5" for="flexSwitchCheckChecked">Print
+                                            bill:</label>
+                                        <div class="col-7 form-switch text-end">
+                                            <input class="form-check-input" type="checkbox"
+                                                   id="flexSwitchCheckChecked"
+                                                   checked="">
+                                        </div>
+                                    </div>
+                                    <div class="row mb-xl-3 mb-3">
+                                        <div class="btn-group" role="group"
+                                             aria-label="Basic radio toggle button group">
+                                            <input type="radio" class="btn-check" name="payments" id="cash"
+                                                   checked="" autocomplete="off">
+                                            <label class="btn btn-outline-primary" for="cash"
+                                                   style="width: 50%">Cash</label>
+
+                                            <input type="radio" class="btn-check" name="payments" id="transfer"
+                                                   autocomplete="off">
+                                            <label class="btn btn-outline-primary" for="transfer" style="width: 50%">Transfer</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <button class="btn btn-primary btn-lg" type="button">Pay</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!--end check out-->
+                    </div>
+                </div>
+                <!-- / Content -->
+
+                <div class="content-backdrop fade"></div>
+            </div>
+            <!-- Content wrapper -->
+        </div>
+        <!-- / Layout page -->
+    </div>
+</div>
+
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+<script th:src="@{/admin/assets/vendor/libs/jquery/jquery.js}"></script>
+<script th:src="@{/admin/assets/vendor/libs/popper/popper.js}"></script>
+<script th:src="@{/admin/assets/vendor/js/bootstrap.js}"></script>
+<script th:src="@{/admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js}"></script>
+<script th:src="@{/admin/assets/vendor/js/menu.js}"></script>
+<!-- endbuild -->
+
+<!-- Vendors JS -->
+<script th:src="@{/admin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js}"></script>
+<!-- Main JS -->
+<script th:src="@{/admin/assets/js/main.js}"></script>
+<script th:src="@{/admin/assets/js/select2.min.js}"></script>
+<script th:src="@{/admin/assets/js/select2-plugin.js}"></script>
+<!-- Page JS -->
+
+<!-- Place this tag in your head or just before your close body tag. -->
+<script async defer th:src="@{https://buttons.github.io/buttons.js}"></script>
+</body>
+</html>

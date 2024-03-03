@@ -1,0 +1,231 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" href="/admin/plugin/css/card-product.css">
+
+<section>
+    <img class="d-block w-100" src="/image/tv-xiaomi-thang-9-1200x200.jpg" alt="Second slide">
+</section>
+<div class="container-xl">
+
+    <!--    <form th:action="@{/tivi}" method="get" th:object="${modelTiviPage}">-->
+    <section class="mt-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-style1">
+                <li class="breadcrumb-item">
+                    <a href="/">Trang chủ</a>
+                </li>
+                <li class="breadcrumb-item active">Tivi</li>
+            </ol>
+        </nav>
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="mb-3 d-flex">
+                    <div class="d-inline col-sm-2"><span>Tìm:</span></div>
+                    <div class="col-sm-7 row">
+                        <div class="w-75">
+                            <input class="form-control " type="search" id="key"
+                                   placeholder="Tìm tên sản phẩm, thông số ...">
+                        </div>
+                        <div class="w-25">
+                            <button type="button" class="btn btn-outline-secondary" id="btn-reset">Đặt lại</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3 d-flex">
+                    <div class="d-inline col-sm-2"><span>Lọc sản phẩm:</span></div>
+                    <div class="d-inline w-100">
+                        <div class="mx-3 btn border-secondary d-inline dropdown-toggle w-auto"
+                             data-bs-toggle="dropdown"
+                             data-bs-auto-close="outside"
+                             aria-haspopup="true" aria-expanded="true">
+                            Hãng
+                        </div>
+                        <div class="dropdown-menu w-px-600 h-auto" style="overflow-x: hidden; max-height: 300px">
+                            <div class="pt-2 px-4 row row-cols-3">
+                                <div class="d-inline col" th:each="brand:${listBrand}">
+                                    <div class="form-check form-check-inline w-auto pb-2">
+                                        <input type="checkbox" class="form-check-input filter-brand"
+                                               th:id="|brand${brand.id}|" th:value="${brand.id}"
+                                               th:field="*{listBrand}">
+                                        <label class="form-check-label" th:for="|brand${brand.id}|"
+                                               th:text="${brand.name}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mx-3 btn border-secondary d-inline dropdown-toggle w-auto"
+                             data-bs-toggle="dropdown"
+                             data-bs-auto-close="outside"
+                             aria-haspopup="true" aria-expanded="true">
+                            Giá
+                        </div>
+                        <div class="dropdown-menu w-px-600 h-auto" style="overflow-x: hidden; max-height: 300px">
+                            <div class="pt-2 px-4 justify-content-between">
+                                <div class="mx-3 mb-3">
+                                    <div class="form-check form-check-inline w-auto pb-2">
+                                        <input type="checkbox" class="form-check-input filter-price" id="under5"
+                                               value="1">
+                                        <label class="form-check-label" for="under5">Dười 5tr</label>
+                                    </div>
+                                    <div class="form-check form-check-inline w-auto pb-2">
+                                        <input type="checkbox" class="form-check-input  filter-price" id="5to20"
+                                               value="2">
+                                        <label class="form-check-label" for="5to20">Từ 5tr - 20tr</label>
+                                    </div>
+                                    <div class="form-check form-check-inline w-auto pb-2">
+                                        <input type="checkbox" class="form-check-input  filter-price" id="20to50"
+                                               value="3">
+                                        <label class="form-check-label" for="20to50">Từ 20tr - 50tr</label>
+                                    </div>
+                                    <div class="form-check form-check-inline w-auto pb-2">
+                                        <input type="checkbox" class="form-check-input  filter-price" id="up50"
+                                               value="4">
+                                        <label class="form-check-label" for="up50">Trên 50tr</label>
+                                    </div>
+                                </div>
+                                <div class="mx-3">
+                                    <div class="w-auto pb-2 row-cols-2 row">
+                                        <div class="col">
+                                            Từ:
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="price-begin">
+                                                <span class="input-group-text">VNĐ</span>
+                                            </div>
+                                        </div>
+                                        <div class="col">
+                                            Đến:
+                                            <div class="input-group">
+                                                <input type="number" class="form-control" id="price-end" >
+                                                <span class="input-group-text">VNĐ</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <select class="form-select w-auto d-inline mx-3" id="filterRate">
+                            <option value="-1">Đánh giá</option>
+                            <option value="1">Từ 1 sao</option>
+                            <option value="2">Từ 2 sao</option>
+                            <option value="3">Từ 3 sao</option>
+                            <option value="4">Từ 4 sao</option>
+                            <option value="5">Từ 5 sao</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 row-cols-sm-2 g-4"
+             id="list-product-tivi">
+        </div>
+        <div class="text-center mt-4">
+            <button class="btn btn-outline-secondary w-auto" id="loadMore" value="20">Xem thêm sản phẩm</button>
+        </div>
+    </section>
+    <!--    </form>-->
+    <section class="mt-3">
+        <div class="lh-base" style="text-align: justify">
+            <h4 class="text-center fw-bold">Smart TV - lựa chọn của người dùng hiện đại</h4>
+            <p>
+                Những năm gần đây, smart Tivi ngày càng trở nên phổ biến với người dùng Việt Nam. Với khả năng kết nối
+                với
+                nguồn giải trí khổng lồ và hỗ trợ rất nhiều tiện ích, smart tivi là sự lựa chọn thay thế cho những chiếc
+                tivi truyền thống thông thường. Ngoài ra, các mẫu tivi thông minh còn có thiết kế hiện đại, mẫu mã đa
+                dạng,
+                có thể sử dụng như một đồ vật trang trí độc đáo trong căn phòng của bạn. Hiểu được nhu cầu của người
+                dùng,
+                các nhà sản xuất cũng không ngừng cải tiến công nghệ, mang thế giới đến gần hơn với mọi người qua một
+                chiếc
+                màn hình.
+            </p>
+            <p>
+                Các mẫu Smart TV có kích thước màn hình đa dạng từ 35 inch đến 65 inch để bạn tùy chọn theo không gian
+                của
+                căn phòng. Người dùng có thể lựa chọn các mẫu tivi thông minh từ nhiều nhà sản xuất uy tín như Xiaomi,
+                Samsung,... để có thể trải nghiệm hoạt động giải trí với chất lượng tốt nhất.
+
+            </p>
+            <h4 class="fw-bold">
+                Thiết kế mỏng nhẹ, sang trọng, mang cả thế giới đa sắc màu vào căn phòng
+            </h4>
+            <p>
+                Hầu hết các mẫu tivi thông minh hiện đại đều được thiết kế rất mỏng và nhẹ để nâng cao tính di dộng,
+                linh
+                hoạt.
+                Người dùng có thể sử dụng chân đế đi kèm để đặt tivi trên những chiếc kệ trong phòng, hoặc có thể treo
+                nó
+                lên
+                tường để tiếp kiệm không gian. Một số mẫu smart tivi còn đi kèm với các loại chân đế độc đáo cho người
+                dùng
+                lựa
+                chọn. Smart tivi thường có phần viền màn hình khá mỏng, trừ một số mẫu lấy cảm hứng thiết kế từ khung
+                tranh,
+                do
+                đó nó có thể dùng như một đồ vật trang trí, tôn lên vẻ đẹp sang trọng cho căn phòng của bạn.
+            </p>
+            <p>
+                Khi lựa chọn các mẫu tivi, người dùng rất quan tâm đến chất lượng hiển thị của màn hình. Hiểu được nhu
+                cầu
+                đó,
+                các nhà sản xuất đã trang bị cho sản phẩm của mình các tấm nền hiện đại, cho chất lượng hiển thị hình
+                ảnh
+                full
+                HD đến 4K và độ tương phản tốt. Nhờ đó, người dùng có thể chiêm ngưỡng các hình ảnh trong tivi với độ
+                chân
+                thực
+                cao nhất, rực rỡ và sống động vô cùng. Các tivi viền mỏng còn giúp tối đa không gian hiển thị nội dung,
+                mang
+                cả
+                thế giới muôn màu vào căn phòng của bạn.
+            </p>
+            <h4 class="fw-bold">
+                Điều khiển thông minh tiện lợi, đa dạng các nội dung giải trí hấp dẫn
+            </h4>
+            <p>
+                Một trong những ưu điểm lớn nhất của các mẫu tivi thông minh chính là khả năng kết nối với kho giải trí
+                khổng
+                lồ. Người dùng có thể thỏa sức truy cập vào các bộ phim, hàng nghìn video từ các ứng dụng, nền tảng giải
+                trí.
+                Ngoài ra, bạn cũng có thể kết nối giữa tivi và điện thoại một cách dễ dàng để xem thêm các nội dung trên
+                màn
+                hình lớn.
+            </p>
+            <p>
+                Các mẫu tivi thông minh còn được trang bị các tính năng hỗ trợ như tìm kiếm bằng giọng nói, kết nối với
+                trợ
+                lý
+                ảo để thực hiện các tác vụ, điều khiển dễ dàng hơn. Nó cũng có thể sử dụng cùng các thiết bị khác qua
+                kết
+                nối
+                Bluetooth ổn định, đảm bảo nội dung sẽ hiển thị rõ nét, không có hiện tượng giật lag, mờ nhòe. Nhìn
+                chung,
+                các
+                mẫu smart tivi có thể đáp ứng được nhu cầu giải trí đa dạng của mọi lứa tuổi từ trẻ nhỏ đến người lớn,
+                người
+                cao
+                tuổi với kho nội dung khổng lồ.
+            </p>
+        </div>
+    </section>
+    <section class="mt-4">
+        <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-2 g-4">
+            <div class="col text-center">
+                <i class='bx bx-check-shield' style='color:#ff0202; font-size: 80px'></i>
+                <h5 class="text-secondary">Sản phẩm chính hãng</h5>
+            </div>
+            <div class="col text-center">
+                <i class='bx bx-phone-call' style='color:#ff0202; font-size: 80px'></i>
+                <h5 class="text-secondary">Hotline hỗ trợ
+                    1900.0101</h5>
+            </div>
+            <div class="col text-center">
+                <i class='bx bx-repost' style='color:#ff0202;font-size: 80px'></i>
+                <h5 class="text-secondary">Đổi trả dễ dàng</h5>
+            </div>
+        </div>
+    </section>
+</div>
+<script type="text/javascript" src="/admin/assets/js/nouislider.min.js"></script>
+
+<script src="/admin/plugin/js/tivi.js"></script>
+
+</html>

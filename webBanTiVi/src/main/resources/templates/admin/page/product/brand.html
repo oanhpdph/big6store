@@ -1,0 +1,99 @@
+<style>
+    div.swal2-container {
+        z-index: 1100;
+    }
+
+</style>
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Sản phẩm/</span> Hãng
+</h4>
+<div class="mb-3">
+    <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#add-brand">Thêm hãng
+    </button>
+</div>
+<div class="modal fade" id="add-brand" tabindex="-1"
+     style="display: none;"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Thêm hãng</h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal" id="close-add"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label class="label">Tên hãng</label>
+                <input class="form-control mb-3" type="text" id="name">
+                <span class="text-danger" id="error"></span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" id="btn-add">
+                    Thêm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-header">
+        <input class="form-control" type="search" id="search" placeholder="Nhập tên hãng muốn tìm">
+    </div>
+    <div class="card-body">
+        <div class="table-responsive text-nowrap">
+            <table class="table" id="list-brand">
+                <caption class="ms-4">
+                </caption>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Tên</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            <div class="modal fade" id="modalBrand" aria-modal="true" role="dialog">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Hãng</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" id="close"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="label">Tên hãng</label>
+                                <input class="form-control" type="text" id="name-brand">
+                            </div>
+                            <div class="mb-3">
+                                <label class="label">Trạng thái: </label>
+                                <div class="form-check form-check-inline mt-3">
+                                    <input class="form-check-input" type="radio" name="active"
+                                           id="active" value='true'>
+                                    <label class="form-check-label" for="active">Hoạt động</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="active"
+                                           id="inactive" value="false">
+                                    <label class="form-check-label" for="inactive">Không hoạt động</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                    id="update-brand">
+                                Cập nhật
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/admin/plugin/js/brand.js"></script>

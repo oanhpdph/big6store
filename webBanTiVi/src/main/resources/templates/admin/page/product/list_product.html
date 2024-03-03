@@ -1,0 +1,362 @@
+<style>
+    div.swal2-container {
+        z-index: 1100;
+    }
+
+    .larger-checkbox {
+        transform: scale(2); /* Tăng kích cỡ 1.5 lần */
+    }
+</style>
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Sản phẩm/</span> Danh sách sản phẩm
+</h4>
+<div class="mb-3">
+    <a type="button" class="btn btn-secondary" href="/admin/product/add-product">Thêm sản phẩm</a>
+</div>
+
+<div class="nav-align-top mb-4">
+    <form th:action="@{/admin/product/list}" id="form-product" th:object="${productDTO}" method="get">
+        <ul class="nav nav-tabs nav-fill fs-5 " role="tablist">
+            <li class="nav-item">
+                <a href="/admin/product/list">
+                    <button type="button" class="nav-link active" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-home" aria-controls="navs-pills-justified-home"
+                            aria-selected="true">
+                        Sản phẩm
+                        <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger">[(${#lists.size(countProduct)})]</span>
+                    </button>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="/admin/product/list_detail">
+                    <button type="button" class="nav-link" role="tab" data-bs-toggle="tab"
+                            data-bs-target="#navs-pills-justified-profile" aria-controls="navs-pills-justified-profile"
+                            aria-selected="false">
+                        Sản phẩm chi tiết
+                        <span class="badge rounded-pill badge-center h-px-20 w-px-20 bg-danger">[(${#lists.size(countDetail)})]</span>
+                    </button>
+                </a>
+            </li>
+        </ul>
+
+        <div class="card rounded-bottom rounded-0 p-0">
+            <div class="card-header">
+                <div class="input-group mb-3">
+                    <input class="form-control" type="search" placeholder="Nhập tên sản phẩm hoặc thông số muốn tìm"
+                           th:field="*{key}">
+                    <button class="btn btn-secondary" id="search">Tìm kiếm</button>
+                </div>
+                <div class="row mb-3">
+                    <div class="input-group w-auto">
+                        <label class="input-group-text" for="select-size">Loại sản phẩm:</label>
+                        <select class="form-select text-start" th:field="*{group}" id="select-group">
+                            <option value="0" >Loại sản phẩm</option>
+                            <option value="1" th:selected="*{group == 1}">Tivi</option>
+                            <option value="2" th:selected="*{group == 2}">Phụ kiện</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row justify-content-between">
+                    <div class="col-xl-2 col-4">
+                        <div class="input-group">
+                            <label class="input-group-text" for="select-size">Xem:</label>
+                            <select class="form-select text-start" id="select-size" name="size" th:field="*{size}">
+                                <option value="10" th:selected="*{size == 10}">10</option>
+                                <option value="20" th:selected="*{size == 20}">20</option>
+                                <option value="40" th:selected="*{size == 40}">40</option>
+                                <option value="80" th:selected="*{size == 80}">80</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="input-group">
+                            <label class="input-group-text" for="select-size">Sắp xếp:</label>
+                            <select class="form-select text-start" id="sort" name="size" th:field="*{sort}">
+                                <option value="1" th:selected="*{sort == 1}">Mới nhất</option>
+                                <option value="2" th:selected="*{sort == 2}">Cũ nhất</option>
+                                <option value="3" th:selected="*{sort == 3}">Đánh giá cao đến thấp</option>
+                                <option value="4" th:selected="*{sort == 4}">Đánh giá thấp đến cao</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body table-responsive">
+                <table class="table table-hover" id="table-all-product">
+                    <caption class="ms-4">
+                        Từ [(${listProduct.number * listProduct.size +1})] đến [(${(listProduct.number*
+                        listProduct.size)+listProduct.numberOfElements})]
+                    </caption>
+                    <thead>
+                    <tr class="fw-semibold row-table text-center">
+                        <!--                        <th>#</th>-->
+                        <th>Sản phẩm</th>
+                        <th>Sku</th>
+                        <th>Hãng</th>
+                        <th>Điểm trung bình</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="product,productStat:${listProduct}">
+                        <!--                        <td th:text="${productStat.index+1}"></td>-->
+                        <td th:text="${product.nameProduct}"></td>
+                        <td th:text="${product.sku}"></td>
+                        <td th:text="${product.brand.name}"></td>
+                        <td th:text="${product.avgPoint}"></td>
+                        <td class="form-switch text-center"><input
+                                class="form-check-input update-active-product cursor-pointer"
+                                type="checkbox"
+                                th:checked="${product.active}"
+                                th:value="${product.id}"></td>
+                        <td>
+                            <div class="dropdown">
+                                <button type="button" class="btn p-0 dropdown-toggle hide-arrow"
+                                        data-bs-toggle="dropdown">
+                                    <i class="bx bx-dots-vertical-rounded"></i>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item edit-product" data-bs-toggle="modal"
+                                       data-bs-target="#modalProduct" href="javascript:void(0);"
+                                       th:value="${product.id}"><i
+                                            class="bx bx-show-alt me-1"></i> Thông tin</a>
+                                    <a class="dropdown-item product-detail" data-bs-toggle="modal"
+                                       href="javascript:void(0);"
+                                       data-bs-target="#modalAddProduct" th:value="${product.id}"><i
+                                            class='bx bx-add-to-queue'></i>Tạo sản phẩm</a>
+                                    <a class="dropdown-item delete-product" th:href="|/admin/evaluate/${product.id}|"><i
+                                            class="bx bx-star me-1"></i> Xem đánh giá</a>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" id="active"
+                        data-bs-target="#modalActiveProduct" hidden>
+                    active
+                </button>
+                <div class="modal fade" id="modalActiveProduct" data-bs-backdrop="static" tabindex="-1"
+                     style="display: none;" aria-modal="true"
+                     role="dialog">
+                    <div class="modal-dialog modal-xl" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel4">Chọn sản phẩm bày bán</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close" id="closeActive"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="table-responsive text-nowrap">
+                                    <table class="table" id="table-active">
+                                        <caption class="ms-4">
+                                            Danh sách sản phẩm
+                                        </caption>
+                                        <thead>
+                                        <tr>
+                                            <th>Sản phẩm</th>
+                                            <th>Mã sku</th>
+                                            <th>Giá bán</th>
+                                            <th>Số lượng</th>
+                                            <th>Bày bán</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+                                        id="cancelActive">
+                                    Hủy
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"
+                                        id="cancel2" hidden>
+                                    Hủy
+                                </button>
+                                <button type="button" class="btn btn-primary" id="saveActive">Xác nhận</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="modalProduct" tabindex="-1" style="display: none">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h3 class="modal-title" id="name-product"></h3> <i
+                                    class='bx bx-edit-alt cursor-pointer mx-3 fs-large'
+                                    id="edit-attri"></i>
+
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" id="close"
+                                        aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <p class="fs-5">Thông tin </p>
+                                <div class="mb-3">
+                                    <span class="fs-6" id="group-product"></span></div>
+                                <div class="table-responsive">
+                                    <table class="table" id="table-detail-modal">
+                                        <tbody class="table-border-bottom-0">
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <!--                                <button type="button" class="btn btn-primary" id="product-detail" data-bs-toggle="modal"-->
+                                <!--                                        data-bs-target="#modalAddProduct">Tạo sản phẩm-->
+                                <!--                                </button>-->
+
+                                <button type="button" class="btn btn-primary" id="save">Lưu</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal fade" id="modalAddProduct" tabindex="-1" style="display: none">
+                <div class="modal-dialog modal-lg" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header ">
+                            <div>
+                                <h5 class="modal-title" id="name__product__add"></h5>
+                            </div>
+                            <div class="mx-2">
+                                <span id="date-create"></span>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" id="closeAdd"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <div class="col mb-3">
+                                    <label class="form-label">sku</label>
+                                    <input type="text" class="form-control" id="sku">
+                                    <span class="fst-italic text-danger" id="error-sku"></span>
+                                </div>
+                                <div class="col mb-3">
+                                    <label class="form-label">Số lượng</label>
+                                    <input type="number" class="form-control" id="quantity">
+                                    <span class="fst-italic text-danger" id="error-quantity"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col mb-3">
+                                    <label class="form-label">Giá nhập</label>
+                                    <div class=" input-group">
+                                        <input type="number" class="form-control" id="price-import">
+                                        <span class="input-group-text">VNĐ</span>
+                                    </div>
+                                    <span class="fst-italic text-danger" id="error-priceImport"></span>
+                                </div>
+
+                                <div class="col mb-3">
+                                    <label class="form-label">Giá bán</label>
+                                    <div class=" input-group">
+                                        <input type="number" class="form-control" id="price-export">
+                                        <span class="input-group-text">VNĐ</span>
+                                    </div>
+                                    <span class="fst-italic text-danger" id="error-priceExport"></span>
+                                </div>
+                            </div>
+
+                            <div class="group-attribute" id="group-attribute">
+                                <div class="mb-3" id="attribute">
+                                    <label class="form-label name-attributes"></label>
+                                    <input type="text" class="form-control value-attribute">
+                                    <span class="fst-italic text-danger error-attribute"></span>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col mb-3">
+                                    <label class="form-label">Hình ảnh</label>
+                                    <div class="text-center" id="image">
+                                        <img class="w-25 image-preview cursor-pointer m-2 border border-1 p-2"
+                                             src="/image/product/anhdefault.jpg" alt="Lỗi hình ảnh"
+                                             data-bs-toggle="tooltip" data-popup="tooltip-custom"
+                                             data-bs-placement="bottom" data-bs-offset="0,4" data-bs-html="true"
+                                             title="Ảnh chính">
+                                        <input type="file" class="file-input true" hidden id="image1">
+
+                                        <img class="w-25 image-preview cursor-pointer m-2"
+                                             src="/image/product/anhdefault.jpg" alt="Lỗi hình ảnh"
+                                             data-bs-toggle="tooltip" data-popup="tooltip-custom"
+                                             data-bs-placement="bottom" data-bs-offset="0,4" data-bs-html="true"
+                                             title="Ảnh phụ">
+                                        <input type="file" class="file-input" hidden id="image2">
+
+                                        <img class="w-25 image-preview cursor-pointer m-2"
+                                             src="/image/product/anhdefault.jpg" alt="Lỗi hình ảnh"
+                                             data-bs-toggle="tooltip" data-popup="tooltip-custom"
+                                             data-bs-placement="bottom" data-bs-offset="0,4" data-bs-html="true"
+                                             title="Ảnh phụ">
+                                        <input type="file" class="file-input" hidden id="image3">
+
+                                        <img class="w-25 image-preview cursor-pointer m-2"
+                                             src="/image/product/anhdefault.jpg" alt="Lỗi hình ảnh"
+                                             data-bs-toggle="tooltip" data-popup="tooltip-custom"
+                                             data-bs-placement="bottom" data-bs-offset="0,4" data-bs-html="true"
+                                             title="Ảnh phụ">
+                                        <input type="file" class="file-input" hidden id="image4">
+
+                                        <img class="w-25 image-preview cursor-pointer m-2"
+                                             src="/image/product/anhdefault.jpg" alt="Lỗi hình ảnh"
+                                             data-bs-toggle="tooltip" data-popup="tooltip-custom"
+                                             data-bs-placement="bottom" data-bs-offset="0,4" data-bs-html="true"
+                                             title="Ảnh phụ">
+                                        <input type="file" class="file-input" hidden id="image5">
+
+                                    </div>
+                                    <span class="fst-italic text-danger" id="error-image"></span>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="add-product-detail">Lưu</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div aria-label="Page pagination">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item first">
+                            <a class="page-link" id="first" th:value="1" type="button">
+                                <i class="tf-icon bx bx-chevrons-left"></i>
+                            </a>
+                        </li>
+                        <li class="page-item prev">
+                            <a class="page-link" id="prev"><i class="tf-icon bx bx-chevron-left"></i></a>
+                        </li>
+                        <li class="page-item mx-2">
+                            <div class="input-group input-group-merge">
+                                <input class="form-control inputPage" id="pageInput" type="number" name="page"
+                                       th:temp="*{page}"
+                                       th:value="*{page}">
+                                <span class="input-group-text" id="total" th:value="${listProduct.totalPages}">/[(${listProduct.totalPages})]</span>
+                                <!--                                                                    <input id="totalPage" value="${session.list.totalPages}" hidden="hidden">-->
+                            </div>
+                        </li>
+                        <li class="page-item next">
+                            <a class="page-link" id="next">
+                                <i class="tf-icon bx bx-chevron-right"></i>
+                            </a>
+                        </li>
+                        <li class="page-item last">
+                            <a class="page-link" id="last" th:value="${listProduct.totalPages}">
+                                <i class="tf-icon bx bx-chevrons-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script src="/admin/plugin/js/list-product.js"></script>
+<script src="/admin/plugin/js/loadImage.js"></script>

@@ -1,0 +1,62 @@
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Hóa đơn/</span>
+    Hóa đơn trả hàng</h4>
+<div class="nav-align-top mb-4">
+    <ul class="nav nav-pills mb-3 text-center fs-5" role="tablist">
+        <li class="nav-item w-px-250 ">
+            <a type="button" class="nav-link "
+               th:href="@{/admin/bill/list_invoice_return}"
+            >
+                Chờ xác nhận trả hàng
+            </a>
+        </li>
+        <li class="nav-item w-px-250">
+            <a type="button" class="nav-link"
+               aria-selected="flase"
+               th:href="@{/admin/agree}"
+            >
+                Trả hàng thành công
+            </a>
+        </li>
+        <li class="nav-item w-px-250">
+            <a type="button" class="nav-link active text-center"
+               th:href="@{/admin/refuse}"
+            >
+                Từ chối trả hàng
+            </a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane show active" id="navs-pills-top-home">
+            <h5 class="mb-4">Hóa Đơn Từ Chối Hoàn Trả</h5>
+            <div class="table-responsive text-nowrap">
+                <table class="table card-table text-center">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Mã Hóa Đơn</th>
+                        <th>Tên Sản Phẩm</th>
+                        <th>Số lượng trả</th>
+                        <th>Ghi chú</th>
+                        <th>Lí do trả hàng</th>
+                    </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0 text-left">
+                    <tr th:each="historyReturnBill,billStart : ${listRefuse}">
+                        <td>[(${billStart.index+1})]</td>
+                        <td>[(${historyReturnBill.bill.code})]</td>
+                        <td>[(${historyReturnBill.billProduct.product.product.nameProduct})]
+                            [
+                            <span th:each="field:${historyReturnBill.billProduct.product.fieldList}">[(${field.value})]</span>
+                            ]
+                        </td>
+                        <td>[(${historyReturnBill.quantityRequestReturn})]</td>
+                        <td>[(${historyReturnBill.note})]</td>
+                        <td>[(${historyReturnBill.reason})]</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

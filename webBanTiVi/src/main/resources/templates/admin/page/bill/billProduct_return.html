@@ -1,0 +1,116 @@
+<style>
+    .pull-up:hover {
+        border-radius: 0px !important;
+    }
+</style>
+<div class="mb-3 text-left">
+    <button type="submit" class="btn btn-primary">
+        <a href="/admin/bill/list_invoice_return" class="px-3 text-end" style="text-decoration: none; color: cornsilk">Quay lại</a>
+    </button>
+</div>
+<h4 style="color: black" class="px-3"> Thông tin trả hàng</h4>
+<form th:action="@{admin/refuse}" th:object="${formReturnDto}">
+    <div class="table-responsive text-nowrap">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>
+                    <input type="checkbox">
+                </th>
+                <th>Tên sản phẩm</th>
+                <th>Số lượng</th>
+                <th>Lí do</th>
+                <th>Ghi chú</th>
+                <th>Ảnh trả hàng</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="hBillProduct : ${listBillReturn}">
+                <td>
+                    <input type="checkbox" class="checkbox" readonly="readonly">
+                </td>
+                <td>
+                    <input type="text" th:value="${hBillProduct.billProduct.product.product.nameProduct}" th:name="nameProduct"
+                           th:class="|nameProduct form-control|" disabled>
+                </td>
+                <td>
+                    <div class="input-group input-group-merge" style="flex-wrap:nowrap !important;">
+                        <input type="text"
+                               th:class="|form-control w-px-50 quantityReturn|"
+                               th:name="quantity"
+                               th:max="${hBillProduct.quantityRequestReturn}"
+                               disabled>
+                        <span class="input-group-text w-px-60"  disabled>/[(${hBillProduct.quantityRequestReturn})]</span>
+                    </div>
+                    <p class="text-danger" th:if="${errorAdminQuantity!=''}">[(${errorAdminQuantity})]</p>
+                    <p class="text-danger" th:if="${errorQuantityNull!=''}">[(${errorQuantityNull})]</p>
+                </td>
+                <td>
+                            <textarea name="" id="" cols=""
+                                      rows="2" th:text="${hBillProduct.reason}"
+                                      th:class="|reason form-control|" th:name="reason" disabled></textarea>
+                </td>
+                <td>
+                            <textarea name=""  cols=""
+                                      rows="2" th:value="${hBillProduct.note}"
+                                      th:class="|note form-control|" th:name="note"
+                                      disabled></textarea>
+                    <p class="text-danger" th:if="${errorNoteNull!=''}">[(${errorNoteNull})]</p>
+                </td>
+                <td>
+                    <ul class="list-unstyled users-list avatar-group m-0 d-flex align-items-center">
+                        <li data-bs-toggle="tooltip"
+                            data-popup="tooltip-custom"
+                            data-bs-placement="bottom"
+                            class="avatar avatar-xl pull-up border-dark border"
+                            data-bs-offset="0,4" data-bs-html="true"
+                            title=""
+                             th:each="image:${hBillProduct.listImage}">
+                            <img th:src="@{'/image/product/'+${image.nameImage}}"
+                                 alt="Avatar"
+                                 class="image-preview">
+                        </li>
+                    </ul>
+                </td>
+                <td>
+                    <button th:formaction="@{/admin/refuse/{id}(id=${hBillProduct.billProduct.id})}" formmethod="post" type="submit"
+                            class="btn btn-icon btn-secondary refuse "
+                            onclick="return confirm('Xác nhận từ chối trả hàng')" disabled>
+                        <i class='bx bx-x'></i>
+                    </button>
+
+                    <button th:formaction="@{/admin/agree/{id}(id=${hBillProduct.billProduct.id})}" formmethod="post" type="submit"
+                            class="btn btn-icon btn-success agree" onclick="return confirm('Xác nhận đồng ý trả hàng')"
+                            disabled>
+                        <i class='bx bx-check'></i>
+                    </button>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</form>
+<script>
+    $.each(document.getElementsByClassName("checkbox"), function (index, item) {
+        item.addEventListener('change', function () {
+            var quantityReturn = document.getElementsByClassName("quantityReturn")
+            var refuse = document.getElementsByClassName("refuse")
+            var agree = document.getElementsByClassName("agree")
+            var note = document.getElementsByClassName("note")
+            if (item.checked == false) {
+                quantityReturn[index].disabled = true;
+                refuse[index].disabled = true;
+                agree[index].disabled = true;
+                note[index].disabled = true;
+            } else {
+                quantityReturn[index].disabled = false;
+                refuse[index].disabled = false;
+                agree[index].disabled = false;
+                note[index].disabled = false;
+            }
+        })
+    })
+
+</script>

@@ -1,0 +1,122 @@
+<style>
+    div.swal2-container {
+        z-index: 1100;
+    }
+
+</style>
+<h4 class="fw-bold py-3 mb-4">
+    <span class="text-muted fw-light">Sản phẩm/</span> Danh sách thuộc tính
+</h4>
+<div class="mb-3">
+    <button type="button"
+            class="btn btn-secondary d-inline-flex"
+            data-bs-toggle="modal"
+            data-bs-dismiss="modal"
+            data-bs-target="#add-variant-modal"
+            id="add-variant"><span class="">Thêm thuộc tính</span>
+    </button>
+</div>
+<div class="modal fade" id="add-variant-modal" tabindex="-1"
+     style="display: none;"
+     aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tạo thuộc tính</h5>
+                <button type="button" class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="label">Tên thuộc tính</label>
+                    <input class="form-control" type="text" id="name-attribute-1">
+                    <span class="fst-italic text-danger " id="attributes-error"></span>
+                </div>
+                <div class="mb-3">
+                    <label class="label">Loại: </label>
+                    <div class="form-check form-check-inline mt-3 mx-3">
+                        <input class="form-check-input" type="radio" name="attri" value="true" id="normal"
+                               checked="checked">
+                        <label class="form-check-label" for="active">Thường</label>
+                    </div>
+                    <div class="form-check form-check-inline ">
+                        <input class="form-check-input" type="radio" name="attri" value="false" id="variant">
+                        <label class="form-check-label" for="inactive">Biến thể</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" id="submit-add-attribute">
+                    Thêm
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card mb-4">
+    <div class="card-header">
+        <input class="form-control" type="search" id="search" placeholder="Nhập tên thuộc tính muốn tìm">
+    </div>
+    <div class="card-body">
+        <div class="table-responsive text-nowrap">
+            <table class="table" id="list-attributes">
+                <caption class="ms-4">
+                </caption>
+                <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Tên</th>
+                    <th>Loại</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+            <div class="modal fade" id="modalDetailAttributes" aria-modal="true" role="dialog">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Thuộc tính</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" id="close"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="label">Tên thuộc tính</label>
+                                <input class="form-control" type="text" id="name-attribute">
+                            </div>
+                            <div class="mb-3">
+                                <label class="label">Loại thuộc tính</label>
+                                <span class="form-control" type="text" id="type-attribute"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="label">Trạng thái: </label>
+                                <div class="form-check form-check-inline mt-3">
+                                    <input class="form-check-input" type="radio" name="active"
+                                           id="active" value='true'>
+                                    <label class="form-check-label" for="active">Hoạt động</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="active"
+                                           id="inactive" value="false">
+                                    <label class="form-check-label" for="inactive">Không hoạt động</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-outline-secondary"
+                                    id="update-attribute">
+                                Cập nhật
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/admin/plugin/js/attributes.js"></script>

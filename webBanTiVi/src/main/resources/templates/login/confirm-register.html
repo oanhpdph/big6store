@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Big6 Shop</title>
+    <meta name="description" content=""/>
+    <link rel="stylesheet" th:href="@{/admin/plugin/css/comfirm_register.css}">
+    <link rel="icon" type="image/x-icon" th:href="@{/image/logobig6-03.png}"/>
+    <link rel="stylesheet" th:href="@{/admin/assets/vendor/fonts/boxicons.css}"/>
+    <link rel="stylesheet" th:href="@{/admin/assets/vendor/css/bootstrap.css}"/>
+    <link rel="stylesheet" th:href="@{/admin/assets/vendor/css/theme-default.css}"
+          class="template-customizer-theme-css"/>
+    <link rel="stylesheet" th:href="@{/admin/assets/css/demo.css}"/>
+    <link rel="stylesheet" th:href="@{/admin/assets/vendor/css/pages/page-auth.css}"/>
+
+    <script th:src="@{/admin/assets/vendor/js/helpers.js}"></script>
+</head>
+
+<body>
+<div class="header">
+    <nav class="header-navbar">
+        <ul class="header-nav-list">
+            <li class="header-nav-item">Hệ thống cửa hàng tivi</li>
+            <li class="header-nav-item">
+                <a class="header-nav-item-link" href="/">LOGO</a>
+            </li>
+        </ul>
+
+        <ul class="header-nav-list">
+            <li class="header-nav-item">
+                <a href="#" class="header-nav-item-link">HỎI ĐÁP</a>
+            </li>
+            <li class="header-nav-item">
+                <a href="/" class="header-nav-item-link">QUAY LẠI</a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<div class="container-xxl">
+    <div class="authentication-wrapper authentication-basic container-p-y">
+        <div class="authentication-inner">
+            <div class="verification-page">
+                <h2>Nhập mã xác thực</h2>
+                <form th:action="@{/login/confirm-register}" method="post">
+                    <div>
+                        <input class="form-group" type="text" id="verification-code" name="verification-code"
+                               placeholder="Nhập mã xác thực" required>
+                    </div>
+                    <p class="text-danger" th:if="${errorRegister !=''}">[(${errorRegister})]</p>
+                    <button type="submit">Xác thực</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="footer">
+    <div class="footer-text">
+        Bạn gặp khó khăn gì khi đăng nhập, đăng ký ?Gọi
+        <span><a href="/hotro" class="sdt">1800 1008</a></span> để được hỗ trợ
+        nhanh nhất.
+    </div>
+</div>
+<script th:src="@{/admin/assets/vendor/libs/jquery/jquery.js}"></script>
+<script th:src="@{/admin/assets/vendor/libs/popper/popper.js}"></script>
+<script th:src="@{/admin/assets/vendor/js/bootstrap.js}"></script>
+<script th:src="@{/admin/assets/vendor/js/menu.js}"></script>
+<script th:src="@{/admin/assets/js/main.js}"></script>
+<script async defer th:src="@{https://buttons.github.io/buttons.js}"></script>
+</body>
+</html>

@@ -1,0 +1,115 @@
+<aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+    <div class="app-brand demo">
+        <a th:href="@{/admin}" class="app-brand-link">
+            <span class="app-brand-text demo menu-text fw-bolder ms-2">
+                <img th:src="@{/image/logochuan-04.png}" type="icon" style="width: 150px">
+            </span>
+        </a>
+
+        <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+            <i class="bx bx-chevron-left bx-sm align-middle"></i>
+        </a>
+    </div>
+    <div class="menu-inner-shadow"></div>
+    <ul class="menu-inner py-1 " style="padding-bottom:100px !important;">
+        <!-- Dashboard -->
+        <li th:class="${#strings.equals(session.active,'/dashboard')?'menu-item active':'menu-item'}">
+            <a th:href="@{/admin}" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div>Bảng điều khiển</div>
+            </a>
+        </li>
+
+        <li class="menu-header small text-uppercase">
+            <span>Quản lý</span>
+        </li>
+
+        <li th:class="${#strings.contains((session.active==null?'': session.active) ,'/product')?'menu-item active open':'menu-item'}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class='menu-icon tf-icons bx bx-package'></i>
+                <div>Sản phẩm</div>
+            </a>
+            <ul class="menu-sub">
+                <li th:class="${#strings.equals(session.active,'/product/list-product')?'menu-item active':'menu-item'}">
+                    <a th:href="@{/admin/product/list}" class="menu-link">
+                        <div>Sản phẩm</div>
+                    </a>
+                </li>
+                <li th:class="${#strings.equals(session.active,'/product/attributes')?'menu-item active':'menu-item'}">
+                    <a th:href="@{/admin/attributes/list}" class="menu-link">
+                        <div>Thuộc tính</div>
+                    </a>
+                </li>
+                <li th:class="${#strings.equals(session.active,'/product/brand')?'menu-item active':'menu-item'}">
+                    <a th:href="@{/admin/brand/list}" class="menu-link">
+                        <div>Hãng</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li th:class="${#strings.contains((session.active==null?'': session.active) ,'/bill')?'menu-item active open':'menu-item'}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-receipt"></i>
+                <div>Hóa đơn</div>
+            </a>
+            <ul class="menu-sub">
+                <li th:class="${#strings.equals(session.active,'/bill/list_bill')?'menu-item active':'menu-item'}">
+                    <a th:href="@{/admin/bill/list_bill}" class="menu-link">
+                        <div>Danh sách hóa đơn</div>
+                    </a>
+                </li>
+                <li th:class="${#strings.equals(session.active,'/bill/invoice_return')?'menu-item active':'menu-item'}">
+                    <a th:href="@{/admin/bill/list_invoice_return}" class="menu-link">
+                        <div>Trả hàng</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li th:class="${#strings.contains((session.active==null?'': session.active) ,'customer')?'menu-item active open':'menu-item'}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-user-circle"></i>
+                <div>Tài khoản</div>
+            </a>
+            <ul class="menu-sub">
+                <li th:class="${#strings.equals(session.active,'/customer/list')?'menu-item active':'menu-item'}">
+                    <a th:href="@{/admin/customer/list}" class="menu-link">
+                        <div>Danh sách tài khoản</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li th:class="${#strings.contains((session.active==null?'': session.active),'promotion')?'menu-item active open':'menu-item'}">
+            <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bxs-coupon"></i>
+                <div>Khuyến mãi</div>
+            </a>
+            <ul class="menu-sub">
+                <li th:class="${#strings.equals(session.active,'/promotion/voucher')?'menu-item active':'menu-item'}">
+                    <a th:href="@{/admin/voucher/list}" class="menu-link">
+                        <div>Voucher</div>
+                    </a>
+                </li>
+                <li th:class="${#strings.equals(session.active,'/promotion/coupon')?'menu-item active':'menu-item'}">
+                    <a th:href="@{/admin/coupon/list}" class="menu-link">
+                        <div>Giảm giá sản phẩm</div>
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li class="menu-header small text-uppercase">
+            <span>Khác</span>
+        </li>
+        <li class="menu-item">
+            <a class="menu-link" href="/">
+                <i class='menu-icon tf-icons bx bx-right-arrow-alt'></i>
+                <span class="align-middle">Trang bán hàng</span>
+            </a>
+        </li>
+        <li class="menu-item">
+            <a class="menu-link" th:href="@{/login/logout}">
+                <i class="menu-icon tf-icons bx bx-power-off me-2"></i>
+                <span class="align-middle">Đăng xuất</span>
+            </a>
+        </li>
+    </ul>
+</aside>

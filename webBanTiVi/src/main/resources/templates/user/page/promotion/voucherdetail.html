@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html class="light-style" xmlns:th="http://www.thymeleaf.org">
+
+<section class="ss1">
+    <div class="container">
+        <div >
+            <h3 class="text-center pt-2 pb-2 title px-3 text-uppercase fw-bold">
+                [(${voucher.getNameVoucher()})]
+            </h3>
+        </div>
+        <p>Chương trình bắt đầu: [(${voucher.getStartDay()})] - Kết thúc: [(${voucher.getExpirationDate()})]</p>
+        <hr>
+        <img th:src="@{'/image/' + *{voucher.getImage()}}" width="100%" height="auto"  display="block"  style="text-align: center">
+        <hr>
+        <div class="row">
+        <div  class="alert alert-warning col-6">
+        <p class="text-danger fs-xlarge fw-bold">
+            Giảm ngay [(${voucher.getValue()})](VNĐ) trong hóa đơn</p>
+            <hr>
+            <p class="fw-bold text-black">Khi mua đơn hàng có giá trị từ [(${voucher.getMinimumValue().intValue()})](VNĐ)
+                trở lên</p>
+        </div>
+            <div class="alert alert-danger col-6">
+                <p class="text-danger fs-xlarge fw-bold">Số lượng: còn [(${soluongcon})] trong tổng số [(${voucher.getQuantity()})] voucher</p>
+                <hr>
+                <a type="button"
+                   class="btn btn-outline-danger" data-bs-toggle="modal"
+                   data-bs-target="#modalVoucher">LẤY MÃ NGAY</a>
+            </div>
+
+        </div>
+
+
+
+<!--        th:href="@{'/promotion/vouchercode/' + *{voucher.getId()}}"-->
+        <div class="modal" th:id="modalVoucher" data-bs-backdrop="static"
+        >
+            <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <br>
+                <div class="modal-header">
+                </div>
+                <div th:if="${check == true && check2 == false}" class="modal-body">
+                    <p class=" fs-large fw-bold text-center">
+                        Mã voucher của bạn là: <span class="text-danger">
+                [(${voucher.getCode()})]
+            </span>
+                    </p>
+                    <p class="text-center">Quý khách đã nhận voucher thành công.</p>
+                    <p class="text-center">Vui lòng chọn đúng voucher trong trang thanh toán để giảm tiền theo khuyến mại!</p>
+                </div>
+                <div th:if="${check == false && check2 == false}">
+                    <p class=" fs-large fw-bold text-center text-danger">[(${thongbao})]</p>
+                </div>
+                <div th:if="${check == false && check2 == true}">
+                    <p class=" fs-large fw-bold text-center text-danger">[(${thongbao})]</p>
+                </div>
+                <div th:if="${check == true && check2 == true}">
+                    <p class=" fs-large fw-bold text-center">
+                        Mã voucher của bạn là: <span class="text-danger">
+                [(${voucher.getCode()})]
+            </span>
+                    </p>
+                    <p class="text-center text-danger">Bạn đã nhận mã voucher 1 lần. <br>
+                        [(${thongbao})]</p>
+                </div>
+                <div class="modal-footer  text-center mx-auto">
+                    <div th:if="${check == false && check2 == false}">
+                        <a type="button"
+                           class="btn btn-outline-primary" th:href="@{'/login'}"
+                        >Chuyển sang trang đăng nhập</a>
+                    </div>
+                    <a type="button"
+                       class="btn btn-outline-primary" th:href="@{'/promotion'}"
+                    >Xem các khuyễn mãi khác</a>
+                    <a type="button"
+                       class="btn btn-outline-primary" th:href="@{'/promotion/voucherdetail/' + *{voucher.getId()}}"
+                       >Quay lại trang</a>
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</section>

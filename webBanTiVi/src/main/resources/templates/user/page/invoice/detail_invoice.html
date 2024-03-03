@@ -1,0 +1,168 @@
+<style>
+    .pull-up:hover {
+        border-radius: 0px !important;
+    }
+
+    .return-view:hover {
+        color: #1890ff !important;
+        cursor: pointer;
+    }
+</style>
+<section class="mt-4 container-xl">
+    <div class="mb-2">
+        <div>
+            <span class="fs-5">Chi tiết đơn hàng #[(${bill.code})] - <span class="text-success"
+                                                                           th:text="${bill.billStatus.status}"></span></span>
+        </div>
+        <div>
+            <span>Ngày đặt:[(${bill.createDate})]</span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4 mb-4 order-0">
+            <div class="card mb-3">
+                <div class="d-flex align-items-end row">
+                    <div class="card-body">
+                        <div class="mb-2 list-group-item align-items-center">
+                            <i class='bx bx-user'></i>
+                            <span class="fs-5 text-uppercase">Thông tin khách hàng:</span>
+                        </div>
+                        <div class="row mb-2">
+                            <span class="col-sm-4">Người nhận</span><span
+                                class="col-sm-8"> [(${bill.deliveryNotes[0]?.received})] - [(${bill.deliveryNotes[0]?.receiverPhone})]</span>
+                        </div>
+                        <div class="row mb-2">
+                            <span class="col-sm-4">Địa chỉ:</span><span class="col-sm-8">[(${bill.deliveryNotes[0]?.receivingAddress})]</span>
+                        </div>
+                        <div class="row mb-2">
+                            <span class="col-sm-4">Ngày nhận: </span><span class="col-sm-8">[(${bill.deliveryNotes[0]?.receivedDate})]</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card mb-3">
+                <div class="d-flex align-items-end row">
+                    <div class="card-body">
+                        <div class="mb-2 list-group-item align-items-center">
+                            <i class='bx bx-credit-card'></i>
+                            <span class="fs-5 text-uppercase">Hình thức thanh toán:</span>
+                        </div>
+                        <div class="row mb-2">
+                            <span th:text="${bill.paymentMethod.paymentMethod}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8 order-1">
+            <div class="row">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="list-group-item mb-2 align-items-center">
+                            <i class='bx bx-shopping-bag'></i>
+                            <span class="fs-5 text-uppercase"> Thông tin sản phẩm</span>
+                        </div>
+                        <div class="row mb-3" th:each="billProduct : ${billProducts}">
+                            <div class="col-sm-2">
+                                <div th:each="image:${billProduct.product.listImage}">
+                                    <img th:if="${image.location == true}"
+                                         th:src="@{'/image/product/'+${image.link}}"
+                                         alt="" width="100px">
+                                </div>
+                            </div>
+                            <div class="col-sm-7">
+                                <div class="mb-2">
+                                    <div>[(${billProduct?.product.product.nameProduct})]
+
+                                    </div>
+                                    <div>
+                                        <span th:each="field,iterStat :${billProduct.product.fieldList}">[(${field.value})]
+                                            <span th:if="${!iterStat.last}">,</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="mb-2">
+                                    <span>x[(${billProduct.quantity})]</span>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 text-end">
+                                <div>
+                                    <span class="text-strike-through">[(${#numbers.formatDecimal(billProduct.price,0,'COMMA',0,'POINT')})]</span>
+                                    <span class="fs-tiny text-decoration-underline">đ</span>
+                                </div>
+                                <div th:if="${billProduct.reducedMoney !=0}">
+                                    <span>[(${#numbers.formatDecimal(billProduct.price-billProduct.reducedMoney,0,'COMMA',0,'POINT')})]</span>
+                                    <span class="fs-tiny text-decoration-underline">đ</span>
+                                </div>
+                                <div th:if="${billProduct.reducedMoney==0}">
+                                    <span>[(${#numbers.formatDecimal(billProduct.price,0,'COMMA',0,'POINT')})]</span>
+                                    <span class="fs-tiny text-decoration-underline">đ</span>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <div class="mb-3 row text-end">
+                                <span class="col-sm-10 ">Tổng giá trị sản phẩm:</span>
+                                <span class="col-sm-2 ">
+                                [(${#numbers.formatDecimal(bill.totalPrice+bill.voucherValue,0,'COMMA',0,'POINT')})]
+                                    <span class="text-decoration-underline fs-tiny">đ</span>
+                                </span>
+                            </div>
+                            <div class="mb-3 row text-end">
+                                <span class="col-sm-10 ">Voucher:</span>
+                                <span class="col-sm-2">
+                                    -[(${#numbers.formatDecimal(bill.voucherValue,0,'COMMA',0,'POINT')})]
+                                    <span class="text-decoration-underline fs-tiny">đ</span>
+                                </span>
+                            </div>
+                            <div class="mb-3 row text-end">
+                                <span class="col-sm-10 ">Phí vận chuyển:</span>
+                                <span class="col-sm-2">
+                                    [(${#numbers.formatDecimal(bill.deliveryNotes[0].deliveryFee,0,'COMMA',0,'POINT')})]
+                                    <span class="text-decoration-underline fs-tiny">đ</span>
+                                </span>
+                            </div>
+                            <hr>
+                            <div class="mb-3 row text-end">
+                                <span class="col-sm-10 fw-semibold ">Thanh toán:</span>
+                                <span class="col-sm-2" >
+                                        [(${#numbers.formatDecimal(bill.totalPrice+bill.deliveryNotes[0].deliveryFee,0,'COMMA',0,'POINT')})]
+                                      <span class="text-decoration-underline fs-tiny">đ</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="text-center mt-2">
+                            <a type="button" class="btn btn-outline-dark" href="/order"
+                               sec:authorize="isAuthenticated()">Về danh sách đơn hàng</a>
+                            <a type="button" class="btn btn-outline-dark"
+                               th:href="@{/search_order?search={codeSearch}(codeSearch=${session.codeSearch})}"
+                               sec:authorize="!isAuthenticated()">Về danh sách đơn hàng</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</section>
+<script>
+    const productAIncrementBtn = document.getElementsByClassName('quantityReturn');
+    $.each(productAIncrementBtn, function (index, item) {
+        item.addEventListener('keydown', (event) => {
+            if (event.target.value > event.target.getAttribute("max")) {
+                item.value = item.getAttribute("max")
+            }
+        })
+    })
+    var returnMoneyDiv = document.getElementById('returnMoneyDiv');
+    var returnMoney = parseFloat(returnMoneyDiv.innerText.replace(/[^\d.-]/g, ''));
+    if (returnMoney < 0) {
+        returnMoneyDiv.innerText = 'Khách hàng gửi lại: ' + Math.abs(returnMoney).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+    }
+
+</script>
+<script src="/admin/plugin/js/loadImage.js"></script>

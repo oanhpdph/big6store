@@ -1,0 +1,134 @@
+<div class="container-xl row justify-content-center">
+    <div class="card w-50">
+        <div class="card-header">
+            <h3 class="mb-4">
+                Đánh Giá <span th:text="${product.nameProduct+' '+product.sku}"></span>
+            </h3>
+            <div class="row">
+                <div>
+                    <i th:class="|${product.avgPoint == 0 ? 'bx bx-star bx-md': product.avgPoint > 0 && product.avgPoint < 1 ? 'bx bxs-star-half bx-md':'bx bxs-star bx-md'}|"
+                       style='color:#fdb602'></i>
+                    <i th:class="|${product.avgPoint <=1 ? 'bx bx-star bx-md': product.avgPoint > 1 && product.avgPoint < 2 ? 'bx bxs-star-half bx-md':'bx bxs-star bx-md'}|"
+                       style='color:#fdb602'></i>
+                    <i th:class="|${product.avgPoint <=2 ? 'bx bx-star bx-md': product.avgPoint > 2 && product.avgPoint < 3 ? 'bx bxs-star-half bx-md':'bx bxs-star bx-md'}|"
+                       style='color:#fdb602'></i>
+                    <i th:class="|${product.avgPoint <=3 ? 'bx bx-star bx-md': product.avgPoint > 3 && product.avgPoint < 4 ? 'bx bxs-star-half bx-md':'bx bxs-star bx-md'}|"
+                       style='color:#fdb602'></i>
+                    <i th:class="|${product.avgPoint <=4 ? 'bx bx-star bx-md': product.avgPoint > 4 && product.avgPoint < 5 ? 'bx bxs-star-half bx-md':'bx bxs-star bx-md'}|"
+                       style='color:#fdb602'></i>
+                </div>
+                <div>
+                    <span class="fs-3" th:text="${product.avgPoint}"></span>
+                    <span class="fs-5 mx-2"
+                          th:text="|${#lists.size(evaluate)} đánh giá|"></span>
+                </div>
+                <div class="mt-3">
+                    <div>
+                        <button class="btn btn-primary" style="width: 40%" data-bs-target="#writeEvaluate"
+                                data-bs-toggle="modal"
+                                th:if="${(session.user != null && hasEvaluate == false && hasBuy==true)}">
+                            Viết đánh giá
+                        </button>
+                    </div>
+                    <small th:if="${hasBuy == false}">Bạn cần mua hàng để đánh giá</small>
+                    <small th:if="${session.user == null}">Bạn cần đăng nhập để đánh giá</small>
+                    <small th:if="${(session.user != null && hasEvaluate == true)}">Bạn đã đánh giá sản phẩm
+                        này</small>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div th:each="item,itemStat: ${list}">
+                <span class="fs-5"><strong th:text="${item.customer.name}"></strong></span>
+                <div>
+                    <p>
+                        <i th:class="|${item.point >=1 ? 'bx bxs-star':'bx bx-star'}|"
+                           style='color:#fdb602'></i>
+                        <i th:class="|${item.point >=2 ? 'bx bxs-star':'bx bx-star'}|"
+                           style='color:#fdb602'></i>
+                        <i th:class="|${item.point >=3 ? 'bx bxs-star':'bx bx-star'}|"
+                           style='color:#fdb602'></i>
+                        <i th:class="|${item.point >=4 ? 'bx bxs-star':'bx bx-star'}|"
+                           style='color:#fdb602'></i>
+                        <i th:class="|${item.point >=5 ? 'bx bxs-star':'bx bx-star'}|"
+                           style='color:#fdb602'></i>
+                    </p>
+                    <p>
+                        <span th:text="${item.comment}"></span> <br>
+                        <small class="text-muted">
+                            <span th:text="${item.dateCreate}"></span>
+                        </small>
+                    </p>
+                </div>
+
+                <div>
+                    <img th:each="img:${item.evaluateList}" th:src="|/image/product/${img.nameImage}|"
+                         data-bs-target="#image"
+                         data-bs-toggle="modal"
+                         alt="Ảnh bị lỗi" class="w-px-100 image-evaluate">
+                </div>
+
+                <hr>
+            </div>
+            <div class="modal fade" id="image" tabindex="-1" aria-hidden="true">
+                <div class="modal-dialog modal-lg text-center" role="img">
+                    <!--                    <div class="modal-content">-->
+                    <img class="w-75 h-75" src="" alt="lỗi" id="image-evaluate-modal">
+                    <!--                    </div>-->
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer text-center">
+            <div class="modal fade" id="writeEvaluate" tabindex="-1" aria-modal="true" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel1">Đánh giá</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" id="close"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="mb-3 row">
+                                <span th:text="${product.nameProduct + ' '+product.sku}"></span>
+                            </div>
+                            <div class="mb-3 row">
+                                <p>
+                                    <i class='bx bx-star bx-lg star1 point' style='color:#fdb602'></i>
+                                    <i class='bx bx-star bx-lg star2 point' style='color:#fdb602'></i>
+                                    <i class='bx bx-star bx-lg star3 point' style='color:#fdb602'></i>
+                                    <i class='bx bx-star bx-lg star4 point' style='color:#fdb602'></i>
+                                    <i class='bx bx-star bx-lg star5 point' style='color:#fdb602'></i>
+                                </p>
+                            </div>
+                            <div class="mb-3 row">
+                                        <textarea type="text" class="form-control" id="comment"
+                                                  placeholder="Viết cảm nhận ở đây"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <p>Hình ảnh thực tế</p>
+                                <img th:src="@{'/image/tivi1.jpg'}"
+                                     class="w-px-100 image-preview cursor-pointer" alt="Chưa chọn ảnh">
+                                <input class="file-input" hidden="hidden" type="file">
+                                <img th:src="@{'/image/tivi1.jpg'}"
+                                     class="w-px-100 image-preview cursor-pointer" alt="Chưa chọn ảnh">
+                                <input class="file-input" hidden="hidden" type="file">
+                                <img th:src="@{'/image/tivi1.jpg'}"
+                                     class="w-px-100 image-preview cursor-pointer" alt="Chưa chọn ảnh">
+                                <input class="file-input" hidden="hidden" type="file">
+
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="sendEvaluate"
+                                    th:value="${product.id}">Lưu
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/admin/plugin/js/evaluate.js"></script>
+<script src="/admin/plugin/js/loadImage.js"></script>

@@ -1,0 +1,84 @@
+<h4 class="fw-semibold py-3 mb-4"> Thống kê :
+</h4>
+
+<div class="row">
+
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 border-primary" style="border-left: 5px solid">
+            <div class="card-header d-flex align-items-center justify-content-between pb-0 text-uppercase text-primary">
+                Tổng đơn hàng
+            </div>
+            <div class="card-body">
+                <button class="fw-bold" id="completed" style="border : none" th:text="${#lists.size(billAll)}"
+                        th:onclick="|oncl()|"></button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3 mb-4 ">
+        <div class="card h-100 border-success" style="border-left: 5px solid;">
+            <div class="card-header d-flex align-items-center justify-content-between pb-0 text-uppercase text-success ">
+                Đơn hàng đang giao
+            </div>
+            <div class="card-body">
+                <button class="fw-bold" id="delivering" style="border : none" th:text="${#lists.size(billDelivering)}"
+                        th:onclick="|onclDeliver()|"></button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 border-warning" style="border-left: 5px solid">
+            <div class="card-header d-flex align-items-center justify-content-between pb-0 text-uppercase text-warning">
+                Đơn yêu cầu hoàn trả
+            </div>
+            <div class="card-body">
+                <button class="fw-bold" id="return" style="border : none" th:text="${#lists.size(billReturn)}"
+                        th:onclick="|onclReturn()|"></button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 border-danger" style="border-left: 5px solid">
+            <div class="card-header d-flex align-items-center justify-content-between pb-0 text-uppercase text-danger">
+                Đơn chờ xử lý
+            </div>
+            <div class="card-body">
+                <button class="fw-bold" id="processing" style="border : none" th:text="${#lists.size(billProcessing)}"
+                        th:onclick="|onclWait()|"></button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 border-danger" style="border-left: 5px solid">
+            <div class="card-header d-flex align-items-center justify-content-between pb-0 text-uppercase text-danger">
+                Số lượng sản phẩm
+            </div>
+            <div class="card-body">
+                <button class="fw-bold" id="productCount" style="border : none" th:text="${#lists?.size(productCount)}"
+                        th:onclick="|onclProduct()|"></button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 border-danger" style="border-left: 5px solid">
+            <div class="card-header d-flex align-items-center justify-content-between pb-0 text-uppercase text-danger">
+                Danh sách discount
+            </div>
+            <div class="card-body">
+                <button class="fw-bold" id="listDisCount" style="border : none" th:text="${#lists?.size(listDisCount)}"
+                        th:onclick="|onclDiscount()|"></button>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card h-100 border-danger" style="border-left: 5px solid">
+            <div class="card-header d-flex align-items-center justify-content-between pb-0 text-uppercase text-danger">
+                Danh sách voucher
+            </div>
+            <div class="card-body">
+                <button class="fw-bold" id="listVoucher" style="border : none" th:text="${#lists.size(listVoucher)}"
+                        th:onclick="|onclVoucher()|"></button>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/admin/plugin/js/dashboard.js}"></script>

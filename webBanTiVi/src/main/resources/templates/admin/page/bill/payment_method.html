@@ -1,0 +1,181 @@
+<form th:action="@{/admin/bill/payment_method}" method="post" th:object="${paymentMethodAtt}">
+    <h4 class="fw-semibold py-3 mb-4">Payment method</h4>
+    <div class="row justify-content-end me-4">
+        <button type="button" class="btn btn-success mb-4 w-auto" data-bs-toggle="modal" data-bs-target="#add">
+            <i class='tf-icon bx bx-plus-medical'></i> Add payment method
+        </button>
+    </div>
+    <div class="modal fade" th:id="add" tabindex="-1"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label" for="addName">Tên phương
+                                thức</label>
+                            <input type="text" class="form-control" id="addName"
+                                   th:name="paymentMethod" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="addDescription">Mô tả</label>
+                            <textarea id="addDescription" class="form-control"
+                                      th:name="description" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Hoạt động</label> <br>
+                            <div class="form-check form-check-inline mt-3">
+                                <input class="form-check-input" type="radio" th:name="active"
+                                       th:value="true" id="active" checked
+                                >
+                                <label class="form-check-label"
+                                       for="active">Active</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio"
+                                       th:name="active" id="inactive"
+                                       th:value="false">
+                                <label class="form-check-label"
+                                       for="inactive">Inactive</label>
+                            </div>
+                        </div>
+                        <div class="row justify-content-end">
+                            <div class="w-auto">
+                                <button type="reset"
+                                        class="btn btn-primary btn-control">
+                                    Reset
+                                </button>
+                            </div>
+                            <div class="w-auto">
+                                <button type="submit" class="btn btn-primary btn-control" onclick="return confirm('Xác nhận thêm')">
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <div class="row">
+            <div class="mb-3">
+                <div class="table-responsive text-nowrap">
+                    <table class="table table-hover overflow-hidden">
+                        <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Tên phương thức</th>
+                            <th>Mô tả</th>
+                            <th>Trạng thái</th>
+                            <th></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="paymentMethod,pmStat : ${listPaymentMethod}">
+                            <td th:text="${pmStat.index+1}"></td>
+                            <td th:text="${paymentMethod.paymentMethod}">Tiền mặt</td>
+                            <td th:text="${paymentMethod.description}">Thanh toán trực tiếp khi nhận hàng</td>
+                            <td th:text="${paymentMethod.active==true?'Hoạt động':'Không hoạt động'}">Hoạt động</td>
+                            <td>
+                                <button type="button" class="btn btn-icon btn-primary" data-bs-toggle="modal"
+                                        th:data-bs-target="|#modal${paymentMethod.id}|">
+                                    <span class="bx bxs-edit-alt"></span>
+                                </button>
+                                <div class="modal fade" th:id="|modal${paymentMethod.id}|" tabindex="-1"
+                                     aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered" role="document">
+                                        <div class="modal-content">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <form th:action="@{/admin/bill/payment_method/update/{id}(id=${paymentMethod.id})}"
+                                                          method="post"
+                                                          th:object="${paymentMethodAtt}">
+                                                        <div class="mb-3" hidden="">
+                                                            <input type="text" class="form-control" id="idMethod"
+                                                                   th:name="id"
+                                                                   th:value="${paymentMethod.id}">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label" for="nameMethod">Tên phương
+                                                                thức</label>
+                                                            <input type="text" class="form-control" id="nameMethod"
+                                                                   th:name="paymentMethod"
+                                                                   th:value="${paymentMethod.paymentMethod}">
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label" for="descriptive">Mô tả</label>
+                                                            <textarea id="descriptive" class="form-control"
+                                                                      th:text="${paymentMethod.description}"
+                                                                      th:name="description"></textarea>
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Hoạt động</label> <br>
+                                                            <div class="form-check form-check-inline mt-3">
+                                                                <input class="form-check-input" type="radio"
+                                                                       th:id="|active${paymentMethod.id}|"
+                                                                       th:name="active"
+                                                                       th:value="true"
+                                                                       th:checked="${paymentMethod.active==true}">
+                                                                <label class="form-check-label"
+                                                                       th:for="|active${paymentMethod.id}|">Active</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio"
+                                                                       th:id="|inactive${paymentMethod.id}|"
+                                                                       th:name="active"
+                                                                       th:value="false"
+                                                                       th:checked="${paymentMethod.active==false}">
+                                                                <label class="form-check-label"
+                                                                       th:for="|inactive${paymentMethod.id}|">Inactive</label>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row justify-content-xl-end">
+                                                            <div class="w-auto">
+                                                                <button type="reset"
+                                                                        class="btn btn-primary btn-control">
+                                                                    Reset
+                                                                </button>
+                                                            </div>
+                                                            <div class="w-auto">
+                                                                <button type="submit"
+                                                                        class="btn btn-primary btn-control"
+                                                                        onclick="return confirm('Xác nhận cập nhật')">
+                                                                    Update
+                                                                </button>
+                                                            </div>
+                                                            <div class="w-auto" disabled="true">
+                                                                <a th:href="@{/admin/bill/payment_method/delete/{id}(id=${paymentMethod.id})}"
+                                                                   onclick="return confirm('Xác nhận xóa')">
+                                                                    <button type="button"
+                                                                            class="btn btn-primary btn-control">
+                                                                        Delete
+                                                                    </button>
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a th:href="@{/admin/bill/payment_method/delete/{id}(id=${paymentMethod.id})}"
+                                   onclick="return confirm('Xác nhận xóa')">
+                                    <button type="button" class="btn btn-icon btn-danger">
+                                        <span class="bx bxs-trash"></span>
+                                    </button>
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

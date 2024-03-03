@@ -1,0 +1,940 @@
+<style>.alert {
+    z-index: 1100;
+    position: fixed;
+}</style>
+<h4 class="fw-semibold py-3 mb-4">Danh sách Voucher</h4>
+
+<div class="row justify-content-end me-4">
+    <button
+            type="button"
+            class="btn btn-success mb-4 w-auto"
+            data-bs-toggle="modal"
+            data-bs-target="#largeModal"
+    >
+        <i class="tf-icon bx bx-plus-medical"></i> Thêm voucher
+    </button>
+</div>
+<div class="mb-4">
+    <div class="modal fade" th:id="largeModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thông tin voucher</h5>
+                    <button
+                            type="button"
+                            class="btn-close"
+                            data-bs-dismiss="modal"
+                            aria-label="Close"
+                    ></button>
+                </div>
+                <form
+                        th:action="@{/admin/voucher/add}"
+                        method="post"
+                        th:object="${voucher}"
+                        enctype="multipart/form-data"
+                        class="formAdd"
+                        th:name="myform"
+                >
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-lg-4 col-sm-12 col-xl-3 text-center">
+                                <div class="text-center">
+                                    <img
+                                            th:src="@{'/image/product/anhdefault.jpg'}"
+                                            alt="Chưa có ảnh"
+                                            class="rounded image-preview mb-3"
+                                            width="200"
+                                    />
+                                </div>
+                                <span class="error imageloc"></span> <br/>
+                                <label class="btn btn-primary me-2 mb-4" tabindex="0">
+                                    <span class="d-none d-sm-block">Tải ảnh lên</span>
+                                    <i class="bx bx-upload d-block d-sm-none"></i>
+                                    <input
+                                            type="file"
+                                            class="file-input"
+                                            hidden=""
+                                            name="image"
+                                    />
+                                </label>
+                            </div>
+                            <div class="row col-xl-9">
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Mã voucher:</label>
+                                        <input type="text" class="form-control" th:name="code"/>
+                                        <span class="error codeloc"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Tên voucher:</label>
+                                        <input
+                                                type="text"
+                                                class="form-control"
+                                                th:name="nameVoucher"
+                                        />
+                                        <span class="error nameVoucherloc"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Giảm tối đa</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" th:name="value"/>
+                                            <span class="input-group-text">VNĐ</span>
+                                        </div>
+                                        <span class="error valueloc"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Đơn tối thiểu</label>
+                                        <div class="input-group">
+                                            <input
+                                                    class="form-control"
+                                                    type="text"
+                                                    th:name="minimumValue"
+                                            />
+                                            <span class="input-group-text">VNĐ</span>
+                                        </div>
+                                        <span class="error minimumValueloc"></span>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Ngày bắt đầu:</label>
+                                        <input
+                                                type="date"
+                                                class="form-control"
+                                                th:name="startDay"
+                                        />
+                                    </div>
+                                    <span class="error startDayloc"></span>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Ngày kết thúc:</label>
+                                        <input
+                                                type="date"
+                                                class="form-control"
+                                                th:name="expirationDate"
+                                        />
+                                    </div>
+                                    <span class="error expirationDateloc"></span>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Số lượng:</label>
+                                        <input
+                                                type="number"
+                                                class="form-control"
+                                                th:name="quantity"
+                                        />
+                                    </div>
+                                    <span class="error quantityloc"></span>
+                                </div>
+                                <div class="col-lg-6 col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Trạng thái:</label>
+                                        <div>
+                                            <div class="form-check form-check-inline mt-3">
+                                                <input
+                                                        class="form-check-input"
+                                                        type="radio"
+                                                        th:name="active"
+                                                        id="inlineRadio1"
+                                                        th:value="true"
+                                                        checked
+                                                />
+                                                <label class="form-check-label" for="inlineRadio1"
+                                                >Hoạt động</label
+                                                >
+                                            </div>
+                                            <div class="form-check form-check-inline">
+                                                <input
+                                                        class="form-check-input"
+                                                        type="radio"
+                                                        th:name="active"
+                                                        id="inlineRadio2"
+                                                        th:value="false"
+                                                />
+                                                <label class="form-check-label" for="inlineRadio2"
+                                                >Không hoạt động</label
+                                                >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="reset" class="btn btn-outline-secondary">
+                                Làm mới
+                            </button>
+                            <button
+                                    type="submit"
+                                    class="btn btn-primary"
+                                    onclick="return confirm('Xác nhận thêm')"
+                            >
+                                Lưu
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card mb-3">
+    <div class="card-header">
+        <form
+                class="col-12 mt-2"
+                th:action="@{/admin/voucher/list}"
+                method="get"
+                th:object="${search}"
+        >
+            <div class="col-12 row">
+                <div class="col-7">
+                    <div class="form-check input-group input-group-merge">
+            <span class="input-group-text">
+              <i class="bx bx-search"></i>
+            </span>
+                        <input
+                                type="text"
+                                class="form-control"
+                                placeholder="Mã voucher, tên voucher"
+                                name="keywords"
+                                th:name="key"
+                                id="key"
+                                th:field="*{key}"
+                                autocomplete="off"
+                        />
+                        <button class="btn btn-primary" type="submit">Tìm kiếm</button>
+                    </div>
+                </div>
+                <div class="col-1">
+                    <button
+                            class="btn btn-secondary"
+                            data-bs-toggle="tooltip"
+                            data-bs-offset="0,4"
+                            data-bs-placement="bottom"
+                            data-bs-html="true"
+                            title=""
+                            data-bs-original-title="<span>Reset filter</span>"
+                            aria-describedby="tooltip91262"
+                    >
+                        <i class="bx bx-reset"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-6 col-xl-7 col-md-9 col-sm-12 row mt-2">
+                <div class="col-lg-9 col-xl-7 col-md-9 col-sm-8">
+                    <div class="input-group form-check">
+                        <div class="input-group input-group-merge input">
+                            <label for="date-seach-voucher" class="input-group-text"
+                            >Select date:</label
+                            >
+                            <input
+                                    type="text"
+                                    class="form-control"
+                                    id="date-seach-voucher"
+                                    name="date"
+                                    th:field="*{date}"
+                                    placeholder="MM/DD/YYYY-MM/DD/YYYY"
+                                    autocomplete="off"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2 d-flex align-items-center">
+                <p>Voucher:</p>
+            </div>
+        </div>
+        <hr/>
+
+        <div class="table-responsive text-nowrap">
+            <table class="table table-hover overflow-hidden">
+                <thead>
+                <tr>
+                    <!--                    <th>code</th>-->
+                    <!--                    <th>Tên Voucher</th>-->
+                    <th>#</th>
+                    <th>Tên voucher</th>
+                    <th>Ảnh</th>
+                    <th>Giá trị</th>
+                    <th>Số lượng</th>
+                    <th>Trạng thái</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="voucher,Stat : ${session.listVoucher.content}">
+                    <td th:text="${Stat.index+1}"></td>
+                    <td th:text="${voucher.nameVoucher}"></td>
+                    <td>
+                        <p>
+                            <img th:src="@{'/image/'+*{voucher.image}}" class="w-px-100"/>
+                        </p>
+                    </td>
+                    <td th:text="${voucher.value}"></td>
+                    <td th:text="${voucher.quantity}"></td>
+                    <td class="form-switch text-center"><input
+                            class="form-check-input update-active-voucher cursor-pointer"
+                            type="checkbox"
+                            th:value="${voucher.id}" th:checked="${voucher.active}"></td>
+                    <td>
+                        <button
+                                type="button"
+                                class="btn btn-icon btn-primary"
+                                data-bs-toggle="modal"
+                                th:data-bs-target="|#modal${voucher.id}|"
+                        >
+                            <i class="bx bxs-edit-alt"></i>
+                        </button>
+                        <div
+                                class="modal fade"
+                                th:id="|modal${voucher.id}|"
+                                tabindex="-1"
+                                aria-hidden="true"
+                        >
+                            <div class="modal-dialog modal-xl" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Thêm mới voucher</h5>
+                                        <button
+                                                type="button"
+                                                class="btn-close"
+                                                data-bs-dismiss="modal"
+                                                aria-label="Close"
+                                        ></button>
+                                    </div>
+                                    <form
+                                            th:action="@{/admin/voucher/update/{id}(id=${voucher.id})}"
+                                            method="post"
+                                            th:object="${voucher}"
+                                            class="formUpdate"
+                                            enctype="multipart/form-data"
+                                    >
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div
+                                                        class="col-lg-4 col-md-12 col-sm-12 col-xl-3 text-center"
+                                                >
+                                                    <div class="text-center">
+                                                        <img
+                                                                th:src="@{'/image/'+*{image}}"
+                                                                alt="Chưa có ảnh"
+                                                                class="rounded image-preview mb-3"
+                                                                width="200"
+                                                        />
+                                                    </div>
+                                                    <!--                                                    <span class="error imageloc"></span> <br/>-->
+                                                    <!--                                                    <label-->
+                                                    <!--                                                            class="btn btn-primary me-2 mb-4"-->
+                                                    <!--                                                            tabindex="0"-->
+                                                    <!--                                                    >-->
+                                                    <!--                                                        <span class="d-none d-sm-block">Tải ảnh lên</span>-->
+                                                    <!--                                                        <i class="bx bx-upload d-block d-sm-none"></i>-->
+                                                    <!--                                                        <input-->
+                                                    <!--                                                                type="file"-->
+                                                    <!--                                                                class="account-file-input file-input"-->
+                                                    <!--                                                                hidden=""-->
+                                                    <!--                                                                name="image"-->
+                                                    <!--                                                        />-->
+                                                    <!--                                                    </label>-->
+                                                </div>
+                                                <div class="row col-lg-12 col-xl-9">
+                                                    <div class="col-lg-6 col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Mã voucher:</label>
+                                                            <input disabled
+                                                                   type="text"
+                                                                   class="form-control"
+                                                                   th:name="code"
+                                                                   th:value="${voucher.code}"
+                                                            />
+                                                            <span class="error codeloc"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Tên voucher:</label>
+                                                            <input disabled
+                                                                   type="text"
+                                                                   class="form-control"
+                                                                   th:name="nameVoucher"
+                                                                   th:value="${voucher.nameVoucher}"
+                                                            />
+                                                            <span class="error nameVoucherloc"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Giảm tối đa</label>
+                                                            <div class="input-group">
+                                                                <input disabled
+                                                                       type="text"
+                                                                       class="form-control"
+                                                                       th:name="value"
+                                                                       th:value="${voucher.value}"
+                                                                />
+                                                                <span disabled class="input-group-text">VNĐ</span>
+                                                            </div>
+                                                            <span class="error valueloc"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Đơn tối thiểu</label>
+                                                            <div class="input-group">
+                                                                <input disabled
+                                                                       class="form-control"
+                                                                       type="text"
+                                                                       th:name="minimumValue"
+                                                                       th:value="${#strings.replace(#numbers.formatDecimal(voucher.minimumValue, 0,'COMMA',0,'POINT'), ',', '')}"
+                                                                />
+                                                                <span class="input-group-text">VNĐ</span>
+                                                            </div>
+                                                            <span class="error minimumValueloc"></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Ngày bắt đầu:</label>
+                                                            <input disabled
+                                                                   type="date"
+                                                                   class="form-control"
+                                                                   th:name="startDay"
+                                                                   th:value="${voucher.startDay}"
+                                                            />
+                                                        </div>
+                                                        <span class="error startDayloc"></span>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Số lượng:</label>
+                                                            <input disabled
+                                                                   type="number"
+                                                                   class="form-control"
+                                                                   th:name="quantity"
+                                                                   th:value="${voucher.quantity}"
+                                                            />
+                                                        </div>
+                                                        <span class="error quantityloc"></span>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6">
+                                                        <div class="mb-3">
+                                                            <label class="form-label"
+                                                            >Ngày kết thúc :</label
+                                                            >
+                                                            <input disabled
+                                                                   type="date"
+                                                                   class="form-control"
+                                                                   th:name="expirationDate"
+                                                                   th:value="${voucher.expirationDate}"
+                                                            />
+                                                        </div>
+                                                        <span id="expirationDateloc" class="error"></span>
+                                                    </div>
+                                                    <!--                                                    <div class="col-lg-6 col-md-6">-->
+                                                    <!--                                                        <div class="mb-3">-->
+                                                    <!--                                                            <label class="form-label">Trạng thái:</label>-->
+                                                    <!--                                                            <div>-->
+                                                    <!--                                                                <div-->
+                                                    <!--                                                                        class="form-check form-check-inline mt-3"-->
+                                                    <!--                                                                >-->
+                                                    <!--                                                                    <input disabled-->
+                                                    <!--                                                                            class="form-check-input"-->
+                                                    <!--                                                                            type="radio"-->
+                                                    <!--                                                                            th:name="active"-->
+                                                    <!--                                                                            th:value="true"-->
+                                                    <!--                                                                            th:checked="${voucher.active==true}"-->
+                                                    <!--                                                                    />-->
+                                                    <!--                                                                    <label class="form-check-label"-->
+                                                    <!--                                                                    >Hoạt động</label-->
+                                                    <!--                                                                    >-->
+                                                    <!--                                                                </div>-->
+                                                    <!--                                                                <div class="form-check form-check-inline">-->
+                                                    <!--                                                                    <input disabled-->
+                                                    <!--                                                                            class="form-check-input"-->
+                                                    <!--                                                                            type="radio"-->
+                                                    <!--                                                                            th:name="active"-->
+                                                    <!--                                                                            th:value="false"-->
+                                                    <!--                                                                            th:checked="${voucher.active==false}"-->
+                                                    <!--                                                                    />-->
+                                                    <!--                                                                    <label class="form-check-label"-->
+                                                    <!--                                                                    >Không hoạt động</label-->
+                                                    <!--                                                                    >-->
+                                                    <!--                                                                </div>-->
+                                                    <!--                                                            </div>-->
+                                                    <!--                                                        </div>-->
+                                                    <!--                                                    </div>-->
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <div class="row justify-content-xl-end">
+                                                <div class="w-auto">
+                                                    <a
+                                                            th:href="@{'/admin/vouchercustomer/' + *{id}}"
+                                                            class="btn btn-primary btn-control"
+                                                    >Xem chi tiết</a
+                                                    >
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <!--                        <a th:href="@{/admin/voucher/delete/{id}(id=*{voucher.id})}"-->
+                        <!--                           onclick="return confirm('Xác nhận xóa')">-->
+                        <!--                            <button type="button" class="btn btn-icon btn-danger">-->
+                        <!--                                <span class="bx bxs-trash"></span>-->
+                        <!--                            </button>-->
+                        <!--                        </a>-->
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <hr class="card-separator"/>
+    </div>
+    <div class="card-footer">
+        <!--        <div class="d-inline-flex float-end">-->
+        <!--            <div aria-label="Page pagination">-->
+        <!--                <ul class="pagination">-->
+        <!--                    <li class="page-item first">-->
+        <!--                        <a class="page-link" th:href="@{'/admin/voucher/list?page=1&size='+${session.size}}"><i-->
+        <!--                                class="tf-icon bx bx-chevrons-left"></i></a>-->
+        <!--                    </li>-->
+        <!--                    <li class="page-item prev">-->
+        <!--                        <a class="page-link"-->
+        <!--                           th:href="@{'/admin/voucher/list?page='+${session.page==1? '1': session.page - 1}+'&size='+${session.size}}"><i-->
+        <!--                                class="tf-icon bx bx-chevron-left"></i></a>-->
+        <!--                    </li>-->
+        <!--                    <li class="page-item" th:each="pagination:${#numbers.sequence(1,session.list.totalPages)}">-->
+        <!--                        <a class="page-link"-->
+        <!--                           th:href="@{'/admin/voucher/list?page='+${pagination}+'&size='+${session.size}}"-->
+        <!--                           th:text="${pagination}"></a>-->
+        <!--                    </li>-->
+        <!--                    <li class="page-item next">-->
+        <!--                        <a class="page-link"-->
+        <!--                           th:href="@{'/admin/voucher/list?page='+${session.page < session.list.totalPages ? session.page + 1 : session.list.totalPages }+'&size='+${session.size}}"><i-->
+        <!--                                class="tf-icon bx bx-chevron-right"></i></a>-->
+        <!--                    </li>-->
+        <!--                    <li class="page-item last">-->
+        <!--                        <a class="page-link"-->
+        <!--                           th:href="@{'/admin/voucher/list?page='+${session.list.totalPages}+'&size='+${session.size}}"><i-->
+        <!--                                class="tf-icon bx bx-chevrons-right"></i></a>-->
+        <!--                    </li>-->
+        <!--                </ul>-->
+        <!--            </div>-->
+        <!--        </div>-->
+    </div>
+</div>
+<script>
+    const fileInputs = document.getElementsByClassName("file-input");
+    const imagePreviews = document.getElementsByClassName("image-preview");
+    $.each($(".formAdd"), function (index, item) {
+        $(item).on("submit", function (event) {
+            event.preventDefault();
+            var $this = item;
+            $.ajax({
+                url: "/admin/voucher/all",
+                method: "get",
+                success: function (data) {
+                    var nameVoucher = $this.nameVoucher;
+                    var code = $this.code;
+                    var value = $this.value;
+                    var minimumValue = $this.minimumValue;
+                    var quantity = $this.quantity;
+                    var startDay = $this.startDay;
+                    var expirationDate = $this.expirationDate;
+                    let today = new Date().toISOString().slice(0, 10);
+                    var image = $this.image;
+                    var status = [];
+
+                    //code
+                    if (code.value.trim().length == 0) {
+                        $(code)
+                            .siblings(".codeloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống mã!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $.each(data, function (index, item) {
+                            if (code.value.trim() == item) {
+                                $(code)
+                                    .siblings(".codeloc")
+                                    .first()
+                                    .html(
+                                        "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Mã đã tồn tại!"
+                                    );
+
+                                status.push(false);
+                                return false;
+                            } else {
+                                $(code).siblings(".codeloc").first().html("");
+                            }
+                        });
+                    }
+                    //image
+                    if (image.value.trim().length < 1) {
+                        $(image)
+                            .parent()
+                            .siblings(".imageloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống ảnh!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(image).parent().siblings(".imageloc").first().html("");
+                    }
+                    //name
+                    if (nameVoucher.value.trim().length < 1) {
+                        $(nameVoucher)
+                            .siblings(".nameVoucherloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống tên!"
+                            );
+                        status.push(false);
+                    } else {
+                        $(nameVoucher).siblings(".nameVoucherloc").first().html("");
+                    }
+                    //value
+                    if (value.value.trim() == "" || value.value <= 0) {
+                        $(value)
+                            .parent()
+                            .siblings(".valueloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Giá trị không được để trống và phải lớn hơn 0!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(value).parent().siblings(".valueloc").first().html("");
+                    }
+                    //minimumValue
+                    if (value.value <= 0) {
+                        $(minimumValue)
+                            .parent()
+                            .siblings(".minimumValueloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Giá trị không được để trống và phải lớn hơn 0!"
+                            );
+                        status.push(false);
+                    } else if (Number(minimumValue.value) < Number(value.value)) {
+                        $(minimumValue).parent().siblings('.minimumValueloc').first().html("<i class='bx bx-x-circle' style='color:#ff0000' ></i> Giá trị tối thiểu không được nhỏ hơn giá trị giảm!");
+                        status.push(false);
+                    } else {
+                        console.log("a")
+                        $(minimumValue)
+                            .parent()
+                            .siblings(".minimumValueloc")
+                            .first()
+                            .html("");
+                    }
+                    //startDay
+                    if (startDay.value.trim().length < 1) {
+                        $(startDay)
+                            .parents()
+                            .siblings(".startDayloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống ngày bắt đầu!"
+                            );
+
+                        status.push(false);
+                    } else if (today.valueOf() > startDay.value.valueOf()) {
+                        $(startDay)
+                            .parents()
+                            .siblings(".startDayloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Ngày bắt đầu phải lớn hơn ngày hiện tại!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(startDay).parents().siblings(".startDayloc").first().html("");
+                    }
+                    //expirationDate
+                    if (expirationDate.value.trim().length < 1) {
+                        $(expirationDate)
+                            .parents()
+                            .siblings(".expirationDateloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống ngày kết thúc!"
+                            );
+
+                        status.push(false);
+                    } else if (
+                        expirationDate.value.valueOf() < startDay.value.valueOf()
+                    ) {
+                        $(expirationDate)
+                            .parents()
+                            .siblings(".expirationDateloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Ngày kết thúc phải lớn hơn ngày bắt đầu!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(expirationDate)
+                            .parents()
+                            .siblings(".expirationDateloc")
+                            .first()
+                            .html("");
+                    }
+                    //quantity
+                    if (quantity.value.trim().length < 1) {
+                        $(quantity)
+                            .parent()
+                            .siblings(".quantityloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống số lượng!"
+                            );
+                        status.push(false);
+                    } else {
+                        $(quantity).parent().siblings(".quantityloc").first().html("");
+                    }
+
+                    if (status.indexOf(false) > -1) {
+                        // resolve(false)
+                        // event.preventDefault()
+                        return;
+                    }
+                    $this.submit();
+                    $("#formUpdate")[0].submit();
+                },
+                error: function (error) {
+                    // reject(error)
+                    return;
+                },
+            });
+        });
+    });
+    $.each($(".formUpdate"), function (index, item) {
+        $(item).on("submit", function (event) {
+            event.preventDefault();
+            var $this = this;
+            console.log($this);
+            $.ajax({
+                url: "/admin/voucher/all",
+                method: "get",
+                success: function (data) {
+                    var nameVoucher = $this.nameVoucher;
+                    var code = $this.code;
+                    var value = $this.value;
+                    var minimumValue = $this.minimumValue;
+                    var quantity = $this.quantity;
+                    var startDay = $this.startDay;
+                    var expirationDate = $this.expirationDate;
+                    let today = new Date().toISOString().slice(0, 10);
+                    var image = $this.image;
+                    var status = [];
+
+                    //code
+                    if (code.value.trim().length == 0) {
+                        $(code)
+                            .siblings(".codeloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống mã!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(code).siblings(".codeloc").first().html("");
+                    }
+                    //image
+                    if (nameVoucher.value.trim().length < 1) {
+                        $(nameVoucher)
+                            .siblings(".nameVoucherloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống tên!"
+                            );
+                        status.push(false);
+                    } else {
+                        $(nameVoucher).siblings(".nameVoucherloc").first().html("");
+                    }
+                    //value
+                    if (value.value.trim() == "" || value.value <= 0) {
+                        $(value)
+                            .parent()
+                            .siblings(".valueloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Giá trị không được để trống và phải lớn hơn 0!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(value).parent().siblings(".valueloc").first().html("");
+                    }
+                    //minimumValue
+                    if (minimumValue.value.trim() == "" || value.value <= 0) {
+                        $(minimumValue)
+                            .parent()
+                            .siblings(".minimumValueloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Giá trị không được để trống và phải lớn hơn 0!"
+                            );
+                        status.push(false);
+                    } else {
+                        $(minimumValue)
+                            .parent()
+                            .siblings(".minimumValueloc")
+                            .first()
+                            .html("");
+                    }
+                    //startDay
+                    if (startDay.value.trim().length < 1) {
+                        $(startDay)
+                            .parents()
+                            .siblings(".startDayloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống ngày bắt đầu!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(startDay).parents().siblings(".startDayloc").first().html("");
+                    }
+                    //expirationDate
+                    if (expirationDate.value.trim().length < 1) {
+                        $(expirationDate)
+                            .parents()
+                            .siblings(".expirationDateloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống ngày kết thúc!"
+                            );
+
+                        status.push(false);
+                    } else {
+                        $(expirationDate)
+                            .parents()
+                            .siblings(".expirationDateloc")
+                            .first()
+                            .html("");
+                    }
+                    //quantity
+                    if (quantity.value.trim().length < 1) {
+                        $(quantity)
+                            .parent()
+                            .siblings(".quantityloc")
+                            .first()
+                            .html(
+                                "<i class='bx bx-x-circle' style='color:#ff0000' ></i> Không được để trống số lượng!"
+                            );
+                        status.push(false);
+                    } else {
+                        $(quantity).parent().siblings(".quantityloc").first().html("");
+                    }
+
+                    if (status.indexOf(false) > -1) {
+                        // resolve(false)
+                        // event.preventDefault()
+                        return;
+                    }
+                    $this.submit();
+                    $("#formUpdate")[0].submit();
+                },
+                error: function (error) {
+                    // reject(error)
+                    return;
+                },
+            });
+        });
+    });
+
+    for (let i = 0; i < fileInputs.length; i++) {
+        const fileInput = fileInputs[i];
+        const imagePreview = imagePreviews[i];
+
+        // Lắng nghe sự kiện khi người dùng chọn tệp
+        fileInput.addEventListener("change", function () {
+            const file = fileInput.files[0]; // Lấy tệp đã chọn
+
+            if (file) {
+                // Kiểm tra xem tệp đã chọn có phải là hình ảnh
+                if (file.type.startsWith("image/")) {
+                    // Tạo đường dẫn URL cho hình ảnh và hiển thị nó
+                    const imageURL = URL.createObjectURL(file);
+                    imagePreview.src = imageURL;
+                } else {
+                    alert("Vui lòng chọn một tệp hình ảnh.");
+                    fileInput.value = ""; // Đặt lại trường nhập
+                }
+            }
+        });
+    }
+
+    $.each($(".update-active-voucher"), function (index, item) {
+        $(item).on("change", function () {
+            Swal.fire({
+                title: "Bạn xác nhận cập nhật?",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Xác nhận!",
+                cancelButtonText: "Hủy",
+                customClass: {
+                    container: 'alert'
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var data = {
+                        id: item.value,
+                        active: item.checked
+                    }
+                    $.ajax({
+                        url: "/admin/voucher/update",
+                        method: "post",
+                        data: JSON.stringify(data),
+                        contentType: "application/json",
+                        success: function (data) {
+                            Swal.fire({
+                                title: "Thành công!",
+                                text: "Trạng thái sản phẩm đã được cập nhật",
+                                icon: "success",
+                                customClass: {
+                                    container: 'alert'
+                                }
+                            });
+                        }
+                    })
+                } else {
+                    item.checked = !item.checked
+                }
+            });
+        })
+
+    })
+
+</script>
